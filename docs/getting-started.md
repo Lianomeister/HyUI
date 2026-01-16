@@ -7,7 +7,7 @@ HyUI is a fluent, builder-based library for creating and managing custom user in
 To use HyUI in your Hytale project, you can either include the JAR file directly or use Cursemaven if you are using Gradle.
 
 **Using the JAR file:**
-1. Download the latest `HyUI-0.X.0.jar` (replace X with version) from the releases page.
+1. Download the latest `HyUI-0.X.0.jar` (replace X with version) from the CurseForge page (see [README](../README.md)).
 2. Place the JAR in your project's `libs` folder.
 3. Add the following to your `build.gradle` (replace X with version):
 ```gradle
@@ -98,7 +98,7 @@ new PageBuilder(playerRef)
         .addChild(ButtonBuilder.textButton()
             .withId("MyButton")
             .withText("Click Me!")
-            .addEventListener(CustomUIEventBindingType.Activating, (ignored) -> {
+            .addEventListener(CustomUIEventBindingType.Activating, (ignored, ctx) -> {
                 playerRef.sendMessage(Message.raw("Button clicked!"));
             }))
     )
@@ -257,32 +257,32 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                                     HyUIPlugin.getInstance().logInfo("HEEEEEEEEEEY");
                                     commandBuilder.set(elementSelector + ".Text", "Heyyy");
                                 })
-                                .addEventListener(CustomUIEventBindingType.Activating, (ignored) -> {
+                                .addEventListener(CustomUIEventBindingType.Activating, (ignored, ctx) -> {
                                     playerRef.sendMessage(Message.raw("Text Button 2 clicked!"));
                                 }))
                         .addChild(TextFieldBuilder.textInput()
                                 //.withId("MyTextField")
                                 .withValue("Test Value")
-                                .addEventListener(CustomUIEventBindingType.ValueChanged, (val) -> {
+                                .addEventListener(CustomUIEventBindingType.ValueChanged, (val, ctx) -> {
                                     playerRef.sendMessage(Message.raw("Text Field changed to: " + val));
                                 }))
                         .addChild(new CheckBoxBuilder()
                                 .withId("MyCheckBox")
                                 .withValue(true)
-                                .addEventListener(CustomUIEventBindingType.ValueChanged, (checked) -> {
+                                .addEventListener(CustomUIEventBindingType.ValueChanged, (checked, ctx) -> {
                                     playerRef.sendMessage(Message.raw("CheckBox: " + checked));
                                 })
                         )
                         .addChild(new ColorPickerBuilder()
                                 .withValue("#aabbcc")
-                                .addEventListener(CustomUIEventBindingType.ValueChanged, (val) -> {
+                                .addEventListener(CustomUIEventBindingType.ValueChanged, (val, ctx) -> {
                                     playerRef.sendMessage(Message.raw("Color Picker changed to: " + val));
                                 })
                         )
                         .addChild(NumberFieldBuilder.numberInput()
                                 .withValue(25)
                                 .withId("ANum")
-                                .addEventListener(CustomUIEventBindingType.ValueChanged, (val) -> {
+                                .addEventListener(CustomUIEventBindingType.ValueChanged, (val, ctx) -> {
                                     playerRef.sendMessage(Message.raw("Number Field changed to: " + val));
                                 })
                         )

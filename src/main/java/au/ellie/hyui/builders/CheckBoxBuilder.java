@@ -27,7 +27,7 @@ public class CheckBoxBuilder extends UIElementBuilder<CheckBoxBuilder> {
      * wrapped within a grouping element.
      */
     public CheckBoxBuilder() {
-        super(UIElements.CHECK_BOX_WITH_LABEL);
+        super(UIElements.CHECK_BOX_WITH_LABEL, "#HyUICheckBox");
         withWrappingGroup(true);
         withUiFile("Pages/Elements/CheckBox.ui");
     }
@@ -76,6 +76,11 @@ public class CheckBoxBuilder extends UIElementBuilder<CheckBoxBuilder> {
      */
     public CheckBoxBuilder addEventListener(CustomUIEventBindingType type, BiConsumer<Boolean, UIContext> callback) {
         return addEventListenerInternal(type, callback);
+    }
+
+    @Override
+    protected Object parseValue(String rawValue) {
+        return Boolean.parseBoolean(rawValue);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class ColorPickerBuilder extends UIElementBuilder<ColorPickerBuilder> {
      * - A wrapping group setting enabled.
      */
     public ColorPickerBuilder() {
-        super(UIElements.COLOR_PICKER);
+        super(UIElements.COLOR_PICKER, "#HyUIColorPicker");
         withWrappingGroup(true);
         withUiFile("Pages/Elements/ColorPicker.ui");
     }

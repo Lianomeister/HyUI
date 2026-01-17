@@ -27,7 +27,7 @@ public class TextFieldBuilder extends UIElementBuilder<TextFieldBuilder> {
      * Not normally used, only used when creating a text field element from scratch.
      */
     public TextFieldBuilder() {
-        super(UIElements.TEXT_FIELD);
+        super(UIElements.TEXT_FIELD, "#HyUITextField");
         withWrappingGroup(true);
     }
 
@@ -38,7 +38,7 @@ public class TextFieldBuilder extends UIElementBuilder<TextFieldBuilder> {
      * @param theme The theme to use for the text field element.
      */
     public TextFieldBuilder(Theme theme) {
-        super(theme, UIElements.TEXT_FIELD);
+        super(theme, UIElements.TEXT_FIELD, "#HyUITextField");
         withWrappingGroup(true);
         if (theme == Theme.GAME_THEME) {
             withUiFile("Pages/Elements/TextInput.ui");
@@ -53,7 +53,7 @@ public class TextFieldBuilder extends UIElementBuilder<TextFieldBuilder> {
      * @param elementPath The path to the UI element definition file.
      */
     public TextFieldBuilder(Theme theme, String elementPath) {
-        super(theme, elementPath);
+        super(theme, elementPath, "#HyUITextField");
         withWrappingGroup(true);
         if (UIElements.MACRO_TEXT_FIELD.equals(elementPath)) {
             withUiFile("Pages/Elements/TextInput.ui");

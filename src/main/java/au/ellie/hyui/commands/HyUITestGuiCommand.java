@@ -138,7 +138,15 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                                         //.set("CustomProperty", "ValueHere")
                                         //.setDisabledStyle(new HyUIStyle().setTextColor("#888888")))
                         ))
-                
+                        .addChild(ContainerBuilder.container()
+                                .withId("MyContainer")
+                                .withTitleText("Custom Title")
+                                .addChild(new LabelBuilder()
+                                        .withText("Inside Content")
+                                        .inside("#Content"))
+                                .addChild(new LabelBuilder()
+                                        .withText("Inside Title")
+                                        .inside("#Title")))
                 )
                 .open(store);
     }

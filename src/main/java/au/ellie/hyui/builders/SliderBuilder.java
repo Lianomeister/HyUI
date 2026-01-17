@@ -23,13 +23,13 @@ public class SliderBuilder extends UIElementBuilder<SliderBuilder> {
     private Integer value;
 
     public SliderBuilder() {
-        super(UIElements.SLIDER);
+        super(UIElements.SLIDER, "#HyUISlider");
         withWrappingGroup(true);
         withUiFile("Pages/Elements/Slider.ui");
     }
 
     public SliderBuilder(Theme theme) {
-        super(theme, UIElements.SLIDER);
+        super(theme, UIElements.SLIDER, "#HyUISlider");
         withWrappingGroup(true);
         withUiFile("Pages/Elements/Slider.ui");
     }
@@ -104,6 +104,15 @@ public class SliderBuilder extends UIElementBuilder<SliderBuilder> {
     @Override
     protected boolean usesRefValue() {
         return true;
+    }
+    
+    @Override
+    protected Object parseValue(String rawValue) {
+        try {
+            return Integer.parseInt(rawValue);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
     
     @Override

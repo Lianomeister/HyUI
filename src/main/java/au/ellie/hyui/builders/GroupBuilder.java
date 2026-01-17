@@ -19,11 +19,11 @@ public class GroupBuilder extends UIElementBuilder<GroupBuilder> {
     private String layoutMode;
 
     public GroupBuilder() {
-        super(UIElements.GROUP);
+        super(UIElements.GROUP, "Group");
     }
 
     public GroupBuilder(Theme theme) {
-        super(theme, UIElements.GROUP);
+        super(theme, UIElements.GROUP, "Group");
     }
 
     /**

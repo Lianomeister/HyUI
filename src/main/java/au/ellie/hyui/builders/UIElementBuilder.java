@@ -43,14 +43,14 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
 
     private static int idCounter = 0;
 
-    public UIElementBuilder(String elementPath) {
-        this(Theme.RAW, elementPath);
+    public UIElementBuilder(String elementPath, String typeSelector) {
+        this(Theme.RAW, elementPath, typeSelector);
     }
 
-    public UIElementBuilder(Theme theme, String elementPath) {
+    public UIElementBuilder(Theme theme, String elementPath, String typeSelector) {
         this.theme = theme != null ? theme : Theme.RAW;
         this.elementPath = this.theme.format(elementPath);
-        this.typeSelector = determineTypeSelector(elementPath);
+        this.typeSelector = typeSelector;
         this.id = generateUniqueId();
     }
 
@@ -94,6 +94,17 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
      */
     public List<UIEventListener<?>> getListeners() {
         return listeners;
+    }
+
+    /**
+     * Parses the raw value received from a UI event into the appropriate type for this element.
+     * Defaults to returning the raw value as a string.
+     * 
+     * @param rawValue The raw string value from the UI event.
+     * @return The parsed value object, or null if parsing fails or is not supported.
+     */
+    protected Object parseValue(String rawValue) {
+        return rawValue;
     }
 
     public static void resetIdCounter() {
@@ -320,23 +331,6 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
                 applyStyle(commands, selector + ".Style", hyUIStyle);
             }
         }
-    }
-
-    protected String determineTypeSelector(String elementPath) {
-        if (elementPath == null) return null;
-        // Extract the base type from the element path
-        // e.g., "$C.@TextButton" -> "#HyUITextButton"
-        // e.g., "Group" -> "Group"
-        if (elementPath.contains("TextButton")) return "#HyUITextButton";
-        if (elementPath.contains("CancelTextButton")) return "#HyUICancelTextButton";
-        if (elementPath.contains("TextField")) return "#HyUITextField";
-        if (elementPath.contains("CheckBox")) return "#HyUICheckBox";
-        if (elementPath.contains("ColorPicker")) return "#HyUIColorPicker";
-        if (elementPath.contains("NumberField")) return "#HyUINumberField";
-        if (elementPath.contains("Slider")) return "#HyUISlider";
-        if (elementPath.contains("Label")) return "Label";
-        if (elementPath.contains("Group")) return "Group";
-        return elementPath;
     }
 
     protected boolean isFilePath() {

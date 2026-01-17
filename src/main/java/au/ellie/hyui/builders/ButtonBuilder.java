@@ -27,7 +27,7 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
      * You do not need to call this.
      */
     public ButtonBuilder() {
-        super(UIElements.BUTTON);
+        super(UIElements.BUTTON, UIElements.BUTTON);
         withWrappingGroup(true);
     }
     
@@ -35,7 +35,7 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
      * You do not need to call this.
      */
     public ButtonBuilder(Theme theme) {
-        super(theme, UIElements.BUTTON);
+        super(theme, UIElements.BUTTON, UIElements.BUTTON);
         withWrappingGroup(true);
         if (theme == Theme.GAME_THEME) {
             withUiFile("Pages/Elements/TextButton.ui");
@@ -49,7 +49,7 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
      * @param elementPath
      */
     public ButtonBuilder(Theme theme, String elementPath) {
-        super(theme, elementPath);
+        super(theme, elementPath, getButtonTypeSelector(elementPath));
         withWrappingGroup(true);
         if (UIElements.TEXT_BUTTON.equals(elementPath)) {
             withUiFile("Pages/Elements/TextButton.ui");
@@ -58,6 +58,12 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
         } else if (UIElements.BACK_BUTTON.equals(elementPath)) {
             withUiFile("Pages/Elements/BackButton.ui");
         }
+    }
+
+    private static String getButtonTypeSelector(String elementPath) {
+        if (elementPath.contains("TextButton")) return "#HyUITextButton";
+        if (elementPath.contains("CancelTextButton")) return "#HyUICancelTextButton";
+        return "#HyUIButton"; // Default for other buttons if any
     }
 
     /**

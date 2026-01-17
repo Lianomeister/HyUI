@@ -23,11 +23,11 @@ public class LabelBuilder extends UIElementBuilder<LabelBuilder> {
      * By default, the label element type is set to {@code UIElements.LABEL}.
      */
     public LabelBuilder() {
-        super(UIElements.LABEL);
+        super(UIElements.LABEL, "Label");
     }
 
     public LabelBuilder(Theme theme) {
-        super(theme, UIElements.LABEL);
+        super(theme, UIElements.LABEL, "Label");
     }
 
     /**

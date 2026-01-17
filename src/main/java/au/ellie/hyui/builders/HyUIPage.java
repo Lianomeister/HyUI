@@ -132,21 +132,7 @@ public class HyUIPage extends InteractiveCustomUIPage<DynamicPageData> implement
                         }
 
                         if (rawValue != null) {
-                            // TODO: Fix this mess... sometime, ellie, sometime...
-                            // It already exists in bool/int/whatever format. Perhaps the builders can give us the
-                            // correct @Value to use and pull from data...
-                            if (element instanceof NumberFieldBuilder) {
-                                try {
-                                    finalValue = Double.parseDouble(rawValue);
-                                } catch (NumberFormatException ignored) {
-                                }
-                            } else if (element instanceof CheckBoxBuilder) {
-                                finalValue = Boolean.parseBoolean(rawValue);
-                            } else if (element instanceof SliderBuilder) {
-                                finalValue = Integer.parseInt(rawValue);
-                            } else {
-                                finalValue = rawValue;
-                            }
+                            finalValue = element.parseValue(rawValue);
                         }
 
                         if (finalValue != null && element.getId() != null) {

@@ -31,7 +31,7 @@ public class NumberFieldBuilder extends UIElementBuilder<NumberFieldBuilder> {
      * @param theme
      */
     public NumberFieldBuilder(Theme theme) {
-        super(theme, UIElements.MACRO_NUMBER_FIELD);
+        super(theme, UIElements.MACRO_NUMBER_FIELD, "#HyUINumberField");
         withWrappingGroup(true);
         if (theme == Theme.GAME_THEME) {
             withUiFile("Pages/Elements/NumberInput.ui");
@@ -82,6 +82,15 @@ public class NumberFieldBuilder extends UIElementBuilder<NumberFieldBuilder> {
      */
     public NumberFieldBuilder addEventListener(CustomUIEventBindingType type, BiConsumer<Double, UIContext> callback) {
         return addEventListenerInternal(type, callback);
+    }
+
+    @Override
+    protected Object parseValue(String rawValue) {
+        try {
+            return Double.parseDouble(rawValue);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     @Override

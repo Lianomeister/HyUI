@@ -81,8 +81,8 @@ public class SliderBuilder extends UIElementBuilder<SliderBuilder> {
      *                 a {@code Float} value.
      * @return the current instance of {@code SliderBuilder}, enabling method chaining.
      */
-    public SliderBuilder addEventListener(CustomUIEventBindingType type, Consumer<Float> callback) {
-        return addEventListenerInternal(type, callback);
+    public SliderBuilder addEventListener(CustomUIEventBindingType type, Consumer<Integer> callback) {
+        return addEventListener(type, Integer.class, callback);
     }
 
     /**
@@ -93,7 +93,7 @@ public class SliderBuilder extends UIElementBuilder<SliderBuilder> {
      * @return This SliderBuilder instance for method chaining.
      */
     public SliderBuilder addEventListener(CustomUIEventBindingType type, BiConsumer<Integer, UIContext> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListenerWithContext(type, Integer.class, callback);
     }
 
     @Override

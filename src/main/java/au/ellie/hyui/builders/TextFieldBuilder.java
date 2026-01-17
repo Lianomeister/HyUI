@@ -89,7 +89,7 @@ public class TextFieldBuilder extends UIElementBuilder<TextFieldBuilder> {
      * @return This TextFieldBuilder instance for method chaining.
      */
     public TextFieldBuilder addEventListener(CustomUIEventBindingType type, Consumer<String> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListener(type, String.class, callback);
     }
 
     /**
@@ -100,7 +100,7 @@ public class TextFieldBuilder extends UIElementBuilder<TextFieldBuilder> {
      * @return This TextFieldBuilder instance for method chaining.
      */
     public TextFieldBuilder addEventListener(CustomUIEventBindingType type, BiConsumer<String, UIContext> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListenerWithContext(type, String.class, callback);
     }
     
     @Override

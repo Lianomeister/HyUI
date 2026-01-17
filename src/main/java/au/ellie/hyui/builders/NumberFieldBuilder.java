@@ -70,7 +70,7 @@ public class NumberFieldBuilder extends UIElementBuilder<NumberFieldBuilder> {
      * @return the current instance of {@code NumberFieldBuilder}, enabling method chaining.
      */
     public NumberFieldBuilder addEventListener(CustomUIEventBindingType type, Consumer<Double> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListener(type, Double.class, callback);
     }
 
     /**
@@ -81,7 +81,7 @@ public class NumberFieldBuilder extends UIElementBuilder<NumberFieldBuilder> {
      * @return This NumberFieldBuilder instance for method chaining.
      */
     public NumberFieldBuilder addEventListener(CustomUIEventBindingType type, BiConsumer<Double, UIContext> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListenerWithContext(type, Double.class, callback);
     }
 
     @Override

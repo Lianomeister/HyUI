@@ -61,7 +61,7 @@ public class ColorPickerBuilder extends UIElementBuilder<ColorPickerBuilder> {
      *         allowing for method chaining.
      */
     public ColorPickerBuilder addEventListener(CustomUIEventBindingType type, Consumer<String> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListener(type, String.class, callback);
     }
 
     /**
@@ -72,7 +72,7 @@ public class ColorPickerBuilder extends UIElementBuilder<ColorPickerBuilder> {
      * @return This ColorPickerBuilder instance for method chaining.
      */
     public ColorPickerBuilder addEventListener(CustomUIEventBindingType type, BiConsumer<String, UIContext> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListenerWithContext(type, String.class, callback);
     }
 
     @Override

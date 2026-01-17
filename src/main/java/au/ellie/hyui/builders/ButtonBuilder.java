@@ -61,8 +61,8 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
     }
 
     private static String getButtonTypeSelector(String elementPath) {
-        if (elementPath.contains("TextButton")) return "#HyUITextButton";
         if (elementPath.contains("CancelTextButton")) return "#HyUICancelTextButton";
+        if (elementPath.contains("TextButton")) return "#HyUITextButton";
         return "#HyUIButton";
     }
 
@@ -112,7 +112,7 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
      * @return the current instance of {@code ButtonBuilder} for method chaining
      */
     public ButtonBuilder addEventListener(CustomUIEventBindingType type, Consumer<Void> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListener(type, Void.class, callback);
     }
 
     /**
@@ -123,7 +123,7 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
      * @return the current instance of {@code ButtonBuilder} for method chaining
      */
     public ButtonBuilder addEventListener(CustomUIEventBindingType type, BiConsumer<Void, UIContext> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListenerWithContext(type, Void.class, callback);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
     @Override
     protected Set<String> getUnsupportedStyleProperties() {
         if (this.theme == Theme.GAME_THEME) {
-            return Set.of("FontSize", "TextColor");
+            return Set.of("FontSize", "TextColor", "Alignment", "HorizontalAlignment", "VerticalAlignment");
         }
         return Collections.emptySet();
     }

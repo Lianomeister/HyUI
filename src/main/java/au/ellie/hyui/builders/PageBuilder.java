@@ -1,6 +1,8 @@
 package au.ellie.hyui.builders;
 
+import au.ellie.hyui.events.UIContext;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
+import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -10,7 +12,12 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -19,7 +26,7 @@ import java.util.function.Consumer;
 public class PageBuilder {
     private final PlayerRef playerRef;
     private CustomPageLifetime lifetime = CustomPageLifetime.CanDismiss;
-    private final List<UIElementBuilder<?>> elements = new ArrayList<>();
+    private final Map<String, UIElementBuilder<?>> elementRegistry = new LinkedHashMap<>();
     private final List<Consumer<UICommandBuilder>> editCallbacks = new ArrayList<>();
     private String uiFile;
 
@@ -93,7 +100,59 @@ public class PageBuilder {
      */
     public PageBuilder addElement(UIElementBuilder<?> element) {
         // Elements are always added to the #HyUIRoot group in the placeholder.
-        this.elements.add(element.inside("#HyUIRoot"));
+        element.inside("#HyUIRoot");
+        registerElement(element);
+        return this;
+    }
+
+    private void registerElement(UIElementBuilder<?> element) {
+        if (element.getId() != null) {
+            this.elementRegistry.put(element.getId(), element);
+        }
+        for (UIElementBuilder<?> child : element.children) {
+            registerElement(child);
+        }
+    }
+
+    /**
+     * Retrieves an element builder by its ID.
+     *
+     * @param id    The ID of the element to retrieve.
+     * @param clazz The class of the builder to cast to.
+     * @param <T>   The type of the builder.
+     * @return An Optional containing the builder if found and of the correct type, otherwise empty.
+     */
+    public <T extends UIElementBuilder<T>> Optional<T> getById(String id, Class<T> clazz) {
+        UIElementBuilder<?> builder = elementRegistry.get(id);
+        if (builder != null && clazz.isInstance(builder)) {
+            return Optional.of(clazz.cast(builder));
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Adds an event listener to an element by its ID.
+     *
+     * @param id       The ID of the element.
+     * @param type     The event type.
+     * @param callback The callback function.
+     * @return The current PageBuilder instance.
+     */
+    public PageBuilder addEventListener(String id, CustomUIEventBindingType type, Consumer<Object> callback) {
+        elementRegistry.get(id).addEventListener(type, Object.class, callback);
+        return this;
+    }
+
+    /**
+     * Adds an event listener with context to an element by its ID.
+     *
+     * @param id       The ID of the element.
+     * @param type     The event type.
+     * @param callback The callback function.
+     * @return The current PageBuilder instance.
+     */
+    public PageBuilder addEventListener(String id, CustomUIEventBindingType type, BiConsumer<Object, UIContext> callback) {
+        elementRegistry.get(id).addEventListenerWithContext(type, Object.class, callback);
         return this;
     }
 
@@ -113,6 +172,16 @@ public class PageBuilder {
         return this;
     }
 
+    private List<UIElementBuilder<?>> getTopLevelElements() {
+        List<UIElementBuilder<?>> topLevel = new ArrayList<>();
+        for (UIElementBuilder<?> element : elementRegistry.values()) {
+            if ("#HyUIRoot".equals(element.parentSelector)) {
+                topLevel.add(element);
+            }
+        }
+        return topLevel;
+    }
+
     /**
      * Opens a custom UI page for the associated player using the provided store.
      * This method retrieves the player's page manager and creates a new instance
@@ -125,7 +194,7 @@ public class PageBuilder {
         assert playerRef != null : "Player reference cannot be null. Use override for open(Store<ECS>) if reusing this builder.";
         Player playerComponent = store.getComponent(playerRef.getReference(), Player.getComponentType());
         PageManager pageManager = playerComponent.getPageManager();
-        pageManager.openCustomPage(playerRef.getReference(), store, new HyUIPage(playerRef, lifetime, uiFile, elements, editCallbacks));
+        pageManager.openCustomPage(playerRef.getReference(), store, new HyUIPage(playerRef, lifetime, uiFile, getTopLevelElements(), editCallbacks));
     }
 
     /**
@@ -140,6 +209,6 @@ public class PageBuilder {
     public void open(@Nonnull PlayerRef playerRefParam, Store<EntityStore> store) {
         Player playerComponent = store.getComponent(playerRefParam.getReference(), Player.getComponentType());
         PageManager pageManager = playerComponent.getPageManager();
-        pageManager.openCustomPage(playerRefParam.getReference(), store, new HyUIPage(playerRefParam, lifetime, uiFile, elements, editCallbacks));
+        pageManager.openCustomPage(playerRefParam.getReference(), store, new HyUIPage(playerRefParam, lifetime, uiFile, getTopLevelElements(), editCallbacks));
     }
 }

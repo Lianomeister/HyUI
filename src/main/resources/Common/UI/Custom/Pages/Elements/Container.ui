@@ -11,6 +11,6 @@ $C.@Container #HyUIContainer {
     }
 
     #Content {
-      LayoutMode: Left;
+      LayoutMode: Top;
     }
 }

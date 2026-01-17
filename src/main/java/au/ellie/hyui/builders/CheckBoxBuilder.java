@@ -44,16 +44,12 @@ public class CheckBoxBuilder extends UIElementBuilder<CheckBoxBuilder> {
         return this;
     }
 
-    /**
-     * Sets the text to be displayed as the label for the checkbox being constructed.
-     *
-     * @param text the text to set as the label (to the right) of the checkbox
-     * @return the {@code CheckBoxBuilder} instance for method chaining
-     */
-    public CheckBoxBuilder withText(String text) {
+    // TODO: Work out how I can set a variable within a variable given the Label for a checkbox with label has 
+    //       no ID to work with.
+    /*public CheckBoxBuilder withText(String text) {
         this.text = text;
         return this;
-    }
+    }*/
 
     /**
      * Registers an event listener for the checkbox being constructed. The listener is triggered 
@@ -64,7 +60,7 @@ public class CheckBoxBuilder extends UIElementBuilder<CheckBoxBuilder> {
      * @return the {@code CheckBoxBuilder} instance for method chaining, allowing further configuration
      */
     public CheckBoxBuilder addEventListener(CustomUIEventBindingType type, Consumer<Boolean> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListener(type, Boolean.class, callback);
     }
 
     /**
@@ -75,7 +71,7 @@ public class CheckBoxBuilder extends UIElementBuilder<CheckBoxBuilder> {
      * @return This CheckBoxBuilder instance for method chaining.
      */
     public CheckBoxBuilder addEventListener(CustomUIEventBindingType type, BiConsumer<Boolean, UIContext> callback) {
-        return addEventListenerInternal(type, callback);
+        return addEventListenerWithContext(type, Boolean.class, callback);
     }
 
     @Override
@@ -104,10 +100,10 @@ public class CheckBoxBuilder extends UIElementBuilder<CheckBoxBuilder> {
             commands.set(selector + " #CheckBox.Value", value);
         }
 
-        if (text != null) {
+        /*if (text != null) {
             HyUIPlugin.getInstance().logInfo("Setting Text: " + text + " for " + selector);
-            commands.set(selector + ".@Text", text);
-        }
+            commands.set(selector + " Label.Text", text);
+        }*/
 
         if (hyUIStyle == null && style != null) {
             HyUIPlugin.getInstance().logInfo("Setting Style: " + style + " for " + selector);

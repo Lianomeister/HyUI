@@ -2,6 +2,7 @@ package au.ellie.hyui.commands;
 
 import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.builders.*;
+import au.ellie.hyui.html.HtmlParser;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.GameMode;
@@ -40,7 +41,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                 return CompletableFuture.runAsync(() -> {
                     PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
                     if (playerRef != null) {
-                        openTestGuiFromScratch(playerRef, store);
+                        openHtmlTestGui(playerRef, store);
                     }
                 }, world);
             } else {
@@ -56,23 +57,69 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                 .fromFile("Pages/EllieAU_HyUI_Placeholder.ui")
                 .open(store);
     }
+    private void openHtmlTestGui(PlayerRef playerRef, Store<EntityStore> store) {
+        String html = """
+            <div class="page-overlay" style="anchor: 150">
+                <div class="container" id="myContainer" data-hyui-title="HyUI HTML Parser Test" 
+                    style="anchor-left: 100; anchor-right: 100; anchor-top: 50; anchor-bottom: 50">
+                    
+                    <div class="container-title">
+                        <p style="color: #ff0000; font-weight: bold; text-transform: uppercase">
+                            Text Here That Isnt The Title
+                        </p>
+                    </div>
+                    <div class="container-contents">
+                        <p style="font-size: 20; color: #00ff00">Welcome to HyUI HTML parser!</p>
+                        <div style="text-align: top; flex-weight: 1">
+                             Free text here should be a label!
+                            <input type="text" id="myInput" style="flex-weight: 1"/>
+                        </div>
+                        <input type="number" value="42"/>
+                        <input type="range" min="0" max="100" value="50" step="1"/>
+                        <label data-hyui-tooltiptext="This is a checkbox!">
+                            Checkbox Label
+                        </label>
+                        <input type="checkbox" checked="true"/>
+                        <input type="color" value="#ff0000" 
+                            style="anchor-width: 140; anchor-height: 120; anchor-left: 12"/>
+                        <button id="btn1">Click Me!</button>
+                        <input type="reset" value="Cancel Operation" style="flex-weight: 2"/>
+                    </div>
+                </div>
+            </div>
+            """;
+
+        PageBuilder builder = PageBuilder.detachedPage()
+                .withLifetime(CustomPageLifetime.CanDismiss);
+
+        new HtmlParser().parseToPage(builder, html);
+        builder.addEventListener("btn1", CustomUIEventBindingType.Activating, (data, context) -> {
+            playerRef.sendMessage(Message.raw("Button clicked via PageBuilder ID lookup!"));
+        });
+        builder.getById("myInput", TextFieldBuilder.class).ifPresent(input -> {
+            input.addEventListener(CustomUIEventBindingType.ValueChanged, (val) -> {
+                playerRef.sendMessage(Message.raw("Input changed to: " + val));
+            });
+        });
+        builder.open(playerRef, store);
+    }
+
     private void openTestGuiFromScratch(PlayerRef playerRef, Store<EntityStore> store) {
         
         PageBuilder.detachedPage()
             .withLifetime(CustomPageLifetime.CanDismiss)
-                .addElement(PageOverlayBuilder.pageOverlay()
-                        .withId("MyOverlay")
-                        .addChild(ContainerBuilder.container()
-                                .withTitleText("Custom UI from scratch")
-                                .addContentChild(
-                                        LabelBuilder.label()
-                                                .withText("Overlay Content")
-                                )
-                        )
+            .addElement(PageOverlayBuilder.pageOverlay()
+                .withId("MyOverlay")
+                .addChild(ContainerBuilder.container()
+                    .withTitleText("Custom UI from scratch")
+                    .addContentChild(
+                        LabelBuilder.label()
+                            .withText("Overlay Content")
+                    )
                 )
+            )
             .addElement(ButtonBuilder.backButton())
             .open(playerRef, store);
-            
         
     }
     private void openTestGui(PlayerRef playerRef, Store<EntityStore> store) {

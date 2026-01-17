@@ -63,7 +63,7 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
     private static String getButtonTypeSelector(String elementPath) {
         if (elementPath.contains("TextButton")) return "#HyUITextButton";
         if (elementPath.contains("CancelTextButton")) return "#HyUICancelTextButton";
-        return "#HyUIButton"; // Default for other buttons if any
+        return "#HyUIButton";
     }
 
     /**
@@ -85,6 +85,10 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
         return new ButtonBuilder(Theme.GAME_THEME, UIElements.CANCEL_TEXT_BUTTON);
     }
 
+    public static ButtonBuilder backButton() {
+        return new ButtonBuilder(Theme.GAME_THEME, UIElements.BACK_BUTTON);
+    }
+
     /**
      * Sets the text for the button being built. Replaces any other text.
      *
@@ -92,6 +96,9 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
      * @return the current instance of ButtonBuilder for method chaining
      */
     public ButtonBuilder withText(String text) {
+        // Not supported in back buttons.
+        if (elementPath.contains("BackButton"))
+            return this;
         this.text = text;
         return this;
     }

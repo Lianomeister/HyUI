@@ -5,6 +5,7 @@ import au.ellie.hyui.builders.*;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.GameMode;
+import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -39,7 +40,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                 return CompletableFuture.runAsync(() -> {
                     PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
                     if (playerRef != null) {
-                        openTestGui(playerRef, store);
+                        openTestGuiFromScratch(playerRef, store);
                     }
                 }, world);
             } else {
@@ -50,7 +51,30 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
             return CompletableFuture.completedFuture(null);
         }
     }
-
+    private void openTestGuiMinimal(PlayerRef playerRef, Store<EntityStore> store) {
+        new PageBuilder(playerRef)
+                .fromFile("Pages/EllieAU_HyUI_Placeholder.ui")
+                .open(store);
+    }
+    private void openTestGuiFromScratch(PlayerRef playerRef, Store<EntityStore> store) {
+        
+        PageBuilder.detachedPage()
+            .withLifetime(CustomPageLifetime.CanDismiss)
+                .addElement(PageOverlayBuilder.pageOverlay()
+                        .withId("MyOverlay")
+                        .addChild(ContainerBuilder.container()
+                                .withTitleText("Custom UI from scratch")
+                                .addContentChild(
+                                        LabelBuilder.label()
+                                                .withText("Overlay Content")
+                                )
+                        )
+                )
+            .addElement(ButtonBuilder.backButton())
+            .open(playerRef, store);
+            
+        
+    }
     private void openTestGui(PlayerRef playerRef, Store<EntityStore> store) {
         new PageBuilder(playerRef)
                 .fromFile("Pages/EllieAU_HyUI_Placeholder.ui")
@@ -147,6 +171,11 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                                 .addChild(new LabelBuilder()
                                         .withText("Inside Title")
                                         .inside("#Title")))
+                        .addChild(PageOverlayBuilder.pageOverlay()
+                                .withId("MyOverlay")
+                                .addChild(new LabelBuilder()
+                                        .withText("Overlay Content"))
+                                .addChild(ButtonBuilder.backButton()))
                 )
                 .open(store);
     }

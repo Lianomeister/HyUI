@@ -30,6 +30,8 @@ public class PageBuilder {
      */
     public PageBuilder(PlayerRef playerRef) {
         this.playerRef = playerRef;
+        // No matter what happens, we need at least an empty UI file to begin with.
+        fromFile("Pages/EllieAU_HyUI_Placeholder.ui");
     }
     
     /**
@@ -37,6 +39,27 @@ public class PageBuilder {
      */
     public PageBuilder() {
         this.playerRef = null;
+        fromFile("Pages/EllieAU_HyUI_Placeholder.ui");
+    }
+
+    /**
+     * Factory method to create a new instance of the {@code PageBuilder} class.
+     * This does not depend on any player.
+     * You must use {@code PageBuilder.open(PlayerRef, Store<ECS>)} to open it.
+     *
+     * @return A new instance of the {@code PageBuilder}.
+     */
+    public static PageBuilder detachedPage() {
+        return new PageBuilder();
+    }
+
+    /**
+     * Factory method to create a new instance of the {@code PageBuilder} class.
+     *
+     * @return A new instance of the {@code PageBuilder}.
+     */
+    public static PageBuilder pageForPlayer(PlayerRef ref) {
+        return new PageBuilder(ref);
     }
 
     /**
@@ -69,7 +92,8 @@ public class PageBuilder {
      * @return The current instance of the PageBuilder to allow for method chaining.
      */
     public PageBuilder addElement(UIElementBuilder<?> element) {
-        this.elements.add(element);
+        // Elements are always added to the #HyUIRoot group in the placeholder.
+        this.elements.add(element.inside("#HyUIRoot"));
         return this;
     }
 

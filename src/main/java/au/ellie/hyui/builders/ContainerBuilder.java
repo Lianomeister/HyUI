@@ -37,6 +37,28 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> {
         return this;
     }
 
+    /**
+     * Add a child inside the #Content of the container.
+     * @param child the element to add to the container's contents.
+     * @return the {@code ContainerBuilder} instance for method chaining
+     */
+    public ContainerBuilder addContentChild(UIElementBuilder<?> child) {
+        child.inside("#Content");
+        this.children.add(child);
+        return this;
+    }
+    
+    /**
+     * Add a child inside the #Title of the container.
+     * @param child the element to add to the container's title.
+     * @return the {@code ContainerBuilder} instance for method chaining
+     */
+    public ContainerBuilder addTitleChild(UIElementBuilder<?> child) {
+        child.inside("#Title");
+        this.children.add(child);
+        return this;
+    }
+    
     @Override
     protected boolean supportsStyling() {
         return true;
@@ -59,6 +81,7 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> {
         String selector = getSelector();
         if (selector != null) {
             for (UIElementBuilder<?> child : children) {
+                HyUIPlugin.getInstance().logInfo("Building child element with parent selector: " + child.parentSelector);
                 // We want to make sure children can be placed in #Title or #Content.
                 // UIElementBuilder.inside() sets parentSelector.
                 String childParent = child.parentSelector;

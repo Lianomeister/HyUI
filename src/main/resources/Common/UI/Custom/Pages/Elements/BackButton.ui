@@ -1,2 +1,2 @@
 $C = "../../Common.ui";
-$C.@BackButton {}
+$C.@BackButton #HyUIButton {}

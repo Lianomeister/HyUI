@@ -1,29 +1,4 @@
 $C = "../Common.ui";
-
-@CustomStyle = TextButtonStyle(
-              Default: (Background: $C.@DefaultSquareButtonDefaultBackground, LabelStyle: $C.@DefaultButtonLabelStyle),
-              Hovered: (Background: $C.@DefaultSquareButtonHoveredBackground, LabelStyle: $C.@DefaultButtonLabelStyle),
-              Pressed: (Background: $C.@DefaultSquareButtonPressedBackground, LabelStyle: $C.@DefaultButtonLabelStyle),
-              Disabled: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: $C.@DefaultButtonDisabledLabelStyle),
-              Sounds: $C.@ButtonSounds,
-            );
-
-$C.@PageOverlay {
-  $C.@Container #HyUIContainer {
-    Anchor: (Width: 600, Height: 260);
-
-    #Title {
-      Group {
-        $C.@Title #HyUITitle {
-          @Text = "HyUI";
-        }
-      }
-    }
-
-    #Content {
-      LayoutMode: Left;
-    }
-  }
+Group #HyUIRoot {
+    
 }
-
-$C.@BackButton {}

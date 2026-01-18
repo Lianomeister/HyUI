@@ -7,32 +7,25 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import javax.annotation.Nonnull;
 
 public class HyUIPlugin extends JavaPlugin {
-    private final HytaleLogger internalLogger = HytaleLogger.forEnclosingClass();
 
-    private static HyUIPlugin instance;
+    private static HyUIPluginLogger instance;
     
-    public static boolean loggingEnabled = false;
-    
-    public static HyUIPlugin getInstance() {
+    public static HyUIPluginLogger getLog() {
+        if (instance == null)
+            instance = new HyUIPluginLogger();
         return instance;
     }
 
     public HyUIPlugin(@Nonnull JavaPluginInit init) {
         super(init);
-        instance = this;
-        loggingEnabled = false;
+        if (instance == null)
+            instance = new HyUIPluginLogger();
     }
 
-    public void logInfo(String message) {
-        if (loggingEnabled) {
-            internalLogger.atInfo().log(message);
-        }
-    }
-    
     @Override
     protected void setup() {
-        if (loggingEnabled) {
-            internalLogger.atInfo().log("Setting up plugin " + this.getName());
+        if (HyUIPluginLogger.LOGGING_ENABLED) {
+            instance.logInfo("Setting up plugin " + this.getName());
             this.getCommandRegistry().registerCommand(new au.ellie.hyui.commands.HyUITestGuiCommand());
         }
     }

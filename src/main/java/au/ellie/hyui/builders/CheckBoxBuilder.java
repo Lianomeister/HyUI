@@ -4,8 +4,6 @@ import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.events.UIContext;
 import au.ellie.hyui.events.UIEventActions;
 import au.ellie.hyui.elements.UIElements;
-import au.ellie.hyui.theme.Theme;
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -96,7 +94,7 @@ public class CheckBoxBuilder extends UIElementBuilder<CheckBoxBuilder> {
 
         if (value != null) {
             // For CheckBoxWithLabel, the actual CheckBox is a child
-            HyUIPlugin.getInstance().logInfo("Setting Value: " + value + " for " + selector + " #CheckBox");
+            HyUIPlugin.getLog().logInfo("Setting Value: " + value + " for " + selector + " #CheckBox");
             commands.set(selector + " #CheckBox.Value", value);
         }
 
@@ -106,14 +104,14 @@ public class CheckBoxBuilder extends UIElementBuilder<CheckBoxBuilder> {
         }*/
 
         if (hyUIStyle == null && style != null) {
-            HyUIPlugin.getInstance().logInfo("Setting Style: " + style + " for " + selector);
+            HyUIPlugin.getLog().logInfo("Setting Style: " + style + " for " + selector);
             commands.set(selector + ".Style", style);
         }
 
         listeners.forEach(listener -> {
             if (listener.type() == CustomUIEventBindingType.ValueChanged) {
                 String eventId = getEffectiveId();
-                HyUIPlugin.getInstance().logInfo("Adding ValueChanged event binding for " + selector + " #CheckBox with eventId: " + eventId);
+                HyUIPlugin.getLog().logInfo("Adding ValueChanged event binding for " + selector + " #CheckBox with eventId: " + eventId);
                 events.addEventBinding(CustomUIEventBindingType.ValueChanged, selector + " #CheckBox", 
                         EventData.of("@ValueBool", selector + " #CheckBox.Value")
                             .append("Target", eventId)

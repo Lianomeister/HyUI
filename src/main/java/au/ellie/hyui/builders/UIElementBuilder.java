@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Consumer;
 
 /**
  * A builder class for constructing UI elements with a hierarchical structure and configurable 
@@ -289,7 +288,7 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     protected void build(UICommandBuilder commands, UIEventBuilder events) {
         if (wrapInGroup && parentSelector != null) {
             String wrappingGroupId = getWrappingGroupId();
-            HyUIPlugin.getInstance().logInfo("Creating wrapping group: #" + wrappingGroupId + " for element: " + (typeSelector != null ? typeSelector : elementPath));
+            HyUIPlugin.getLog().logInfo("Creating wrapping group: #" + wrappingGroupId + " for element: " + (typeSelector != null ? typeSelector : elementPath));
             commands.appendInline(parentSelector, "Group #" + wrappingGroupId + " {}");
             
             // The inner element should be inside the wrapping group
@@ -304,12 +303,12 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
 
     protected void buildBase(UICommandBuilder commands, UIEventBuilder events) {
         String selector = getSelector();
-        HyUIPlugin.getInstance().logInfo("Building element: " + (typeSelector != null ? typeSelector : elementPath) + " with ID: " + id + " at selector: " + selector);
+        HyUIPlugin.getLog().logInfo("Building element: " + (typeSelector != null ? typeSelector : elementPath) + " with ID: " + id + " at selector: " + selector);
 
         if (parentSelector != null) {
             String path = getAppendPath();
             if (path != null && path.endsWith(".ui")) {
-                HyUIPlugin.getInstance().logInfo("Appending UI file: " + path + " to " + parentSelector);
+                HyUIPlugin.getLog().logInfo("Appending UI file: " + path + " to " + parentSelector);
                 commands.append(parentSelector, path);
                 
                 // If it's a file but NOT wrapped, we need to set the ID of the root element in that file
@@ -320,27 +319,27 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
                 }
             } else {
                 String inline = generateBasicInlineMarkup();
-                HyUIPlugin.getInstance().logInfo("Appending inline: " + inline + " to " + parentSelector);
+                HyUIPlugin.getLog().logInfo("Appending inline: " + inline + " to " + parentSelector);
                 commands.appendInline(parentSelector, inline);
             }
 
             if (anchor != null) {
-                HyUIPlugin.getInstance().logInfo("Setting Anchor for " + selector);
+                HyUIPlugin.getLog().logInfo("Setting Anchor for " + selector);
                 commands.setObject(selector + ".Anchor", anchor.toHytaleAnchor());
             }
 
             if (visible != null) {
-                HyUIPlugin.getInstance().logInfo("Setting Visible: " + visible + " for " + selector);
+                HyUIPlugin.getLog().logInfo("Setting Visible: " + visible + " for " + selector);
                 commands.set(selector + ".Visible", visible);
             }
 
             if (tooltipTextSpan != null) {
-                HyUIPlugin.getInstance().logInfo("Setting TooltipTextSpans for " + selector);
+                HyUIPlugin.getLog().logInfo("Setting TooltipTextSpans for " + selector);
                 commands.set(selector + ".TooltipTextSpans", tooltipTextSpan);
             }
 
             if (flexWeight != null) {
-                HyUIPlugin.getInstance().logInfo("Setting FlexWeight: " + flexWeight + " for " + selector);
+                HyUIPlugin.getLog().logInfo("Setting FlexWeight: " + flexWeight + " for " + selector);
                 commands.set(selector + ".FlexWeight", flexWeight);
             }
 
@@ -414,36 +413,36 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     protected void applyStyle(UICommandBuilder commands, String prefix, HyUIStyle style) {
         Set<String> unsupported = getUnsupportedStyleProperties();
         if (style.getFontSize() != null && !unsupported.contains("FontSize")) {
-            HyUIPlugin.getInstance().logInfo("Setting Style FontSize: " + style.getFontSize() + " for " + prefix);
+            HyUIPlugin.getLog().logInfo("Setting Style FontSize: " + style.getFontSize() + " for " + prefix);
             commands.set(prefix + ".FontSize", style.getFontSize().doubleValue());
         }
         if (style.getRenderBold() != null && !unsupported.contains("RenderBold")) {
-            HyUIPlugin.getInstance().logInfo("Setting Style RenderBold: " + style.getRenderBold() + " for " + prefix);
+            HyUIPlugin.getLog().logInfo("Setting Style RenderBold: " + style.getRenderBold() + " for " + prefix);
             commands.set(prefix + ".RenderBold", style.getRenderBold());
         }
         if (style.getRenderUppercase() != null && !unsupported.contains("RenderUppercase")) {
-            HyUIPlugin.getInstance().logInfo("Setting Style RenderUppercase: " + style.getRenderUppercase() + " for " + prefix);
+            HyUIPlugin.getLog().logInfo("Setting Style RenderUppercase: " + style.getRenderUppercase() + " for " + prefix);
             commands.set(prefix + ".RenderUppercase", style.getRenderUppercase());
         }
         if (style.getTextColor() != null && !unsupported.contains("TextColor")) {
-            HyUIPlugin.getInstance().logInfo("Setting Style TextColor: " + style.getTextColor() + " for " + prefix);
+            HyUIPlugin.getLog().logInfo("Setting Style TextColor: " + style.getTextColor() + " for " + prefix);
             commands.set(prefix + ".TextColor", style.getTextColor());
         }
         if (style.getHorizontalAlignment() != null && !unsupported.contains("HorizontalAlignment")) {
-            HyUIPlugin.getInstance().logInfo("Setting Style HorizontalAlignment: " + style.getHorizontalAlignment() + " for " + prefix);
+            HyUIPlugin.getLog().logInfo("Setting Style HorizontalAlignment: " + style.getHorizontalAlignment() + " for " + prefix);
             commands.set(prefix + ".HorizontalAlignment", style.getHorizontalAlignment().name());
         }
         if (style.getVerticalAlignment() != null && !unsupported.contains("VerticalAlignment")) {
-            HyUIPlugin.getInstance().logInfo("Setting Style VerticalAlignment: " + style.getVerticalAlignment() + " for " + prefix);
+            HyUIPlugin.getLog().logInfo("Setting Style VerticalAlignment: " + style.getVerticalAlignment() + " for " + prefix);
             commands.set(prefix + ".VerticalAlignment", style.getVerticalAlignment().name());
         }
         if (style.getAlignment() != null && !unsupported.contains("Alignment")) {
-            HyUIPlugin.getInstance().logInfo("Setting Style Alignment: " + style.getAlignment() + " for " + prefix);
+            HyUIPlugin.getLog().logInfo("Setting Style Alignment: " + style.getAlignment() + " for " + prefix);
             commands.set(prefix + ".Alignment", style.getAlignment().name());
         }
 
         style.getRawProperties().forEach((key, value) -> {
-            HyUIPlugin.getInstance().logInfo("Setting Style Raw Property: " + key + "=" + value + " for " + prefix);
+            HyUIPlugin.getLog().logInfo("Setting Style Raw Property: " + key + "=" + value + " for " + prefix);
             if (value instanceof String) {
                 commands.set(prefix + "." + key, (String) value);
             } else if (value instanceof Boolean) {

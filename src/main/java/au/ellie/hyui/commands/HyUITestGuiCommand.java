@@ -2,7 +2,6 @@ package au.ellie.hyui.commands;
 
 import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.builders.*;
-import au.ellie.hyui.html.HtmlParser;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.GameMode;
@@ -116,8 +115,8 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
             """;
         PageBuilder builder = PageBuilder.detachedPage()
                 .fromHtml(html)
-                .withLifetime(CustomPageLifetime.CanDismiss)
-                .addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                .withLifetime(CustomPageLifetime.CanDismiss);
+                /*.addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
                     playerRef.sendMessage(Message.raw("Button clicked via PageBuilder ID lookup!: " + 
                     ctx.getValue("myInput", String.class).orElse("N/A")));
                 })
@@ -130,7 +129,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
             input.addEventListener(CustomUIEventBindingType.ValueChanged, (val) -> {
                 playerRef.sendMessage(Message.raw("Input changed to: " + val));
             });
-        });
+        });*/
         builder.open(playerRef, store);
     }
 
@@ -169,7 +168,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                                 .withId("FirstButton")
                                 .withText("Text Button 1")
                                 .editElementBefore((commandBuilder, elementSelector) -> {
-                                    HyUIPlugin.getInstance().logInfo("Before build callback for FirstButton");
+                                    HyUIPlugin.getLog().logInfo("Before build callback for FirstButton");
                                 })
                                 .withTooltipTextSpan(Message.raw("This button has a tooltip now!"))
                                 .withStyle(new HyUIStyle().setTextColor("#00FF00").setFontSize(16))
@@ -185,7 +184,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                                 .withStep(10)
                                 .withValue(51)
                                 .addEventListener(CustomUIEventBindingType.ValueChanged, (value, ctx) -> {
-                                    HyUIPlugin.getInstance().logInfo("Slider value changed to: " + value);
+                                    HyUIPlugin.getLog().logInfo("Slider value changed to: " + value);
                                     String text = ctx.getValue("MyTextField", String.class).orElse("N/A");
                                     Integer num = ctx.getValue("Hey", Integer.class).orElse(0);
                                     playerRef.sendMessage(Message.raw("Text Field: " + text + ", Num: " + num));
@@ -194,7 +193,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                                 .withId("SecondButton")
                                 .withText("Text Button 2")
                                 .editElementAfter((commandBuilder, elementSelector) -> {
-                                    HyUIPlugin.getInstance().logInfo("HEEEEEEEEEEY");
+                                    HyUIPlugin.getLog().logInfo("HEEEEEEEEEEY");
                                     commandBuilder.set(elementSelector + ".Text", "Heyyy");
                                 })
                                 .addEventListener(CustomUIEventBindingType.Activating, (ignored) -> {

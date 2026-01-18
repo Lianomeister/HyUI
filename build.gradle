@@ -94,4 +94,11 @@ shadowJar {
     archiveClassifier.set('all')
     
     configurations = [project.configurations.shadow]
+/*
+    doFirst {
+        ant.replace(file: "src/main/java/au/ellie/hyui/HyUIPlugin.java", token: "public static final boolean LOGGING_ENABLED = true;", value: "public static final boolean LOGGING_ENABLED = false;")
+    }
+    doLast {
+        ant.replace(file: "src/main/java/au/ellie/hyui/HyUIPlugin.java", token: "public static final boolean LOGGING_ENABLED = false;", value: "public static final boolean LOGGING_ENABLED = true;")
+    }*/
 }

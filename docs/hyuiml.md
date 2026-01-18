@@ -20,7 +20,7 @@ new PageBuilder(playerRef)
 | `<div>` | `GroupBuilder` | Use for layout and containers. |
 | `<p>` | `LabelBuilder` | Standard text labels. |
 | `<label>` | `LabelBuilder` | Similar to `<p>`, often used for form field descriptions. |
-| `<button>` | `ButtonBuilder` | Standard buttons. |
+| `<button>` | `ButtonBuilder` | Standard buttons. Use `class="back-button"` for a back button. |
 | `<input type="text">` | `TextFieldBuilder` | Text input fields. |
 | `<input type="number">` | `NumberFieldBuilder` | Numeric input fields. |
 | `<input type="range">` | `SliderBuilder` | Sliders. |
@@ -68,6 +68,8 @@ You can include a `<style>` block at the beginning of your HYUIML:
 *   `vertical-align`: `top`, `bottom`, `center`.
 *   `horizontal-align`: `left`, `right`, `center`.
 *   `align`: Combines horizontal and vertical alignment (e.g., `center`).
+*   `visibility`: `hidden` or `shown` (directly translates to `withVisible(bool)`).
+*   `display`: `none` or `block` (alternative to `visibility`, also translates to `withVisible(bool)`).
 *   `flex-weight`: Numeric weight for layout.
 *   `anchor-*`: Maps to Hytale anchors (e.g., `anchor-left`, `anchor-top`, `anchor-width`, `anchor-height`).
 

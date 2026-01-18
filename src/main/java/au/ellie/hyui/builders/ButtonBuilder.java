@@ -5,7 +5,6 @@ import au.ellie.hyui.events.UIEventActions;
 import au.ellie.hyui.elements.UIElements;
 import au.ellie.hyui.events.UIContext;
 import au.ellie.hyui.theme.Theme;
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -145,19 +144,19 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> {
         if (selector == null) return;
 
         if (text != null) {
-            HyUIPlugin.getInstance().logInfo("Setting Text: " + text + " for " + selector);
+            HyUIPlugin.getLog().logInfo("Setting Text: " + text + " for " + selector);
             commands.set(selector + ".Text", text);
         }
 
         if (hyUIStyle == null && style != null) {
-            HyUIPlugin.getInstance().logInfo("Setting Style: " + style + " for " + selector);
+            HyUIPlugin.getLog().logInfo("Setting Style: " + style + " for " + selector);
             commands.set(selector + ".Style", style);
         }
 
         listeners.forEach(listener -> {
             if (listener.type() == CustomUIEventBindingType.Activating) {
                 String eventId = getEffectiveId();
-                HyUIPlugin.getInstance().logInfo("Adding Activating event binding: " + eventId + " for " + selector);
+                HyUIPlugin.getLog().logInfo("Adding Activating event binding: " + eventId + " for " + selector);
                 events.addEventBinding(CustomUIEventBindingType.Activating, selector, 
                         EventData.of("Action", UIEventActions.BUTTON_CLICKED)
                             .append("Target", eventId), 

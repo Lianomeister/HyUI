@@ -4,6 +4,8 @@ import au.ellie.hyui.elements.UIElements;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
+import java.util.Set;
+
 /**
  * Builder for the PageOverlay UI element.
  */
@@ -26,7 +28,7 @@ public class PageOverlayBuilder extends UIElementBuilder<PageOverlayBuilder> {
 
     @Override
     protected boolean supportsStyling() {
-        return true;
+        return false;
     }
 
     @Override

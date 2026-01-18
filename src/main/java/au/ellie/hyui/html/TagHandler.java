@@ -120,6 +120,20 @@ public interface TagHandler {
                     hyStyle.setAlignment(capitalize(value));
                     hasStyle = true;
                     break;
+                case "visibility":
+                    if (value.equalsIgnoreCase("hidden")) {
+                        builder.withVisible(false);
+                    } else if (value.equalsIgnoreCase("shown")) {
+                        builder.withVisible(true);
+                    }
+                    break;
+                case "display":
+                    if (value.equalsIgnoreCase("none")) {
+                        builder.withVisible(false);
+                    } else if (value.equalsIgnoreCase("block")) {
+                        builder.withVisible(true);
+                    }
+                    break;
                 case "flex-weight":
                     try {
                         builder.withFlexWeight(Integer.parseInt(value));

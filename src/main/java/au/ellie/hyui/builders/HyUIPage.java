@@ -7,7 +7,6 @@ import au.ellie.hyui.events.UIEventActions;
 import au.ellie.hyui.events.UIEventListener;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
@@ -66,7 +65,7 @@ public class HyUIPage extends InteractiveCustomUIPage<DynamicPageData> implement
      */
     @Override
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder uiCommandBuilder, @Nonnull UIEventBuilder uiEventBuilder, @Nonnull Store<EntityStore> store) {
-        HyUIPlugin.getInstance().logInfo("Building HyUIPage" + (uiFile != null ? " from file: " + uiFile : ""));
+        HyUIPlugin.getLog().logInfo("Building HyUIPage" + (uiFile != null ? " from file: " + uiFile : ""));
         if (uiFile != null) {
             uiCommandBuilder.append(uiFile);
         }
@@ -98,9 +97,9 @@ public class HyUIPage extends InteractiveCustomUIPage<DynamicPageData> implement
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, @Nonnull DynamicPageData data) {
         super.handleDataEvent(ref, store, data);
 
-        HyUIPlugin.getInstance().logInfo("Received DataEvent: Action=" + data.action);
+        HyUIPlugin.getLog().logInfo("Received DataEvent: Action=" + data.action);
         data.values.forEach((key, value) -> {
-            HyUIPlugin.getInstance().logInfo("  Property: " + key + " = " + value);
+            HyUIPlugin.getLog().logInfo("  Property: " + key + " = " + value);
         });
 
         for (UIElementBuilder<?> element : elements) {

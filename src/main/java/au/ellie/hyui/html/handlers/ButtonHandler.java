@@ -1,5 +1,6 @@
 package au.ellie.hyui.html.handlers;
 
+import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.builders.ButtonBuilder;
 import au.ellie.hyui.builders.UIElementBuilder;
 import au.ellie.hyui.html.HtmlParser;
@@ -25,6 +26,8 @@ public class ButtonHandler implements TagHandler {
 
         if (tag.equals("input") && element.attr("type").equalsIgnoreCase("reset")) {
             builder = ButtonBuilder.cancelTextButton();
+        } else if (tag.equals("button") && element.hasClass("back-button")) {
+            builder = ButtonBuilder.backButton();
         } else {
             builder = ButtonBuilder.textButton();
         }

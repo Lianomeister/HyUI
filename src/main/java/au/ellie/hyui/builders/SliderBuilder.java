@@ -140,7 +140,7 @@ public class SliderBuilder extends UIElementBuilder<SliderBuilder> {
         listeners.forEach(listener -> {
             if (listener.type() == CustomUIEventBindingType.ValueChanged) {
                 String eventId = getEffectiveId();
-                HyUIPlugin.getInstance().logInfo("Adding ValueChanged event binding for " + selector + " with eventId: " + eventId);
+                HyUIPlugin.getLog().logInfo("Adding ValueChanged event binding for " + selector + " with eventId: " + eventId);
                 events.addEventBinding(CustomUIEventBindingType.ValueChanged, selector,
                         EventData.of("@ValueInt", selector + ".Value")
                             .append("Target", eventId)

@@ -113,10 +113,14 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                 </div>
             </div>
             """;
-        PageBuilder builder = PageBuilder.detachedPage()
+        HyUIHud hudInstance = HudBuilder.detachedHud()
                 .fromHtml(html)
-                .withLifetime(CustomPageLifetime.CanDismiss);
-                /*.addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                .show(playerRef, store);
+        
+        /*PageBuilder builder = PageBuilder.detachedPage()
+                .fromHtml(html)
+                .withLifetime(CustomPageLifetime.CanDismiss)
+                .addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
                     playerRef.sendMessage(Message.raw("Button clicked via PageBuilder ID lookup!: " + 
                     ctx.getValue("myInput", String.class).orElse("N/A")));
                 })
@@ -129,8 +133,8 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
             input.addEventListener(CustomUIEventBindingType.ValueChanged, (val) -> {
                 playerRef.sendMessage(Message.raw("Input changed to: " + val));
             });
-        });*/
-        builder.open(playerRef, store);
+        });
+        builder.open(playerRef, store);*/
     }
 
     private void openTestGuiFromScratch(PlayerRef playerRef, Store<EntityStore> store) {

@@ -59,11 +59,13 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
     private void openHtmlTestGui(PlayerRef playerRef, Store<EntityStore> store) {
         String html = """
             <style>
-                .page-overlay { 
-                    anchor: 150; 
+                .page-overlay {
+                    anchor: 150;
+                    background-color: #000000(0.5);
                 }
                 .container 
                 { 
+                    layout-mode: top;
                     anchor-left: 100; 
                     anchor-right: 100; 
                     anchor-top: 50; 
@@ -81,6 +83,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                        comment */
                     font-size: 20; 
                     color: #00ff00; 
+                    background-color: #ff0000;
                 }
                 .input-row { text-align: top; flex-weight: 1; color: #ff0000; }
                 input[type="text"] { flex-weight: 1; }
@@ -94,12 +97,12 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                         </p>
                     </div>
                     <div class="container-contents">
-                        <p id="welcome-msg">Welcome to HyUIML parser!</p>
-                        <div class="input-row">
+                        <p id="welcome-msg" style="padding: 100 200">Welcome to HyUIML parser!</p>
+                        <div class="input-row" style="padding-left: 50; padding-top: 20;">
                              Free text here should be a label!
                             <input type="text" id="myInput"/>
                         </div>
-                        <input type="number" value="42"/>
+                        <input type="number" value="42" style="padding: 10;"/>
                         <input type="range" min="0" max="100" value="50" step="1"/>
                         <label data-hyui-tooltiptext="This is a checkbox!">
                             Checkbox Label
@@ -108,19 +111,19 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                         <input type="color" value="#ff0000" 
                             style="anchor-width: 140; anchor-height: 120; anchor-left: 12"/>
                         <button id="btn1">Click Me!</button>
-                        <input type="reset" value="Cancel Operation" class="cancel-btn"/>
+                        <input type="reset" value="Cancel Operation" class="cancel-btn" style="font-size: 25px"/>
                     </div>
                 </div>
             </div>
             """;
-        HyUIHud hudInstance = HudBuilder.detachedHud()
-                .fromHtml(html)
-                .show(playerRef, store);
+        //HyUIHud hudInstance = HudBuilder.detachedHud()
+        //        .fromHtml(html)
+        //        .show(playerRef, store);
         
-        /*PageBuilder builder = PageBuilder.detachedPage()
+        PageBuilder builder = PageBuilder.detachedPage()
                 .fromHtml(html)
-                .withLifetime(CustomPageLifetime.CanDismiss)
-                .addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                .withLifetime(CustomPageLifetime.CanDismiss);
+                /*.addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
                     playerRef.sendMessage(Message.raw("Button clicked via PageBuilder ID lookup!: " + 
                     ctx.getValue("myInput", String.class).orElse("N/A")));
                 })
@@ -133,8 +136,8 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
             input.addEventListener(CustomUIEventBindingType.ValueChanged, (val) -> {
                 playerRef.sendMessage(Message.raw("Input changed to: " + val));
             });
-        });
-        builder.open(playerRef, store);*/
+        });*/
+        builder.open(playerRef, store);
     }
 
     private void openTestGuiFromScratch(PlayerRef playerRef, Store<EntityStore> store) {

@@ -1,15 +1,17 @@
 package au.ellie.hyui.builders;
 
+import au.ellie.hyui.elements.BackgroundSupported;
+import au.ellie.hyui.elements.LayoutModeSupported;
 import au.ellie.hyui.elements.UIElements;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
-import java.util.Set;
-
 /**
  * Builder for the PageOverlay UI element.
  */
-public class PageOverlayBuilder extends UIElementBuilder<PageOverlayBuilder> {
+public class PageOverlayBuilder extends UIElementBuilder<PageOverlayBuilder> implements LayoutModeSupported<PageOverlayBuilder>, BackgroundSupported<PageOverlayBuilder> {
+    private String layoutMode;
+    private HyUIPatchStyle background;
 
     public PageOverlayBuilder() {
         super(UIElements.PAGE_OVERLAY, "#HyUIPageOverlay");
@@ -27,12 +29,38 @@ public class PageOverlayBuilder extends UIElementBuilder<PageOverlayBuilder> {
     }
 
     @Override
+    public PageOverlayBuilder withLayoutMode(String layoutMode) {
+        this.layoutMode = layoutMode;
+        return this;
+    }
+
+    @Override
+    public String getLayoutMode() {
+        return this.layoutMode;
+    }
+
+    @Override
+    public PageOverlayBuilder withBackground(HyUIPatchStyle background) {
+        this.background = background;
+        return this;
+    }
+
+    @Override
+    public HyUIPatchStyle getBackground() {
+        return this.background;
+    }
+
+    @Override
     protected boolean supportsStyling() {
         return false;
     }
 
     @Override
     protected void onBuild(UICommandBuilder commands, UIEventBuilder events) {
-        // No specific properties for PageOverlay itself yet, but it supports styling via base class.
+        String selector = getSelector();
+        if (selector == null) return;
+
+        applyLayoutMode(commands, selector);
+        applyBackground(commands, selector);
     }
 }

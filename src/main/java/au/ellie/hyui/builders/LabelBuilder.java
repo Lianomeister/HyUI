@@ -1,6 +1,7 @@
 package au.ellie.hyui.builders;
 
 import au.ellie.hyui.HyUIPlugin;
+import au.ellie.hyui.elements.BackgroundSupported;
 import au.ellie.hyui.elements.UIElements;
 import au.ellie.hyui.theme.Theme;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -10,8 +11,9 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
  * Builder for creating label UI elements. 
  * Labels are used to display text or other static content.
  */
-public class LabelBuilder extends UIElementBuilder<LabelBuilder> {
+public class LabelBuilder extends UIElementBuilder<LabelBuilder> implements BackgroundSupported<LabelBuilder> {
     private String text;
+    private HyUIPatchStyle background;
 
     /**
      * Constructs a new instance of {@code LabelBuilder} for creating label UI elements.
@@ -51,6 +53,17 @@ public class LabelBuilder extends UIElementBuilder<LabelBuilder> {
     }
 
     @Override
+    public LabelBuilder withBackground(HyUIPatchStyle background) {
+        this.background = background;
+        return this;
+    }
+
+    @Override
+    public HyUIPatchStyle getBackground() {
+        return this.background;
+    }
+
+    @Override
     protected boolean supportsStyling() {
         return true;
     }
@@ -59,6 +72,8 @@ public class LabelBuilder extends UIElementBuilder<LabelBuilder> {
     protected void onBuild(UICommandBuilder commands, UIEventBuilder events) {
         String selector = getSelector();
         if (selector == null) return;
+
+        applyBackground(commands, selector);
 
         if (text != null) {
             HyUIPlugin.getLog().logInfo("Setting Text: " + text + " for " + selector);

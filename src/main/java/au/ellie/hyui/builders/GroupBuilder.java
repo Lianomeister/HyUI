@@ -1,6 +1,8 @@
 package au.ellie.hyui.builders;
 
 import au.ellie.hyui.HyUIPlugin;
+import au.ellie.hyui.elements.BackgroundSupported;
+import au.ellie.hyui.elements.LayoutModeSupported;
 import au.ellie.hyui.elements.UIElements;
 import au.ellie.hyui.theme.Theme;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -12,8 +14,9 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
  * 
  * This directly translates to a {@code Group {}}
  */
-public class GroupBuilder extends UIElementBuilder<GroupBuilder> {
+public class GroupBuilder extends UIElementBuilder<GroupBuilder> implements LayoutModeSupported<GroupBuilder>, BackgroundSupported<GroupBuilder> {
     private String layoutMode;
+    private HyUIPatchStyle background;
 
     public GroupBuilder() {
         super(UIElements.GROUP, "Group");
@@ -41,9 +44,26 @@ public class GroupBuilder extends UIElementBuilder<GroupBuilder> {
      * @param layoutMode The layout mode to set.
      * @return This builder instance for method chaining.
      */
+    @Override
     public GroupBuilder withLayoutMode(String layoutMode) {
         this.layoutMode = layoutMode;
         return this;
+    }
+
+    @Override
+    public String getLayoutMode() {
+        return this.layoutMode;
+    }
+
+    @Override
+    public GroupBuilder withBackground(HyUIPatchStyle background) {
+        this.background = background;
+        return this;
+    }
+
+    @Override
+    public HyUIPatchStyle getBackground() {
+        return this.background;
     }
 
     @Override
@@ -56,10 +76,8 @@ public class GroupBuilder extends UIElementBuilder<GroupBuilder> {
         String selector = getSelector();
         if (selector == null) return;
 
-        if (layoutMode != null) {
-            HyUIPlugin.getLog().logInfo("Setting LayoutMode: " + layoutMode + " for " + selector);
-            commands.set(selector + ".LayoutMode", layoutMode);
-        }
+        applyLayoutMode(commands, selector);
+        applyBackground(commands, selector);
 
         if (hyUIStyle == null && style != null) {
             HyUIPlugin.getLog().logInfo("Setting Style: " + style + " for " + selector);

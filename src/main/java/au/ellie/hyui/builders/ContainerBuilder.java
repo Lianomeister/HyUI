@@ -1,6 +1,8 @@
 package au.ellie.hyui.builders;
 
 import au.ellie.hyui.HyUIPlugin;
+import au.ellie.hyui.elements.BackgroundSupported;
+import au.ellie.hyui.elements.LayoutModeSupported;
 import au.ellie.hyui.elements.UIElements;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
@@ -8,8 +10,10 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 /**
  * Builder for the Container UI element.
  */
-public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> {
+public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> implements LayoutModeSupported<ContainerBuilder>, BackgroundSupported<ContainerBuilder> {
     private String titleText;
+    private String layoutMode;
+    private HyUIPatchStyle background;
 
     public ContainerBuilder() {
         super(UIElements.CONTAINER, "#HyUIContainer");
@@ -35,6 +39,28 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> {
     public ContainerBuilder withTitleText(String titleText) {
         this.titleText = titleText;
         return this;
+    }
+
+    @Override
+    public ContainerBuilder withLayoutMode(String layoutMode) {
+        this.layoutMode = layoutMode;
+        return this;
+    }
+
+    @Override
+    public String getLayoutMode() {
+        return this.layoutMode;
+    }
+
+    @Override
+    public ContainerBuilder withBackground(HyUIPatchStyle background) {
+        this.background = background;
+        return this;
+    }
+
+    @Override
+    public HyUIPatchStyle getBackground() {
+        return this.background;
     }
 
     /**
@@ -68,6 +94,9 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> {
     protected void onBuild(UICommandBuilder commands, UIEventBuilder events) {
         String selector = getSelector();
         if (selector == null) return;
+
+        applyLayoutMode(commands, selector);
+        applyBackground(commands, selector);
 
         if (titleText != null) {
             String titleSelector = selector + " #Title #HyUIContainerTitle";

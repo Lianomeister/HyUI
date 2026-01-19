@@ -1,8 +1,7 @@
 package au.ellie.hyui.html;
 
-import au.ellie.hyui.builders.HyUIAnchor;
-import au.ellie.hyui.builders.HyUIStyle;
-import au.ellie.hyui.builders.UIElementBuilder;
+import au.ellie.hyui.builders.*;
+import au.ellie.hyui.elements.BackgroundSupported;
 import com.hypixel.hytale.server.core.Message;
 import org.jsoup.nodes.Element;
 
@@ -72,8 +71,10 @@ public interface TagHandler {
     private void applyStyles(UIElementBuilder<?> builder, Map<String, String> styles) {
         HyUIStyle hyStyle = new HyUIStyle();
         HyUIAnchor anchor = new HyUIAnchor();
+        HyUIPadding padding = new HyUIPadding();
         boolean hasStyle = false;
         boolean hasAnchor = false;
+        boolean hasPadding = false;
 
         for (Map.Entry<String, String> entry : styles.entrySet()) {
             String key = entry.getKey();
@@ -181,6 +182,50 @@ public interface TagHandler {
                         hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
+                case "padding-left":
+                    try {
+                        padding.setLeft(Integer.parseInt(value));
+                        hasPadding = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "padding-right":
+                    try {
+                        padding.setRight(Integer.parseInt(value));
+                        hasPadding = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "padding-top":
+                    try {
+                        padding.setTop(Integer.parseInt(value));
+                        hasPadding = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "padding-bottom":
+                    try {
+                        padding.setBottom(Integer.parseInt(value));
+                        hasPadding = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "padding":
+                    String[] values = value.split("\\s+");
+                    try {
+                        if (values.length == 1) {
+                            padding.setFull(Integer.parseInt(values[0]));
+                            hasPadding = true;
+                        } else if (values.length >= 2) {
+                            int v = Integer.parseInt(values[0]);
+                            int h = Integer.parseInt(values[1]);
+                            padding.setSymmetric(v, h);
+                            hasPadding = true;
+                        }
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "background-color":
+                    if (builder instanceof BackgroundSupported) {
+                        HyUIPatchStyle bg = new HyUIPatchStyle().setColor(value);
+                        ((BackgroundSupported<?>) builder).withBackground(bg);
+                    }
+                    break;
             }
         }
 
@@ -189,6 +234,9 @@ public interface TagHandler {
         }
         if (hasAnchor) {
             builder.withAnchor(anchor);
+        }
+        if (hasPadding) {
+            builder.withPadding(padding);
         }
     }
 

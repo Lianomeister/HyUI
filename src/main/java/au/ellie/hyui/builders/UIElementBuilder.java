@@ -1,9 +1,12 @@
 package au.ellie.hyui.builders;
 
 import au.ellie.hyui.HyUIPlugin;
+import au.ellie.hyui.elements.BackgroundSupported;
 import au.ellie.hyui.theme.Theme;
 import au.ellie.hyui.events.UIContext;
 import au.ellie.hyui.events.UIEventListener;
+import au.ellie.hyui.utils.BsonDocumentHelper;
+import au.ellie.hyui.utils.PropertyBatcher;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -35,6 +38,7 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     protected String typeSelector;
     protected boolean wrapInGroup = false;
     protected HyUIAnchor anchor;
+    protected HyUIPadding padding;
     protected Boolean visible;
     protected Message tooltipTextSpan;
     protected Integer flexWeight;
@@ -206,6 +210,18 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     }
 
     /**
+     * Sets the padding for the UI element.
+     *
+     * @param padding the {@code HyUIPadding} instance containing the padding configuration
+     * @return the builder instance of type {@code T} for method chaining
+     */
+    @SuppressWarnings("unchecked")
+    public T withPadding(HyUIPadding padding) {
+        this.padding = padding;
+        return (T) this;
+    }
+
+    /**
      * Configures the visibility of the UI element.
      *
      * @param visible a boolean indicating whether the element should be visible
@@ -286,10 +302,22 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
      * @param events   an instance of {@code UIEventBuilder} used to register and handle UI events
      */
     protected void build(UICommandBuilder commands, UIEventBuilder events) {
+        
         if (wrapInGroup && parentSelector != null) {
             String wrappingGroupId = getWrappingGroupId();
             HyUIPlugin.getLog().logInfo("Creating wrapping group: #" + wrappingGroupId + " for element: " + (typeSelector != null ? typeSelector : elementPath));
-            commands.appendInline(parentSelector, "Group #" + wrappingGroupId + " {}");
+            
+            String inlineMarkup = "Group #" + wrappingGroupId + " {}";
+            
+            // Handle background with opacity for the wrapping group
+            if (this instanceof BackgroundSupported<?> bgSupported) {
+                HyUIPatchStyle bg = bgSupported.getBackground();
+                if (bg != null && bg.getTexturePath() == null && bg.getColor() != null && bg.getColor().contains("(")) {
+                    inlineMarkup = "Group #" + wrappingGroupId + " { Background: " + bg.getColor() + "; }";
+                }
+            }
+            
+            commands.appendInline(parentSelector, inlineMarkup);
             
             // The inner element should be inside the wrapping group
             String originalParent = parentSelector;
@@ -322,10 +350,18 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
                 HyUIPlugin.getLog().logInfo("Appending inline: " + inline + " to " + parentSelector);
                 commands.appendInline(parentSelector, inline);
             }
-
+            
             if (anchor != null) {
                 HyUIPlugin.getLog().logInfo("Setting Anchor for " + selector);
                 commands.setObject(selector + ".Anchor", anchor.toHytaleAnchor());
+            }
+
+            if (padding != null) {
+                HyUIPlugin.getLog().logInfo("Setting Padding for " + selector);
+                if (padding.getLeft() != null) commands.set(selector + ".Padding.Left", padding.getLeft());
+                if (padding.getTop() != null) commands.set(selector + ".Padding.Top", padding.getTop());
+                if (padding.getRight() != null) commands.set(selector + ".Padding.Right", padding.getRight());
+                if (padding.getBottom() != null) commands.set(selector + ".Padding.Bottom", padding.getBottom());
             }
 
             if (visible != null) {
@@ -344,13 +380,11 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
             }
 
             if (hyUIStyle != null) {
-                applyStyle(commands, selector + ".Style", hyUIStyle);
+                BsonDocumentHelper doc = PropertyBatcher.beginSet();
+                applyStyle(commands, selector + ".Style", hyUIStyle, doc);
+                PropertyBatcher.endSet(selector + ".Style", doc, commands);
             }
         }
-    }
-
-    protected boolean isFilePath() {
-        return elementPath != null && elementPath.endsWith(".ui");
     }
 
     protected Set<String> getUnsupportedStyleProperties() {
@@ -392,7 +426,17 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
         if (id != null && !wrapInGroup) {
             sb.append(" #").append(id);
         }
-        sb.append(" {}");
+        
+        sb.append(" {");
+        // Handle background with opacity for the element itself if not wrapped
+        if (!wrapInGroup && this instanceof au.ellie.hyui.elements.BackgroundSupported<?> bgSupported) {
+            au.ellie.hyui.builders.HyUIPatchStyle bg = bgSupported.getBackground();
+            if (bg != null && bg.getTexturePath() == null && bg.getColor() != null && bg.getColor().contains("(")) {
+                sb.append(" Background: ").append(bg.getColor()).append("; ");
+            }
+        }
+        sb.append("}");
+        
         return sb.toString();
     }
 
@@ -410,56 +454,52 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
      * @param prefix A string used as a prefix for property keys when applying the styles.
      * @param style An instance of HyUIStyle containing the properties to be applied to the command builder.
      */
-    protected void applyStyle(UICommandBuilder commands, String prefix, HyUIStyle style) {
+    protected void applyStyle(UICommandBuilder commands, String prefix, HyUIStyle style, BsonDocumentHelper doc) {
         Set<String> unsupported = getUnsupportedStyleProperties();
+        
         if (style.getFontSize() != null && !unsupported.contains("FontSize")) {
             HyUIPlugin.getLog().logInfo("Setting Style FontSize: " + style.getFontSize() + " for " + prefix);
-            commands.set(prefix + ".FontSize", style.getFontSize().doubleValue());
+            doc.set("FontSize", style.getFontSize().doubleValue());
         }
         if (style.getRenderBold() != null && !unsupported.contains("RenderBold")) {
             HyUIPlugin.getLog().logInfo("Setting Style RenderBold: " + style.getRenderBold() + " for " + prefix);
-            commands.set(prefix + ".RenderBold", style.getRenderBold());
+            doc.set("RenderBold", style.getRenderBold());
         }
         if (style.getRenderUppercase() != null && !unsupported.contains("RenderUppercase")) {
             HyUIPlugin.getLog().logInfo("Setting Style RenderUppercase: " + style.getRenderUppercase() + " for " + prefix);
-            commands.set(prefix + ".RenderUppercase", style.getRenderUppercase());
+            doc.set("RenderUppercase", style.getRenderUppercase());
         }
         if (style.getTextColor() != null && !unsupported.contains("TextColor")) {
             HyUIPlugin.getLog().logInfo("Setting Style TextColor: " + style.getTextColor() + " for " + prefix);
-            commands.set(prefix + ".TextColor", style.getTextColor());
+            doc.set("TextColor", style.getTextColor());
         }
         if (style.getHorizontalAlignment() != null && !unsupported.contains("HorizontalAlignment")) {
             HyUIPlugin.getLog().logInfo("Setting Style HorizontalAlignment: " + style.getHorizontalAlignment() + " for " + prefix);
-            commands.set(prefix + ".HorizontalAlignment", style.getHorizontalAlignment().name());
+            doc.set("HorizontalAlignment", style.getHorizontalAlignment().name());
         }
         if (style.getVerticalAlignment() != null && !unsupported.contains("VerticalAlignment")) {
             HyUIPlugin.getLog().logInfo("Setting Style VerticalAlignment: " + style.getVerticalAlignment() + " for " + prefix);
-            commands.set(prefix + ".VerticalAlignment", style.getVerticalAlignment().name());
+            doc.set("VerticalAlignment", style.getVerticalAlignment().name());
         }
         if (style.getAlignment() != null && !unsupported.contains("Alignment")) {
             HyUIPlugin.getLog().logInfo("Setting Style Alignment: " + style.getAlignment() + " for " + prefix);
-            commands.set(prefix + ".Alignment", style.getAlignment().name());
+            doc.set("Alignment", style.getAlignment().name());
         }
 
         style.getRawProperties().forEach((key, value) -> {
             HyUIPlugin.getLog().logInfo("Setting Style Raw Property: " + key + "=" + value + " for " + prefix);
-            if (value instanceof String) {
-                commands.set(prefix + "." + key, (String) value);
-            } else if (value instanceof Boolean) {
-                commands.set(prefix + "." + key, (Boolean) value);
-            } else if (value instanceof Double) {
-                commands.set(prefix + "." + key, (Double) value);
-            } else if (value instanceof Integer) {
-                commands.set(prefix + "." + key, (Integer) value);
-            } else if (value instanceof Float) {
-                commands.set(prefix + "." + key, ((Float) value).doubleValue());
-            } else {
-                commands.set(prefix + "." + key, String.valueOf(value));
+            switch (value) {
+                case String s -> doc.set(key, s);
+                case Boolean b -> doc.set(key, b);
+                case Double v -> doc.set(key, v);
+                case Integer i -> doc.set(key, i);
+                case Float v -> doc.set(key, v);
+                case null, default -> doc.set(key, String.valueOf(value));
             }
         });
 
         style.getStates().forEach((state, nestedStyle) -> {
-            applyStyle(commands, prefix + "." + state, nestedStyle);
+            applyStyle(commands, prefix + "." + state, nestedStyle, doc);
         });
     }
 

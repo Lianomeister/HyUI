@@ -1,0 +1,48 @@
+package au.ellie.hyui.utils;
+
+import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
+import org.bson.BsonValue;
+
+import java.lang.reflect.Method;
+
+/**
+ * Utility for applying set() calls in bulk to Hytale UI elements using BSON-based property setting.
+ */
+public final class PropertyBatcher {
+
+    private static final Method INTERNAL_SETTER;
+
+    static {
+        try {
+            INTERNAL_SETTER = UICommandBuilder.class.getDeclaredMethod("setBsonValue", String.class, BsonValue.class);
+            INTERNAL_SETTER.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Hytale UI internals incompatible with this version of PropertyBatcher", e);
+        }
+    }
+
+    /**
+     * Starts a batch of style property additions.
+     * @return A new BsonDocumentHelper to collect properties.
+     */
+    public static BsonDocumentHelper beginSet() {
+        return new BsonDocumentHelper();
+    }
+
+    /**
+     * Submits a collected batch of properties to the specified UI element.
+     */
+    public static void endSet(String targetSelector, BsonDocumentHelper helper, UICommandBuilder builder) {
+        // Make sure to not set an empty doc.
+        if (helper.getDocument().isEmpty()) {
+            return;
+        }
+        try {
+            INTERNAL_SETTER.invoke(builder, targetSelector, helper.getDocument());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to apply BSON styles to " + targetSelector, e);
+        }
+    }
+
+    private PropertyBatcher() {}
+}

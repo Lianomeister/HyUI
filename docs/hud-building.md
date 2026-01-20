@@ -120,3 +120,35 @@ hud.remove();
 // Re-adds it to the same multi-hud manager later
 hud.readd();
 ```
+
+---
+
+#### Showing a HUD on Player Join
+
+A common requirement is to show a HUD (like a scoreboard or player info) as soon as a player joins the world. In Hytale, this is best handled using the `PlayerReadyEvent`.
+
+When the player is ready, you can obtain their `PlayerRef` and `Store` to show the HUD. Remember that `.show()` must be called on the world thread.
+
+```java
+public void onPlayerReady(PlayerReadyEvent event) {
+    var player = event.getPlayer();
+    if (player == null) return;
+
+    Ref<EntityStore> ref = player.getReference();
+    if (ref == null || !ref.isValid()) return;
+    
+    Store<EntityStore> store = ref.getStore();
+    World world = store.getExternalData().getWorld();
+
+    // Ensure we are on the world thread
+    world.execute(() -> {
+        PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+        
+        HudBuilder.detachedHud()
+            .fromHtml("<div style='anchor-top: 10; anchor-right: 10;'><p>Welcome!</p></div>")
+            .show(playerRef, store);
+    });
+}
+```
+
+For a complete implementation of registering this event in a plugin, see `HyUIPlugin.java`.

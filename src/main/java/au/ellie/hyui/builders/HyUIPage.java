@@ -35,14 +35,22 @@ public class HyUIPage extends InteractiveCustomUIPage<DynamicPageData> implement
     }
 
     @Override
+    public Optional<HyUIPage> getPage() {
+        return Optional.of(this);
+    }
+    
+    public void close() {
+        super.close();
+    }
+
+    @Override
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder uiCommandBuilder, @Nonnull UIEventBuilder uiEventBuilder, @Nonnull Store<EntityStore> store) {
         delegate.build(ref, uiCommandBuilder, uiEventBuilder, store);
     }
 
-
     @Override
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store, @Nonnull DynamicPageData data) {
         super.handleDataEvent(ref, store, data);
-        delegate.handleDataEventInternal(data);
+        delegate.handleDataEventInternal(data, this);
     }
 }

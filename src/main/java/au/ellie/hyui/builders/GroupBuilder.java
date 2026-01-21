@@ -38,9 +38,6 @@ public class GroupBuilder extends UIElementBuilder<GroupBuilder> implements Layo
     /**
      * Sets the layout mode for the group.
      * 
-     * Choose from: Left, Top, TopScrolling, Right, Full.
-     * 
-     * 
      * @param layoutMode The layout mode to set.
      * @return This builder instance for method chaining.
      */
@@ -49,7 +46,7 @@ public class GroupBuilder extends UIElementBuilder<GroupBuilder> implements Layo
         this.layoutMode = layoutMode;
         return this;
     }
-
+    
     @Override
     public String getLayoutMode() {
         return this.layoutMode;

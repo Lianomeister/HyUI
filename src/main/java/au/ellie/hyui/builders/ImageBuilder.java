@@ -46,7 +46,7 @@ public class ImageBuilder extends UIElementBuilder<ImageBuilder> implements Layo
         this.layoutMode = layoutMode;
         return this;
     }
-
+    
     @Override
     public String getLayoutMode() {
         return this.layoutMode;

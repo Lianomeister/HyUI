@@ -10,6 +10,7 @@ public class UIElements {
     public static final String BUTTON = "Button";
     public static final String TEXT_FIELD = "TextField";
     public static final String SLIDER = "Slider";
+    public static final String PROGRESS_BAR = "ProgressBar";
 
     // Macros (Common.ui)
     public static final String PAGE_OVERLAY = "PageOverlay";
@@ -23,7 +24,7 @@ public class UIElements {
     public static final String ASSET_IMAGE = "AssetImage";
 
     public static final Set<String> NORMAL_ELEMENTS = Set.of(
-            GROUP, LABEL, COLOR_PICKER, BUTTON, TEXT_FIELD, "Input", "CheckBox", "Slider", "ItemSlot", "Text"
+            GROUP, LABEL, COLOR_PICKER, BUTTON, TEXT_FIELD, "Input", "CheckBox", "Slider", "ItemSlot", "Text", PROGRESS_BAR
     );
 
     public static final Set<String> MACRO_ELEMENTS = Set.of(

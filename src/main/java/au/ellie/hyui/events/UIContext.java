@@ -1,5 +1,8 @@
 package au.ellie.hyui.events;
 
+import au.ellie.hyui.builders.HyUIHud;
+import au.ellie.hyui.builders.HyUIPage;
+
 import java.util.Optional;
 
 /**
@@ -25,4 +28,9 @@ public interface UIContext {
     default <T> Optional<T> getValue(String id, Class<T> type) {
         return getValue(id).filter(type::isInstance).map(type::cast);
     }
+
+    /**
+     * @return The page associated with this context, or empty if not a page.
+     */
+    Optional<HyUIPage> getPage();
 }

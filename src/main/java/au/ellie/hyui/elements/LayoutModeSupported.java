@@ -7,6 +7,22 @@ import au.ellie.hyui.HyUIPlugin;
  * Interface for UI elements that support LayoutMode.
  */
 public interface LayoutModeSupported<T extends LayoutModeSupported<T>> {
+
+    enum LayoutMode {
+        TopScrolling,
+        MiddleCenter,
+        Left,
+        Right,
+        Full,
+        Middle,
+        Bottom,
+        BottomScrolling,
+        CenterMiddle,
+        Top,
+        LeftCenterWrap,
+        RightCenterWrap,
+        Center
+    }
     
     /**
      * Sets the layout mode for the element.
@@ -15,6 +31,16 @@ public interface LayoutModeSupported<T extends LayoutModeSupported<T>> {
      * @return This builder instance for method chaining.
      */
     T withLayoutMode(String layoutMode);
+
+    /**
+     * Sets the layout mode for the element using the LayoutMode enum.
+     *
+     * @param layoutMode The layout mode enum value.
+     * @return This builder instance for method chaining.
+     */
+    default T withLayoutMode(LayoutMode layoutMode) {
+        return withLayoutMode(layoutMode.name());
+    }
 
     /**
      * Gets the current layout mode.

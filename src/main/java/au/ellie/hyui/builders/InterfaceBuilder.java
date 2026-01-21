@@ -87,7 +87,11 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
         return self();
     }
 
-    protected List<UIElementBuilder<?>> getTopLevelElements() {
+    /**
+     * Retrieves the top-level elements of the interface, which are elements with the parent selector "#HyUIRoot".
+     * @return A list of top-level UIElementBuilder instances for use in other builders.
+     */
+    public List<UIElementBuilder<?>> getTopLevelElements() {
         List<UIElementBuilder<?>> topLevel = new ArrayList<>();
         for (UIElementBuilder<?> element : elementRegistry.values()) {
             if ("#HyUIRoot".equals(element.parentSelector)) {
@@ -95,5 +99,14 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
             }
         }
         return topLevel;
+    }
+
+    /**
+     * Get all elements in the element registry for this builder.
+     * 
+     * @return a list of all elements, irrespective of top-level.
+     */
+    public List<UIElementBuilder<?>> getElements() {
+        return elementRegistry.values().stream().toList();        
     }
 }

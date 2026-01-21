@@ -39,8 +39,32 @@ PageBuilder.pageForPlayer(playerRef)
     .fromHtml(html)
     .addEventListener("hi-btn", CustomUIEventBindingType.Activating, (ignored, ctx) -> {
         playerRef.sendMessage(Message.raw("Hello from the UI!"));
+
+        // Use UIContext to access the page or element values
+        ctx.getPage().ifPresent(page -> {
+            // Do something with the page
+        });
     })
     .open(store);
+```
+
+#### Event Listeners and UIContext
+
+When you register an event listener, the callback receives a `UIContext` as the second argument. This context provides a way to interact with the current state of the UI without needing to keep a direct reference to the page.
+
+Key methods in `UIContext`:
+- `getPage()`: Returns an `Optional<HyUIPage>`. This allows you to access the page instance if the event originated from a page.
+- `getValue(String id)`: Retrieves the current value of an element by its ID.
+- `getValue(String id, Class<T> type)`: Retrieves the current value of an element and casts it to the specified type.
+
+```java
+.addEventListener("my-button", CustomUIEventBindingType.Activating, (ignored, ctx) -> {
+    // Accessing the page
+    ctx.getPage().ifPresent(page -> page.close());
+
+    // Accessing values from other elements
+    Optional<String> username = ctx.getValue("username-input", String.class);
+});
 ```
 
 ##### 3. Manual Building

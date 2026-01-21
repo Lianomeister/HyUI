@@ -15,6 +15,7 @@ Whether you are building a simple admin panel, a persistent HUD, or a full-scale
 *   **Specialized Builders:** Includes ready-to-use builders for:
     *   **Buttons:** Standardized game-themed text buttons and back buttons.
     *   **Input Fields:** Text, Numbers, Sliders, Checkboxes, and Color Pickers.
+    *   **Progress Bars:** Dynamic progress indicators with customizable textures and effects.
     *   **Containers:** Flexible Group builders with various layout modes and window frames.
     *   **Images:** Easy asset-backed images with support for Hytale's `@2x` resolution.
 *   **Advanced Logic (Escape Hatches):** Access raw `UICommandBuilder` instances at any point for properties not natively covered by the API.
@@ -23,13 +24,13 @@ Whether you are building a simple admin panel, a persistent HUD, or a full-scale
 
 ### Quick Start
 
-#### 1. Installation (Gradle)
+#### 1\. Installation (Gradle)
 
 To use HyUI in your Hytale project, you can get started quickly by using the example project: [https://github.com/Elliesaur/Hytale-Example-UI-Project](https://github.com/Elliesaur/Hytale-Example-UI-Project)
 
 Otherwise, add HyUI to your project via Cursemaven:
 
-```gradle
+```
 repositories {
     maven { url "https://www.cursemaven.com" }
 }
@@ -40,11 +41,11 @@ dependencies {
 }
 ```
 
-#### 2. Creating a Page with HYUIML (HTML)
+#### 2\. Creating a Page with HYUIML (HTML)
 
 For most use cases, HYUIML is the fastest way to build layouts:
 
-```java
+```
 String html = """
     <div class="page-overlay">
         <div class="container" data-hyui-title="My Menu">
@@ -64,11 +65,11 @@ PageBuilder.pageForPlayer(playerRef)
     .open(store);
 ```
 
-#### 3. Creating a HUD
+#### 3\. Creating a HUD
 
 HUDs are persistent on-screen elements:
 
-```java
+```
 HudBuilder.hudForPlayer(playerRef)
     .fromHtml("<div style='anchor-top: 10; anchor-left: 10;'><p>Health: 100</p></div>")
     .show(store);
@@ -78,18 +79,19 @@ HudBuilder.hudForPlayer(playerRef)
 
 ### Components
 
-| Builder | Purpose |
-| --- | --- |
-| `PageBuilder` | Entry point for full-screen UIs; manages file loading and lifecycle. |
-| `HudBuilder` | Entry point for HUD creation; manages multi-HUD coexistence and refreshes. |
-| `GroupBuilder` | A container used to organize and layout child elements. |
-| `ContainerBuilder` | Provides the standard Hytale window frame. |
-| `ButtonBuilder` | For interactive buttons; supports standard Hytale aesthetics. |
-| `LabelBuilder` | For displaying dynamic text with style and anchor support. |
-| `ImageBuilder` | For displaying asset-backed images (`.png`). |
-| `TextFieldBuilder` | Captures string or numeric input from the player. |
-| `ColorPickerBuilder` | Provides a Hex color selection interface. |
-| `SliderBuilder` | Provides support for number sliders. |
+| Builder            |Purpose                                                                    |
+| ------------------ |-------------------------------------------------------------------------- |
+| <code>PageBuilder</code> |Entry point for full-screen UIs; manages file loading and lifecycle.       |
+| <code>HudBuilder</code> |Entry point for HUD creation; manages multi-HUD coexistence and refreshes. |
+| <code>GroupBuilder</code> |A container used to organize and layout child elements.                    |
+| <code>ContainerBuilder</code> |Provides the standard Hytale window frame.                                 |
+| <code>ButtonBuilder</code> |For interactive buttons; supports standard Hytale aesthetics.              |
+| <code>LabelBuilder</code> |For displaying dynamic text with style and anchor support.                 |
+| <code>ImageBuilder</code> |For displaying asset-backed images (<code>.png</code>).                    |
+| <code>TextFieldBuilder</code> |Captures string or numeric input from the player.                          |
+| <code>ColorPickerBuilder</code> |Provides a Hex color selection interface.                                  |
+| <code>SliderBuilder</code> |Provides support for number sliders.                                       |
+| <code>ProgressBarBuilder</code> |Provides support for progress bars.                                       |
 
 ***
 
@@ -100,6 +102,14 @@ Detailed documentation for installation, page building, HUD building, and HYUIML
 Click the **Source** button on this page to view the full documentation and implementation examples!
 
 **Requirements:**
+
 *   Hytale Server added as a dependency
 *   Java 25 (or current Hytale-compatible version)
-*   jsoup (included in the JAR)
+*   jsoup (embedded in the JAR under MIT license)
+*   MultipleHUD - optional requirement - included source in JAR (not embedded) under MIT license.
+
+### Licenses
+All open source licenses can be found within the JAR and GitHub repo.
+
+## Help and Support
+Feel free to join the Discord: https://discord.gg/NYeK9JqmNB - happy to help!

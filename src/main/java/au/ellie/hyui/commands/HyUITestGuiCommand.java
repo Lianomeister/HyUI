@@ -112,6 +112,10 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                             style="anchor-width: 140; anchor-height: 120; anchor-left: 12"/>
                         <img src="lizard.png" style="anchor-width: 100; anchor-height: 100;"/>
                         <img src="lizard.png" width="100" height="50"/>
+                        <progress value="0.7" style="anchor-width: 500; anchor-height: 50" 
+                            data-hyui-effect-width="500" 
+                            data-hyui-effect-height="50" 
+                            data-hyui-effect-offset="0"></progress>
                         <button id="btn1">Click Me!</button>
                         <input type="reset" value="Cancel Operation" class="cancel-btn" style="font-size: 25px"/>
                     </div>
@@ -128,6 +132,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                 .addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
                     playerRef.sendMessage(Message.raw("Button clicked via PageBuilder ID lookup!: " + 
                     ctx.getValue("myInput", String.class).orElse("N/A")));
+                    ctx.getPage().ifPresent(HyUIPage::close);
                 })
                 .addEventListener("myInput", CustomUIEventBindingType.ValueChanged, String.class, (val) -> {
                     playerRef.sendMessage(Message.raw("Input changed to: " + val));
@@ -247,6 +252,11 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                                         //.set("CustomProperty", "ValueHere")
                                         //.setDisabledStyle(new HyUIStyle().setTextColor("#888888")))
                         ))
+                        .addChild(ProgressBarBuilder.progressBar()
+                                .withId("MyProgressBar")
+                                .withValue(0.45f)
+                                .withOuterAnchor(new HyUIAnchor().setWidth(200).setHeight(12))
+                        )
                         .addChild(ContainerBuilder.container()
                                 .withId("MyContainer")
                                 .withTitleText("Custom Title")

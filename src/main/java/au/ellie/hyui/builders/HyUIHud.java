@@ -208,6 +208,11 @@ public class HyUIHud extends CustomUIHud implements UIContext {
         return delegate.getValue(id);
     }
 
+    @Override
+    public Optional<HyUIPage> getPage() {
+        return Optional.empty();
+    }
+
     private void setVisibilityOnFirstElement(boolean value) {
         for (UIElementBuilder<?> element : delegate.getElements()) {
             element.withVisible(value);

@@ -35,6 +35,7 @@ PageBuilder.pageForPlayer(playerRef)
 | `<input type="checkbox">` | `CheckBoxBuilder` | Toggle switches. |
 | `<input type="color">` | `ColorPickerBuilder` | Color selectors. |
 | `<input type="reset">` | `ButtonBuilder` | Specifically creates a `CancelTextButton`. |
+| `<progress>` | `ProgressBarBuilder` | Displays a progress bar. |
 | `<img>` | `ImageBuilder` | Displays an image. Use `src` for the path. |
 
 #### Attributes
@@ -49,6 +50,11 @@ HYUIML supports several standard and custom attributes:
 *   `width`, `height`: Specific to `<img>` tag, maps to `anchor-width` and `anchor-height`.
 *   `data-hyui-title`: Specific to containers/overlays to set the header title.
 *   `data-hyui-tooltiptext`: Adds a tooltip to the element.
+*   `data-hyui-bar-texture-path`: Path to the progress bar's fill texture.
+*   `data-hyui-effect-texture-path`: Path to the progress bar's effect texture.
+*   `data-hyui-effect-width`, `data-hyui-effect-height`, `data-hyui-effect-offset`: Customizes the progress bar's effect appearance.
+*   `data-hyui-direction`: Progress bar fill direction (`start` or `end`).
+*   `data-hyui-alignment`: Progress bar orientation (`horizontal` or `vertical`).
 
 #### Styling with CSS
 
@@ -73,7 +79,7 @@ You can include a `<style>` block at the beginning of your HYUIML:
 *   `font-size`: Numeric value.
 *   `font-weight`: `bold` or `normal`.
 *   `text-transform`: `uppercase` or `none`.
-*   `text-align`: `top`, `bottom`, `left`, `right`, `center`, `topscrolling`, `bottomscrolling`, `middlecenter`, `centermiddle`, `leftcenterwrap`. (Note: Maps to `LayoutMode` for `<div>`).
+*   `text-align`: `top`, `bottom`, `left`, `right`, `center`, `topscrolling`, `bottomscrolling`, `middlecenter`, `centermiddle`, `leftcenterwrap`, `rightcenterwrap`, `full`, `middle`, `middlecenter`. (Note: Maps to `LayoutMode` for `<div>`).
 *   `layout-mode`, `layout`: Alternative names for `text-align` specifically for setting the `LayoutMode` on a `<div>`.
 *   `vertical-align`: `top`, `bottom`, `center`.
 *   `horizontal-align`: `left`, `right`, `center`.

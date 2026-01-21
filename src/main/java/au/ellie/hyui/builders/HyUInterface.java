@@ -37,6 +37,11 @@ public abstract class HyUInterface implements UIContext {
         return Optional.ofNullable(elementValues.get(id));
     }
 
+    @Override
+    public Optional<HyUIPage> getPage() {
+        return Optional.empty();
+    }
+
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder uiCommandBuilder, @Nonnull UIEventBuilder uiEventBuilder, @Nonnull Store<EntityStore> store) {
         HyUIPlugin.getLog().logInfo("Building HyUInterface" + (uiFile != null ? " from file: " + uiFile : ""));
         if (uiFile != null) {
@@ -86,17 +91,21 @@ public abstract class HyUInterface implements UIContext {
     }
 
     protected void handleDataEventInternal(DynamicPageData data) {
+        handleDataEventInternal(data, this);
+    }
+
+    protected void handleDataEventInternal(DynamicPageData data, UIContext context) {
         HyUIPlugin.getLog().logInfo("Received DataEvent: Action=" + data.action);
         data.values.forEach((key, value) -> {
             HyUIPlugin.getLog().logInfo("  Property: " + key + " = " + value);
         });
 
         for (UIElementBuilder<?> element : elements) {
-            handleElementEvents(element, data);
+            handleElementEvents(element, data, context);
         }
     }
 
-    protected void handleElementEvents(UIElementBuilder<?> element, DynamicPageData data) {
+    protected void handleElementEvents(UIElementBuilder<?> element, DynamicPageData data, UIContext context) {
         String internalId = element.getEffectiveId();
         String userId = element.getId();
 
@@ -106,7 +115,7 @@ public abstract class HyUInterface implements UIContext {
             for (UIEventListener<?> listener : element.getListeners()) {
                 if (listener.type() == CustomUIEventBindingType.Activating && UIEventActions.BUTTON_CLICKED.equals(data.action)) {
                     if (internalId.equals(target)) {
-                        ((UIEventListener<Void>) listener).callback().accept(null, this);
+                        ((UIEventListener<Void>) listener).callback().accept(null, context);
                     }
                 } else if (listener.type() == CustomUIEventBindingType.ValueChanged) {
                     Object finalValue = null;
@@ -129,14 +138,14 @@ public abstract class HyUInterface implements UIContext {
                     }
 
                     if (finalValue != null) {
-                        ((UIEventListener<Object>) listener).callback().accept(finalValue, this);
+                        ((UIEventListener<Object>) listener).callback().accept(finalValue, context);
                     }
                 }
             }
         }
 
         for (UIElementBuilder<?> child : element.children) {
-            handleElementEvents(child, data);
+            handleElementEvents(child, data, context);
         }
     }
 

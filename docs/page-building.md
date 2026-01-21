@@ -9,6 +9,8 @@ There are multiple ways to define the content of your page:
 ##### 1. Loading from UI Files
 You can load an existing Hytale `.ui` file as the base for your page. HyUI often uses a "Placeholder" UI that provides a standard container and title.
 
+> **Note**: Elements defined within the `.ui` file cannot have event listeners attached to them via `.addEventListener`. This method is only for elements created via the Java Builder API or HYUIML. To interact with elements in a `.ui` file, use `.editElement` to send raw UI commands.
+
 ```java
 PageBuilder.pageForPlayer(playerRef)
     .fromFile("Pages/MyPage.ui")
@@ -16,7 +18,7 @@ PageBuilder.pageForPlayer(playerRef)
 ```
 
 ##### 2. Loading from HYUIML (HTML)
-You can define your page using HTML-like syntax, which is often easier for complex layouts.
+You can define your page using HTML-like syntax, which is often easier for complex layouts. Elements defined in HYUIML **do** support `.addEventListener` using the `id` specified in the HTML.
 
 When using HYUIML for a page, it is recommended to use the standard structural classes:
 - `.page-overlay`: Ensures the UI fills the screen and handles background dimming.

@@ -56,6 +56,18 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
         return Optional.empty();
     }
 
+    /**
+     * Adds an event listener to an element by its ID.
+     * Note: This only works for elements created using the builder API or via HYUIML (.fromHtml).
+     * It does not work for elements defined in a .ui file loaded via .fromFile.
+     *
+     * @param id         The ID of the element.
+     * @param type       The type of event to listen for.
+     * @param valueClass The class of the value associated with the event.
+     * @param callback   The callback to execute when the event occurs.
+     * @param <V>        The type of the value.
+     * @return This builder instance for method chaining.
+     */
     public <V> T addEventListener(String id, CustomUIEventBindingType type, Class<V> valueClass, Consumer<V> callback) {
         UIElementBuilder<?> element = elementRegistry.get(id);
         if (element == null) {
@@ -69,6 +81,17 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
         return addEventListener(id, type, Object.class, callback);
     }
 
+    /**
+     * Adds an event listener with access to the UI context.
+     * Note: This only works for elements created using the builder API or via HYUIML (.fromHtml).
+     *
+     * @param id         The ID of the element.
+     * @param type       The type of event to listen for.
+     * @param valueClass The class of the value associated with the event.
+     * @param callback   The callback to execute when the event occurs.
+     * @param <V>        The type of the value.
+     * @return This builder instance for method chaining.
+     */
     public <V> T addEventListener(String id, CustomUIEventBindingType type, Class<V> valueClass, BiConsumer<V, UIContext> callback) {
         UIElementBuilder<?> element = elementRegistry.get(id);
         if (element == null) {

@@ -129,7 +129,7 @@ Example usage:
 
 #### Event Handling
 
-Events for elements defined in HYUIML are handled via the `PageBuilder` using the IDs provided in the markup:
+Events for elements defined in HYUIML are handled via the `PageBuilder` (or `HudBuilder`) using the IDs provided in the markup. Note that this is the primary way to add interaction to HYUIML elements, whereas elements loaded from raw `.ui` files via `.fromFile` do not support `.addEventListener`.
 
 ```java
 builder.addEventListener("my-button", CustomUIEventBindingType.Activating, (ignored, ctx) -> {

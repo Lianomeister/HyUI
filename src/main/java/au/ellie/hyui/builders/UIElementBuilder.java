@@ -43,6 +43,7 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     protected HyUIPadding padding;
     protected Boolean visible;
     protected Message tooltipTextSpan;
+    protected Boolean hitTestVisible;
     protected Integer flexWeight;
     protected final List<BiConsumer<UICommandBuilder, String>> editAfterCallbacks = new ArrayList<>();
     protected final List<BiConsumer<UICommandBuilder, String>> editBeforeCallbacks = new ArrayList<>();
@@ -266,6 +267,32 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     }
 
     /**
+     * Configures the tooltip text for the UI element using a raw string.
+     *
+     * @param tooltipText the tooltip text to display
+     * @return the builder instance of type {@code T} for method chaining
+     */
+    @SuppressWarnings("unchecked")
+    public T withTooltipText(String tooltipText) {
+        if (tooltipText != null) {
+            this.tooltipTextSpan = Message.raw(tooltipText);
+        }
+        return (T) this;
+    }
+
+    /**
+     * Configures whether the element should receive hit-test interactions.
+     *
+     * @param hitTestVisible whether the element is hit-test visible
+     * @return the builder instance of type {@code T} for method chaining
+     */
+    @SuppressWarnings("unchecked")
+    public T withHitTestVisible(boolean hitTestVisible) {
+        this.hitTestVisible = hitTestVisible;
+        return (T) this;
+    }
+
+    /**
      * Sets the flex weight for the UI element.
      * Flex weight determines how the element is sized relative to its siblings
      * within a flex container.
@@ -403,6 +430,11 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
             if (tooltipTextSpan != null) {
                 HyUIPlugin.getLog().logInfo("Setting TooltipTextSpans for " + selector);
                 commands.set(selector + ".TooltipTextSpans", tooltipTextSpan);
+            }
+
+            if (hitTestVisible != null) {
+                HyUIPlugin.getLog().logInfo("Setting HitTestVisible: " + hitTestVisible + " for " + selector);
+                commands.set(selector + ".HitTestVisible", hitTestVisible);
             }
 
             if (flexWeight != null) {

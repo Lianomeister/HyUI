@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -80,7 +81,12 @@ public class ColorPickerBuilder extends UIElementBuilder<ColorPickerBuilder> {
 
     @Override
     protected boolean supportsStyling() {
-        return false;
+        return true;
+    }
+
+    @Override
+    protected Set<String> getUnsupportedStyleProperties() {
+        return Set.of("TextColor");
     }
 
     @Override

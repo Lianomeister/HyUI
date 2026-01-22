@@ -9,6 +9,7 @@ HyUI is a fluent, builder-based library for creating and managing custom user in
 *   **[Build a Page](page-building.md)**: Create full-screen interactive menus and settings pages.
 *   **[Use HYUIML (HTML/CSS)](hyuiml.md)**: Learn how to define your UIs using a familiar markup syntax.
 *   **[UI Elements](elements.md)**: Common UI element examples and patterns.
+*   **[Element Validation](element-validation.md)**: How we validate your UI.
 
 ---
 

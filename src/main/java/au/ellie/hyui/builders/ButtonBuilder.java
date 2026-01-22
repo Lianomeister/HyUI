@@ -27,6 +27,8 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> implements
     private String text;
     private String layoutMode;
     private HyUIPatchStyle background;
+    private Boolean disabled;
+    private Boolean overscroll;
 
     /**
      * You do not need to call this.
@@ -152,6 +154,28 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> implements
         return addChild(itemIcon);
     }
 
+    /**
+     * Sets whether the button is disabled.
+     *
+     * @param disabled whether the button should be disabled
+     * @return the current instance of ButtonBuilder for method chaining
+     */
+    public ButtonBuilder withDisabled(boolean disabled) {
+        this.disabled = disabled;
+        return this;
+    }
+
+    /**
+     * Sets whether the button should overscroll.
+     *
+     * @param overscroll whether the button should overscroll
+     * @return the current instance of ButtonBuilder for method chaining
+     */
+    public ButtonBuilder withOverscroll(boolean overscroll) {
+        this.overscroll = overscroll;
+        return this;
+    }
+
     @Override
     public ButtonBuilder withLayoutMode(String layoutMode) {
         this.layoutMode = layoutMode;
@@ -205,7 +229,11 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> implements
     @Override
     protected Set<String> getUnsupportedStyleProperties() {
         if (this.theme == Theme.GAME_THEME) {
-            return Set.of("FontSize", "TextColor", "Alignment", "HorizontalAlignment", "VerticalAlignment");
+            boolean allowTextColor = UIElements.BUTTON.equals(elementPath);
+            if (allowTextColor) {
+                return Set.of("Alignment", "HorizontalAlignment", "VerticalAlignment");
+            }
+            return Set.of("TextColor", "Alignment", "HorizontalAlignment", "VerticalAlignment");
         }
         return Collections.emptySet();
     }
@@ -221,6 +249,16 @@ public class ButtonBuilder extends UIElementBuilder<ButtonBuilder> implements
         if (text != null) {
             HyUIPlugin.getLog().logInfo("Setting Text: " + text + " for " + selector);
             commands.set(selector + ".Text", text);
+        }
+
+        if (disabled != null) {
+            HyUIPlugin.getLog().logInfo("Setting Disabled: " + disabled + " for " + selector);
+            commands.set(selector + ".Disabled", disabled);
+        }
+
+        if (overscroll != null) {
+            HyUIPlugin.getLog().logInfo("Setting Overscroll: " + overscroll + " for " + selector);
+            commands.set(selector + ".Overscroll", overscroll);
         }
 
         if (hyUIStyle == null && style != null) {

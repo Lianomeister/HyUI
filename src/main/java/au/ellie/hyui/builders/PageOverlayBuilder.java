@@ -15,6 +15,7 @@ public class PageOverlayBuilder extends UIElementBuilder<PageOverlayBuilder> imp
     private HyUIPatchStyle background;
     private String scrollbarStyleReference;
     private String scrollbarStyleDocument;
+    private Boolean clipChildren;
 
     public PageOverlayBuilder() {
         super(UIElements.PAGE_OVERLAY, "#HyUIPageOverlay");
@@ -60,6 +61,17 @@ public class PageOverlayBuilder extends UIElementBuilder<PageOverlayBuilder> imp
         return this;
     }
 
+    /**
+     * Sets whether the page overlay should clip its children.
+     *
+     * @param clipChildren Whether to clip children.
+     * @return the {@code PageOverlayBuilder} instance for method chaining
+     */
+    public PageOverlayBuilder withClipChildren(boolean clipChildren) {
+        this.clipChildren = clipChildren;
+        return this;
+    }
+
     @Override
     public String getScrollbarStyleReference() {
         return this.scrollbarStyleReference;
@@ -83,5 +95,9 @@ public class PageOverlayBuilder extends UIElementBuilder<PageOverlayBuilder> imp
         applyLayoutMode(commands, selector);
         applyBackground(commands, selector);
         applyScrollbarStyle(commands, selector);
+
+        if (clipChildren != null) {
+            commands.set(selector + ".ClipChildren", clipChildren);
+        }
     }
 }

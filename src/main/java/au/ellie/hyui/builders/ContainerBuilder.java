@@ -17,6 +17,7 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> impleme
     private HyUIPatchStyle background;
     private String scrollbarStyleReference;
     private String scrollbarStyleDocument;
+    private Boolean clipChildren;
 
     public ContainerBuilder() {
         super(UIElements.CONTAINER, "#HyUIContainer");
@@ -73,6 +74,17 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> impleme
         return this;
     }
 
+    /**
+     * Sets whether the container should clip its children.
+     *
+     * @param clipChildren Whether to clip children.
+     * @return the {@code ContainerBuilder} instance for method chaining
+     */
+    public ContainerBuilder withClipChildren(boolean clipChildren) {
+        this.clipChildren = clipChildren;
+        return this;
+    }
+
     @Override
     public String getScrollbarStyleReference() {
         return this.scrollbarStyleReference;
@@ -119,6 +131,10 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> impleme
         applyBackground(commands, selector);
         applyScrollbarStyle(commands, selector);
 
+        if (clipChildren != null) {
+            commands.set(selector + ".ClipChildren", clipChildren);
+        }
+
         if (titleText != null) {
             String titleSelector = selector + " #Title #HyUIContainerTitle";
             HyUIPlugin.getLog().logInfo("Setting Title Text: " + titleText + " for " + titleSelector);
@@ -158,4 +174,3 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> impleme
         }
     }
 }
-

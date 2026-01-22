@@ -90,6 +90,10 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
         return userId;
     }
 
+    public HyUIStyle getHyUIStyle() {
+        return hyUIStyle;
+    }
+
     /**
      * @return true if the element uses the @Value (or data-type equiv.) (RefValue) property for its value in events.
      */
@@ -409,12 +413,22 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
             if (hyUIStyle != null) {
                 BsonDocumentHelper doc = PropertyBatcher.beginSet();
                 applyStyle(commands, selector + ".Style", hyUIStyle, doc);
+                hyUIStyle.getStates().forEach((state, nestedStyle) -> {
+                    BsonDocumentHelper innerDoc = PropertyBatcher.beginSet();
+                    applyStyle(commands, selector + ".Style." + state, nestedStyle, innerDoc);
+                    PropertyBatcher.endSet(selector + ".Style." + state, doc, commands);
+                });
                 PropertyBatcher.endSet(selector + ".Style", doc, commands);
             }
 
             secondaryStyles.forEach((property, style) -> {
                 BsonDocumentHelper doc = PropertyBatcher.beginSet();
                 applyStyle(commands, selector + "." + property, style, doc);
+                style.getStates().forEach((state, nestedStyle) -> {
+                    BsonDocumentHelper innerDoc = PropertyBatcher.beginSet();
+                    applyStyle(commands, selector + "." + property + "." + state, nestedStyle, innerDoc);
+                    PropertyBatcher.endSet(selector + "." + property + "." + state, doc, commands);
+                });
                 PropertyBatcher.endSet(selector + "." + property, doc, commands);
             });
         }
@@ -535,10 +549,6 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
                 case Float v -> doc.set(key, v);
                 case null, default -> doc.set(key, String.valueOf(value));
             }
-        });
-
-        style.getStates().forEach((state, nestedStyle) -> {
-            applyStyle(commands, prefix + "." + state, nestedStyle, doc);
         });
     }
 

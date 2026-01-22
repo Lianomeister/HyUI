@@ -109,6 +109,11 @@ public class HyUIStyle {
         return this;
     }
 
+    public HyUIStyle setHoverStyle(HyUIStyle style) {
+        states.put("Hovered", style);
+        return this;
+    }
+
     public HyUIStyle set(String key, Object value) {
         this.rawProperties.put(key, value);
         return this;
@@ -153,6 +158,23 @@ public class HyUIStyle {
 
     public String getStyleDocument() {
         return styleDocument;
+    }
+
+    @Override
+    public String toString() {
+        return "HyUIStyle{" +
+                "fontSize=" + fontSize +
+                ", renderBold=" + renderBold +
+                ", renderUppercase=" + renderUppercase +
+                ", textColor='" + textColor + '\'' +
+                ", horizontalAlignment=" + horizontalAlignment +
+                ", verticalAlignment=" + verticalAlignment +
+                ", alignment=" + alignment +
+                ", styleReference='" + styleReference + '\'' +
+                ", styleDocument='" + styleDocument + '\'' +
+                ", states=" + states +
+                ", rawProperties=" + rawProperties +
+                '}';
     }
 
     public Map<String, HyUIStyle> getStates() {

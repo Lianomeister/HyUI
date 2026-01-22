@@ -62,6 +62,20 @@ public class CssPreprocessor {
             String properties = entry.getValue();
 
             try {
+                // Handle :hover pseudo-class
+                if (selector.endsWith(":hover")) {
+                    String baseSelector = selector.substring(0, selector.length() - 6);
+                    Elements elements = doc.select(baseSelector.isEmpty() ? "*" : baseSelector);
+                    for (Element element : elements) {
+                        String existingHover = element.attr("data-hyui-hover-style");
+                        if (!existingHover.isEmpty() && !existingHover.endsWith(";")) {
+                            existingHover += ";";
+                        }
+                        element.attr("data-hyui-hover-style", properties + (properties.endsWith(";") ? "" : ";") + existingHover);
+                    }
+                    continue;
+                }
+
                 Elements elements = doc.select(selector);
                 for (Element element : elements) {
                     String existingStyle = element.attr("style");

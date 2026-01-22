@@ -239,7 +239,7 @@ public class HyUIHud extends CustomUIHud implements UIContext {
             this.update(false, uiCommandBuilder);
         } else {
             // Re-render completely.
-            if (unsafe) {
+            if (!unsafe) {
                 store.getExternalData().getWorld().execute(() -> {
                     MultiHudWrapper.setCustomHud(getPlayer(), getPlayerRef(), this.name, this);
                 });

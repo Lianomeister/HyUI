@@ -64,11 +64,7 @@ This example combines a button and item icon and labels within the button.
         layout-mode: Left;
         padding: 6;
     }
-
-    #IconButton:hover {
-        background-color: #000000(0.2);
-    }
-
+    
     #Icon {
         anchor-width: 32;
         anchor-height: 32;

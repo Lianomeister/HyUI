@@ -1,5 +1,6 @@
 package au.ellie.hyui.html;
 
+import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.builders.*;
 import au.ellie.hyui.elements.BackgroundSupported;
 import au.ellie.hyui.elements.LayoutModeSupported;
@@ -56,6 +57,20 @@ public interface TagHandler {
             applyStyles(builder, styles);
         }
 
+        if (element.hasAttr("data-hyui-hover-style")) {
+            Map<String, String> hoverStyles = parseStyleAttribute(element.attr("data-hyui-hover-style"));
+            ParsedStyles parsed = getStylesAnchorsPadding(hoverStyles, builder);
+            if (parsed.hasStyle) {
+                HyUIStyle currentStyle = builder.getHyUIStyle();
+                if (currentStyle == null) {
+                    currentStyle = new HyUIStyle();
+                }
+                HyUIPlugin.getLog().logInfo("Applying hover style: " + parsed.style.toString());
+                HyUIPlugin.getLog().logInfo("Applying style: " + currentStyle.toString());
+                builder.withStyle(currentStyle.setHoverStyle(parsed.style));
+            }
+        }
+
         if (element.tagName().equalsIgnoreCase("img")) {
             HyUIAnchor anchor = builder.getAnchor();
             if (anchor == null) {
@@ -93,12 +108,29 @@ public interface TagHandler {
     }
 
     private void applyStyles(UIElementBuilder<?> builder, Map<String, String> styles) {
-        HyUIStyle hyStyle = new HyUIStyle();
+        ParsedStyles parsed = getStylesAnchorsPadding(styles, builder);
+        if (parsed.hasStyle) {
+            builder.withStyle(parsed.style);
+        }
+        if (parsed.hasAnchor) {
+            builder.withAnchor(parsed.anchor);
+        }
+        if (parsed.hasPadding) {
+            builder.withPadding(parsed.padding);
+        }
+    }
+
+    class ParsedStyles {
+        HyUIStyle style = new HyUIStyle();
         HyUIAnchor anchor = new HyUIAnchor();
         HyUIPadding padding = new HyUIPadding();
         boolean hasStyle = false;
         boolean hasAnchor = false;
         boolean hasPadding = false;
+    }
+
+    private ParsedStyles getStylesAnchorsPadding(Map<String, String> styles, UIElementBuilder<?> builder) {
+        ParsedStyles parsed = new ParsedStyles();
 
         for (Map.Entry<String, String> entry : styles.entrySet()) {
             String key = entry.getKey();
@@ -106,23 +138,23 @@ public interface TagHandler {
 
             switch (key) {
                 case "color":
-                    hyStyle.setTextColor(value);
-                    hasStyle = true;
+                    parsed.style.setTextColor(value);
+                    parsed.hasStyle = true;
                     break;
                 case "font-size":
-                    hyStyle.setFontSize(value);
-                    hasStyle = true;
+                    parsed.style.setFontSize(value);
+                    parsed.hasStyle = true;
                     break;
                 case "font-weight":
                     if (value.equalsIgnoreCase("bold")) {
-                        hyStyle.setRenderBold(true);
-                        hasStyle = true;
+                        parsed.style.setRenderBold(true);
+                        parsed.hasStyle = true;
                     }
                     break;
                 case "text-transform":
                     if (value.equalsIgnoreCase("uppercase")) {
-                        hyStyle.setRenderUppercase(true);
-                        hasStyle = true;
+                        parsed.style.setRenderUppercase(true);
+                        parsed.hasStyle = true;
                     }
                     break;
                 case "text-align":
@@ -133,16 +165,16 @@ public interface TagHandler {
                     }
                     break;
                 case "vertical-align":
-                    hyStyle.setVerticalAlignment(capitalize(value));
-                    hasStyle = true;
+                    parsed.style.setVerticalAlignment(capitalize(value));
+                    parsed.hasStyle = true;
                     break;
                 case "horizontal-align":
-                    hyStyle.setHorizontalAlignment(capitalize(value));
-                    hasStyle = true;
+                    parsed.style.setHorizontalAlignment(capitalize(value));
+                    parsed.hasStyle = true;
                     break;
                 case "align":
-                    hyStyle.setAlignment(capitalize(value));
-                    hasStyle = true;
+                    parsed.style.setAlignment(capitalize(value));
+                    parsed.hasStyle = true;
                     break;
                 case "visibility":
                     if (value.equalsIgnoreCase("hidden")) {
@@ -165,81 +197,81 @@ public interface TagHandler {
                     break;
                 case "anchor-left":
                     try {
-                        anchor.setLeft(Integer.parseInt(value));
-                        hasAnchor = true;
+                        parsed.anchor.setLeft(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "anchor-right":
                     try {
-                        anchor.setRight(Integer.parseInt(value));
-                        hasAnchor = true;
+                        parsed.anchor.setRight(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "anchor-top":
                     try {
-                        anchor.setTop(Integer.parseInt(value));
-                        hasAnchor = true;
+                        parsed.anchor.setTop(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "anchor-bottom":
                     try {
-                        anchor.setBottom(Integer.parseInt(value));
-                        hasAnchor = true;
+                        parsed.anchor.setBottom(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "anchor-width":
                     try {
-                        anchor.setWidth(Integer.parseInt(value));
-                        hasAnchor = true;
+                        parsed.anchor.setWidth(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "anchor-height":
                     try {
-                        anchor.setHeight(Integer.parseInt(value));
-                        hasAnchor = true;
+                        parsed.anchor.setHeight(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "anchor":
                     try {
-                        anchor.setFull(Integer.parseInt(value));
-                        hasAnchor = true;
+                        parsed.anchor.setFull(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "padding-left":
                     try {
-                        padding.setLeft(Integer.parseInt(value));
-                        hasPadding = true;
+                        parsed.padding.setLeft(Integer.parseInt(value));
+                        parsed.hasPadding = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "padding-right":
                     try {
-                        padding.setRight(Integer.parseInt(value));
-                        hasPadding = true;
+                        parsed.padding.setRight(Integer.parseInt(value));
+                        parsed.hasPadding = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "padding-top":
                     try {
-                        padding.setTop(Integer.parseInt(value));
-                        hasPadding = true;
+                        parsed.padding.setTop(Integer.parseInt(value));
+                        parsed.hasPadding = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "padding-bottom":
                     try {
-                        padding.setBottom(Integer.parseInt(value));
-                        hasPadding = true;
+                        parsed.padding.setBottom(Integer.parseInt(value));
+                        parsed.hasPadding = true;
                     } catch (NumberFormatException ignored) {}
                     break;
                 case "padding":
                     String[] values = value.split("\\s+");
                     try {
                         if (values.length == 1) {
-                            padding.setFull(Integer.parseInt(values[0]));
-                            hasPadding = true;
+                            parsed.padding.setFull(Integer.parseInt(values[0]));
+                            parsed.hasPadding = true;
                         } else if (values.length >= 2) {
                             int v = Integer.parseInt(values[0]);
                             int h = Integer.parseInt(values[1]);
-                            padding.setSymmetric(v, h);
-                            hasPadding = true;
+                            parsed.padding.setSymmetric(v, h);
+                            parsed.hasPadding = true;
                         }
                     } catch (NumberFormatException ignored) {}
                     break;
@@ -272,14 +304,14 @@ public interface TagHandler {
                 case "hyui-style-reference":
                     String[] styleParts = value.split("\\s+");
                     if (styleParts.length == 1) {
-                        hyStyle.withStyleReference(styleParts[0].replace("\"", "").replace("'", ""));
-                        hasStyle = true;
+                        parsed.style.withStyleReference(styleParts[0].replace("\"", "").replace("'", ""));
+                        parsed.hasStyle = true;
                     } else if (styleParts.length >= 2) {
-                        hyStyle.withStyleReference(
+                        parsed.style.withStyleReference(
                                 styleParts[0].replace("\"", "").replace("'", ""),
                                 styleParts[1].replace("\"", "").replace("'", "")
                         );
-                        hasStyle = true;
+                        parsed.hasStyle = true;
                     }
                     break;
                 case "hyui-entry-label-style":
@@ -302,16 +334,7 @@ public interface TagHandler {
                     break;
             }
         }
-
-        if (hasStyle) {
-            builder.withStyle(hyStyle);
-        }
-        if (hasAnchor) {
-            builder.withAnchor(anchor);
-        }
-        if (hasPadding) {
-            builder.withPadding(padding);
-        }
+        return parsed;
     }
 
     private HyUIStyle parseStyleReference(String value) {

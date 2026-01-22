@@ -97,6 +97,9 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                         .input-row { text-align: top; flex-weight: 1; color: #ff0000; }
                         input[type="text"] { flex-weight: 1; }
                         .cancel-btn { flex-weight: 2; }
+                        p:hover {
+                            text-transform: uppercase;
+                        }
                     </style>
                     <div class="page-overlay">
                         <div class="container" id="myContainer" data-hyui-title="HyUIML Parser Test">

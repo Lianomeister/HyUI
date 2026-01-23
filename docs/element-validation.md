@@ -36,29 +36,30 @@ We do not validate possible client-side elements, properties, or styles.
 ## Elements
 
 ### Container
-- NO STYLE.
 - `LayoutMode` (see Layout Modes)
 - `ScrollbarStyle` (Value reference)
 - `ClipChildren` (Boolean)
 - `#Content` and `#Title` are `Group` elements and follow group rules.
 - The common `@Title` must use `@Text = "Value"` and must be first in the properties list.
+- NO STYLE.
 
 ### PageOverlay
-- NO STYLE.
 - `LayoutMode` (see Layout Modes)
 - `ScrollbarStyle` (Value reference)
 - `ClipChildren` (Boolean)
+- NO STYLE.
 
 ### Group
-- NO STYLE.
 - `LayoutMode` (see Layout Modes)
 - `ScrollbarStyle` (Value reference)
 - `ClipChildren` (Boolean)
+- NO STYLE.
 
 ### ColorPicker
 
 - `Value` (String, hex)
 - Style:  `PaddingLeft` (Integer), `PaddingRight` (Integer), `PaddingTop` (Integer), `PaddingBottom` (Integer), `FontSize` (Integer), `RenderBold` (Boolean), `RenderItalics` (Boolean), `RenderUppercase` (Boolean), `FontName` (String: Default or Secondary), `Wrap` (Boolean), `LetterSpacing` (Integer)
+  - Or a style reference.
 
 ### Label
 
@@ -102,13 +103,13 @@ We do not validate possible client-side elements, properties, or styles.
 - Style: Unknown but excludes `TextColor`
 
 ### AssetImage
-- NO STYLE.
 - `LayoutMode` (see Layout Modes)
 - `AssetPath` (String)
+- NO STYLE.
 
 ### ItemIcon
-- NO STYLE.
 - `ItemId` (String, example: `Tool_Pickaxe_Crude`)
+- NO STYLE.
 
 ### Sprite
 - `TexturePath` (String)

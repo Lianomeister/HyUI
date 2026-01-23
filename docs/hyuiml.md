@@ -140,7 +140,6 @@ You can include a `<style>` block at the beginning of your HYUIML:
 *   `anchor-*`: Maps to Hytale anchors (e.g., `anchor-left`, `anchor-top`, `anchor-width`, `anchor-height`).
 *   `background-image`: URL to an image (e.g., `url('lizard.png')` or `lizard.png`) with optional border values: `background-image: url('lizard.png') 4 6` (horizontal, vertical) or `background-image: url('lizard.png') 4` (border).
 *   `background-color`: Hex color (e.g., `#ff0000` or `#ff0000(0.5)`) or `rgb(...)`/`rgba(...)` (converted to hex). Supports optional border values: `background-color: #ff0000 4 6` (horizontal, vertical) or `background-color: rgba(255, 0, 0, 0.5) 4` (border).
-*   `border`: Standard Hytale border support.
 
 > **Note on Backgrounds**: Due to Hytale limitations, you currently cannot use `background-image`, `background-color`, and background opacity together in a single element's style. 
 

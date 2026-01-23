@@ -144,3 +144,52 @@ SpriteBuilder.sprite()
     .withAnchor(new HyUIAnchor().setWidth(32).setHeight(32))
     .open(playerRef, store);
 ```
+
+### Tab Navigation Example
+
+Use `TabNavigationBuilder` for the tab bar and `TabContentBuilder` for tabbed content sections. Tab content is linked by tab ID and is auto-hidden unless selected, including across `updatePage()` rebuilds.
+
+#### HYUIML Example
+
+```html
+<nav id="main-tabs" class="tabs"
+     data-tabs="templates:Templates,timers:Timers,components:Components"
+     data-selected="templates">
+</nav>
+
+<div id="templates-content" class="tab-content" data-hyui-tab-id="templates">
+    <p>Template examples...</p>
+</div>
+
+<div id="timers-content" class="tab-content" data-hyui-tab-id="timers">
+    <p>Timer examples...</p>
+</div>
+```
+
+#### Java Builder Example
+
+```java
+TabNavigationBuilder tabs = TabNavigationBuilder.tabNavigation()
+    .withId("main-tabs")
+    .addTab("templates", "Templates")
+    .addTab("timers", "Timers")
+    .withSelectedTab("templates");
+
+TabContentBuilder templates = TabContentBuilder.tabContent()
+    .withId("templates-content")
+    .withTabId("templates")
+    .addChild(LabelBuilder.label().withText("Template examples..."));
+
+TabContentBuilder timers = TabContentBuilder.tabContent()
+    .withId("timers-content")
+    .withTabId("timers")
+    .addChild(LabelBuilder.label().withText("Timer examples..."));
+
+PageBuilder.pageForPlayer(playerRef)
+    .addElement(tabs)
+    .addElement(templates)
+    .addElement(timers)
+    .open(store);
+```
+
+If you have multiple tab navs, set `data-hyui-tab-nav` (HYUIML) or `withTabNavigationId(...)` (Java) on the content to target a specific navigation ID.

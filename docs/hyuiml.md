@@ -26,6 +26,7 @@ PageBuilder.pageForPlayer(playerRef)
 | HTML Tag                  | HyUI Builder | Notes                                                             |
 |---------------------------| --- |-------------------------------------------------------------------|
 | `<div>`                   | `GroupBuilder` | Use for layout and containers.                                    |
+| `<div class="tab-content">` | `TabContentBuilder` | Tab content container linked to a tab ID.                      |
 | `<p>`                     | `LabelBuilder` | Standard text labels.                                             |
 | `<label>`                 | `LabelBuilder` | Similar to `<p>`, often used for form field descriptions.         |
 | `<button>`                | `ButtonBuilder` | Standard buttons. Use `class="back-button"`, `class="secondary-button"`, or `class="tertiary-button"` for themed variants. |
@@ -44,6 +45,7 @@ PageBuilder.pageForPlayer(playerRef)
 | `<img>`                   | `ImageBuilder` | Displays an image. Use `src` for the path.                        |
 | `<select>`                | `DropdownBoxBuilder` | Dropdown selection lists. Use `<option>` children for entries.   |
 | `<sprite>`                | `SpriteBuilder` | Displays an animated sprite.                                     |
+| `<nav class="tabs">`      | `TabNavigationBuilder` | Tab navigation bar.                                      |
 
 #### Attributes
 
@@ -91,6 +93,11 @@ HYUIML supports several standard and custom attributes:
 *   `data-hyui-slot-background`: Specific to `<div class="item-grid-slot">`, patch style reference for slot background.
 *   `data-hyui-slot-overlay`: Specific to `<div class="item-grid-slot">`, patch style reference for slot overlay.
 *   `data-hyui-slot-icon`: Specific to `<div class="item-grid-slot">`, patch style reference for slot icon.
+*   `data-tabs`: Specific to `<nav class="tabs">`, defines tabs in `tabId:Label` or `tabId:Label:contentId` format.
+*   `data-selected`: Specific to `<nav class="tabs">`, initial selected tab ID.
+*   `data-tab-content`: Specific to `<button>` or `<a>` inside a tab nav, links a tab to a content ID.
+*   `data-hyui-tab-id`: Specific to `<div class="tab-content">`, links this content block to a tab ID.
+*   `data-hyui-tab-nav`: Optional for `<div class="tab-content">`, restricts it to a specific tab nav ID.
 
 #### Styling with CSS
 
@@ -129,7 +136,7 @@ You can include a `<style>` block at the beginning of your HYUIML:
 *   `align`: Combines horizontal and vertical alignment (e.g., `center`).
 *   `visibility`: `hidden` or `shown` (directly translates to `withVisible(bool)`).
 *   `display`: `none` or `block` (alternative to `visibility`, also translates to `withVisible(bool)`).
-*   `flex-weight`: Numeric weight for layout.
+*   `flex-weight`: Numeric weight for layout. From v0.5.0 onwards, this applies to the wrapping group (all elements except `Group` and `Label`), which can change layout behavior vs earlier versions.
 *   `anchor-*`: Maps to Hytale anchors (e.g., `anchor-left`, `anchor-top`, `anchor-width`, `anchor-height`).
 *   `background-image`: URL to an image (e.g., `url('lizard.png')` or `lizard.png`) with optional border values: `background-image: url('lizard.png') 4 6` (horizontal, vertical) or `background-image: url('lizard.png') 4` (border).
 *   `background-color`: Hex color (e.g., `#ff0000` or `#ff0000(0.5)`) or `rgb(...)`/`rgba(...)` (converted to hex). Supports optional border values: `background-color: #ff0000 4 6` (horizontal, vertical) or `background-color: rgba(255, 0, 0, 0.5) 4` (border).
@@ -156,6 +163,7 @@ HYUIML provides several special classes for `<div>` elements that map to Hytale'
     *   *Note: If you don't use these specific child classes, elements added directly to a `.container` will be placed in the main `#Content` area by default.*
 *   **`.item-grid`**: Maps to an `ItemGrid` element. This is not a container; it renders a grid of item slots.
 *   **`.item-grid-slot`**: Adds a slot entry to the nearest `.item-grid`. This does not render on its own.
+*   **`.tab-content`**: Marks a div as tab content. Use `data-hyui-tab-id` to link it to a tab.
 
 Example usage:
 
@@ -170,6 +178,59 @@ Example usage:
         </div>
     </div>
 </div>
+```
+
+#### Tabs (Tab Navigation + Content)
+
+Use a `<nav class="tabs">` element for the tab bar, and `<div class="tab-content">` blocks for the content. The tab content blocks are registered at build time and auto-hidden unless their tab is selected. This stays consistent across `updatePage()` rebuilds.
+
+Basic example using `data-tabs`:
+
+```html
+<nav id="main-tabs" class="tabs"
+     data-tabs="templates:Templates, timers:Timers, components:Components"
+     data-selected="templates">
+</nav>
+
+<div id="templates-content" class="tab-content" data-hyui-tab-id="templates">
+    <p>Template examples...</p>
+</div>
+
+<div id="timers-content" class="tab-content" data-hyui-tab-id="timers">
+    <p>Timer examples...</p>
+</div>
+
+<div id="components-content" class="tab-content" data-hyui-tab-id="components">
+    <p>Component examples...</p>
+</div>
+```
+
+Linking content directly in the tab list:
+
+```html
+<nav class="tabs"
+     data-tabs="templates:Templates:templates-content,timers:Timers:timers-content"
+     data-selected="templates">
+</nav>
+```
+
+Using explicit buttons:
+
+```html
+<nav class="tabs" data-selected="templates">
+    <button data-tab="templates" data-tab-content="templates-content">Templates</button>
+    <button data-tab="timers" data-tab-content="timers-content">Timers</button>
+</nav>
+```
+
+Multiple tab navigations on one page:
+
+```html
+<nav id="left-tabs" class="tabs" data-tabs="a:A,b:B" data-selected="a"></nav>
+<nav id="right-tabs" class="tabs" data-tabs="x:X,y:Y" data-selected="x"></nav>
+
+<div class="tab-content" data-hyui-tab-id="a" data-hyui-tab-nav="left-tabs">...</div>
+<div class="tab-content" data-hyui-tab-id="x" data-hyui-tab-nav="right-tabs">...</div>
 ```
 
 #### Event Handling
@@ -187,7 +248,7 @@ builder.addEventListener("my-button", CustomUIEventBindingType.Activating, (igno
 While HYUIML looks like HTML, it is **not a full browser engine**. It is a lightweight bridge to Hytale's UI system.
 
 1.  **Strict ID Sanitization**: Internally, Hytale only permits alphanumeric IDs. HyUI handles this by sanitizing your IDs (e.g., `my-button` becomes something like `HYUUIDmybutton0`). Always use your original ID (`my-button`) when calling `getById` or `addEventListener` in Java.
-2.  **Limited CSS**: Only the properties listed above are supported. Traditional CSS layout (floats, flexbox, grid, positions) is **not supported**. Layout is primarily controlled by `Group` layout modes and `flex-weight`.
+2.  **Limited CSS**: Only the properties listed above are supported. Traditional CSS layout (floats, flexbox, grid, positions) is **not fully supported**. From v0.5.0 onwards, partial flexbox support exists (e.g., `flex-direction`, `align-items`, `justify-content` mapping to layout/alignment), but layout is still primarily controlled by `Group` layout modes and `flex-weight`.
 3.  **No Scripting**: `<script>` tags are ignored. All logic must be handled in Java.
 4.  **Nesting Rules**: While most elements can be nested, some Hytale macros (like specialized buttons) might behave unexpectedly if wrapped in too many layers.
 5.  **Comments**: Standard HTML comments `<!-- comment -->` are supported. In CSS, both `/* */` and `//` are supported.

@@ -6,7 +6,7 @@ Whether you are building a simple admin panel, a persistent HUD, or a full-scale
 
 ### Features
 
-*   **HYUIML (HTML/CSS):** Build interfaces using a familiar, declarative HTML-like syntax with CSS styling.
+*   **HYUIML (HTML/CSS):** Build interfaces using a familiar, declarative HTML-like syntax with CSS styling, plus templating and reusable components.
 *   **Fluent Builder API:** Construct nested UI hierarchies (Groups, Buttons, Labels, etc.) using a clean, readable chain of methods.
 *   **Multi-HUD System:** Coexist with other mods effortlessly. HyUI automatically manages Hytale's single HUD slot to allow multiple independent HUD elements to be displayed simultaneously.
 *   **Dynamic Element Injection:** Load base `.ui` files and inject dynamic elements into specific selectors at runtime.

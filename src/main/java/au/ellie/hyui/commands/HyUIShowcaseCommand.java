@@ -95,8 +95,8 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                 // Register reusable components
                 .registerComponent("statCard", """
                 <div style="background-color: #2a2a3e; padding: 10; anchor-width: 120; anchor-height: 60; layout-mode: top;">
-                    <p style="color: #888888; font-size: 11;">{{$label}}</p>
-                    <p style="color: #ffffff; font-size: 18; font-weight: bold;">{{$value}}</p>
+                    <p style="color: #888888; font-size: 15;">{{$label}}</p>
+                    <p style="color: #ffffff; font-size: 22; font-weight: bold;">{{$value}}</p>
                 </div>
                 """)
 
@@ -113,8 +113,8 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
             <div style="background-color: #1a1a2e(0.95); anchor: 0; padding: 20; flex-direction: column;">
                 <!-- Header -->
                 <div style="anchor-height: 80; flex-direction: column;">
-                    <p style="color: #4CAF50; font-size: 24; font-weight: bold;">HyUI 0.5.0 Feature Showcase</p>
-                    <p style="color: #888888; font-size: 14;">Welcome, {{$playerName|Guest}}!</p>
+                    <p style="color: #4CAF50; font-size: 28; font-weight: bold;">HyUI 0.5.0 Feature Showcase</p>
+                    <p style="color: #888888; font-size: 18;">Welcome, {{$playerName|Guest}}!</p>
                 </div>
 
                 <!-- Tab Navigation -->
@@ -126,47 +126,47 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
 
                     <div id="templates-content" class="tab-content" data-hyui-tab-id="templates" style="flex-direction: column;">
                         <!-- Section 1: Template Variables -->
-                        <p style="color: #4CAF50; font-size: 16; font-weight: bold; anchor-height: 30;">1. Template Variables</p>
+                        <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">1. Template Variables</p>
                         <div style="flex-direction: row; anchor-height: 100;">
                             <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                <p style="color: #ffffff; font-size: 12;">Player: {{$playerName}}</p>
-                                <p style="color: #ffffff; font-size: 12;">Level: {{$playerLevel}}</p>
-                                <p style="color: #ffffff; font-size: 12;">Gold: {{$playerGold|number}}</p>
+                                <p style="color: #ffffff; font-size: 16;">Player: {{$playerName}}</p>
+                                <p style="color: #ffffff; font-size: 16;">Level: {{$playerLevel}}</p>
+                                <p style="color: #ffffff; font-size: 16;">Gold: {{$playerGold|number}}</p>
                             </div>
                             <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                <p style="color: #ffffff; font-size: 12;">Upper: {{$playerName|upper}}</p>
-                                <p style="color: #ffffff; font-size: 12;">Lower: {{$playerName|lower}}</p>
-                                <p style="color: #ffffff; font-size: 12;">Default: {{$missing|Not Set}}</p>
+                                <p style="color: #ffffff; font-size: 16;">Upper: {{$playerName|upper}}</p>
+                                <p style="color: #ffffff; font-size: 16;">Lower: {{$playerName|lower}}</p>
+                                <p style="color: #ffffff; font-size: 16;">Default: {{$missing|Not Set}}</p>
                             </div>
                         </div>
                     </div>
 
                     <div id="timers-content" class="tab-content" data-hyui-tab-id="timers" style="flex-direction: column;">
                         <!-- Section 2: Timers -->
-                        <p style="color: #4CAF50; font-size: 16; font-weight: bold; anchor-height: 30;">2. Timer Formats</p>
+                        <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">2. Timer Formats</p>
                         <div style="flex-direction: row; anchor-height: 80;">
                             <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                <p style="color: #888888; font-size: 11;">MM:SS</p>
-                                <timer style="color: #00BCD4; font-size: 18;" value="185000" format="ms"></timer>
+                                <p style="color: #888888; font-size: 15;">MM:SS</p>
+                                <timer style="color: #00BCD4; font-size: 22;" value="185000" format="ms"></timer>
                             </div>
                             <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                <p style="color: #888888; font-size: 11;">HH:MM:SS</p>
-                                <timer style="color: #00BCD4; font-size: 18;" value="7325000" format="hms"></timer>
+                                <p style="color: #888888; font-size: 15;">HH:MM:SS</p>
+                                <timer style="color: #00BCD4; font-size: 22;" value="7325000" format="hms"></timer>
                             </div>
                             <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                <p style="color: #888888; font-size: 11;">Human</p>
-                                <timer style="color: #00BCD4; font-size: 18;" value="7325000" format="human"></timer>
+                                <p style="color: #888888; font-size: 15;">Human</p>
+                                <timer style="color: #00BCD4; font-size: 22;" value="7325000" format="human"></timer>
                             </div>
                             <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                <p style="color: #888888; font-size: 11;">Prefix/Suffix</p>
-                                <timer style="color: #00BCD4; font-size: 18;" value="300000" format="ms" prefix="Time: " suffix=" left"></timer>
+                                <p style="color: #888888; font-size: 15;">Prefix/Suffix</p>
+                                <timer style="color: #00BCD4; font-size: 22;" value="300000" format="ms" prefix="Time: " suffix=" left"></timer>
                             </div>
                         </div>
                     </div>
 
                     <div id="components-content" class="tab-content" data-hyui-tab-id="components" style="flex-direction: column;">
                         <!-- Section 3: Components -->
-                        <p style="color: #4CAF50; font-size: 16; font-weight: bold; anchor-height: 30;">3. Reusable Components</p>
+                        <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">3. Reusable Components</p>
                         <div style="flex-direction: row; anchor-height: 70;">
                             {{@statCard:label=Blocks Placed,value=12.847}}
                             {{@statCard:label=Creatures Found,value=23}}
@@ -175,7 +175,7 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                         </div>
 
                         <!-- Section 4: Features -->
-                        <p style="color: #4CAF50; font-size: 16; font-weight: bold; anchor-height: 30;">4. New in HyUI 0.5.0</p>
+                        <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">4. New in HyUI 0.5.0</p>
                         <div style="flex-direction: column; anchor-height: 130;">
                             {{@featureItem:text=TemplateProcessor for variable interpolation}}
                             {{@featureItem:text=Built-in filters (upper/lower/number/percent)}}
@@ -184,18 +184,18 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                         </div>
 
                         <!-- Section 5: Input Elements -->
-                        <p style="color: #4CAF50; font-size: 16; font-weight: bold; anchor-height: 30;">5. Input Elements</p>
+                        <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">5. Input Elements</p>
                         <div style="flex-direction: row; anchor-height: 150; gap: 10;">
                             <div style="background-color: #2a2a3e; padding: 15; anchor-width: 200; flex-direction: column; align-items: center;">
-                                <p style="color: #888888; font-size: 11; anchor-height: 20;">Color Picker</p>
+                                <p style="color: #888888; font-size: 15; anchor-height: 20;">Color Picker</p>
                                 <input type="color" id="demo-color" value="#4CAF50" style="anchor-width: 170; anchor-height: 110;" />
                             </div>
                             <div style="background-color: #2a2a3e; padding: 15; flex-weight: 2; flex-direction: column;">
-                                <p style="color: #888888; font-size: 11; anchor-height: 20;">Volume Slider</p>
+                                <p style="color: #888888; font-size: 15; anchor-height: 20;">Volume Slider</p>
                                 <input type="range" id="demo-slider" min="0" max="100" value="75" style="anchor-height: 30;" />
                             </div>
                             <div style="background-color: #2a2a3e; padding: 15; flex-weight: 1; flex-direction: column; align-items: center;">
-                                <p style="color: #888888; font-size: 11; anchor-height: 20;">Checkbox</p>
+                                <p style="color: #888888; font-size: 15; anchor-height: 20;">Checkbox</p>
                                 <input type="checkbox" id="demo-checkbox" checked style="anchor-height: 30;" />
                             </div>
                         </div>
@@ -210,7 +210,7 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
 
                 <!-- Footer -->
                 <div style="anchor-height: 30;">
-                    <p style="color: #666666; font-size: 10;">HyUI 0.5.0 | {{$currentTime}} on {{$currentDate}}</p>
+                    <p style="color: #666666; font-size: 14;">HyUI 0.5.0 | {{$currentTime}} on {{$currentDate}}</p>
                 </div>
             </div>
             """;

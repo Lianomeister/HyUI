@@ -5,7 +5,9 @@ import au.ellie.hyui.elements.BackgroundSupported;
 import au.ellie.hyui.elements.LayoutModeSupported;
 import au.ellie.hyui.elements.ScrollbarStyleSupported;
 import au.ellie.hyui.elements.UIElements;
+import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.ui.ItemGridSlot;
+import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
@@ -172,5 +174,26 @@ public class ItemGridBuilder extends UIElementBuilder<ItemGridBuilder> implement
             HyUIPlugin.getLog().logInfo("Setting Slots for " + selector);
             commands.set(selector + ".Slots", slots);
         }
+
+        listeners.forEach(listener -> {
+            CustomUIEventBindingType type = listener.type();
+            if (type == CustomUIEventBindingType.SlotClicking
+                    || type == CustomUIEventBindingType.SlotDoubleClicking
+                    || type == CustomUIEventBindingType.SlotMouseEntered
+                    || type == CustomUIEventBindingType.SlotMouseExited
+                    || type == CustomUIEventBindingType.DragCancelled
+                    || type == CustomUIEventBindingType.Dropped
+                    || type == CustomUIEventBindingType.SlotMouseDragCompleted
+                    || type == CustomUIEventBindingType.SlotMouseDragExited
+                    || type == CustomUIEventBindingType.SlotClickReleaseWhileDragging
+                    || type == CustomUIEventBindingType.SlotClickPressWhileDragging) {
+                String eventId = getEffectiveId();
+                // Untested: cannot find server-side examples for item-grid slot events.
+                events.addEventBinding(type, selector,
+                        EventData.of("Action", type.name())
+                                .append("Target", eventId),
+                        false);
+            }
+        });
     }
 }

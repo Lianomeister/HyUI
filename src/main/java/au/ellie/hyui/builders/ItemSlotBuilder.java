@@ -2,6 +2,8 @@ package au.ellie.hyui.builders;
 
 import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.elements.UIElements;
+import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
@@ -83,5 +85,15 @@ public class ItemSlotBuilder extends UIElementBuilder<ItemSlotBuilder> {
             HyUIPlugin.getLog().logInfo("Setting ItemId on " + selector + " to " + itemId);
             commands.set(selector + ".ItemId", itemId);
         }
+
+        listeners.forEach(listener -> {
+            if (listener.type() == CustomUIEventBindingType.Dropped) {
+                String eventId = getEffectiveId();
+                events.addEventBinding(CustomUIEventBindingType.Dropped, selector,
+                        EventData.of("Action", CustomUIEventBindingType.Dropped.name())
+                                .append("Target", eventId),
+                        false);
+            }
+        });
     }
 }

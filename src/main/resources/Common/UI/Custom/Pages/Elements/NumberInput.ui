@@ -1,4 +1,5 @@
 $C = "../../Common.ui";
 $C.@NumberField #HyUINumberField {
     Value: 0;
+    MaxDecimalPlaces: 2;
 }

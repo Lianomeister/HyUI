@@ -33,6 +33,38 @@ We do not validate possible client-side elements, properties, or styles.
 | `TooltipTextSpans` | Message | Tooltip text span data. |
 | `HitTestVisible` | Boolean | Controls whether the element can receive input. |
 
+## Common Objects
+
+### Layout Mode
+* TopScrolling,
+* MiddleCenter,
+* Left,
+* Right,
+* Full,
+* Middle,
+* Bottom,
+* BottomScrolling,
+* CenterMiddle,
+* Top,
+* LeftCenterWrap,
+* RightCenterWrap,
+* Center
+
+### Anchor
+* Left
+* Right
+* Top
+* Bottom
+* Width
+* Height
+* MinWidth
+* MaxWidth
+* MinHeight
+* MaxHeight
+* Full
+* Horizontal
+* Vertical
+
 ## Elements
 
 ### Container

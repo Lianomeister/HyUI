@@ -4,6 +4,7 @@ import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.builders.*;
 import au.ellie.hyui.elements.BackgroundSupported;
 import au.ellie.hyui.elements.LayoutModeSupported;
+import au.ellie.hyui.utils.StyleUtils;
 import com.hypixel.hytale.server.core.Message;
 import org.jsoup.nodes.Element;
 
@@ -335,27 +336,31 @@ public interface TagHandler {
                     break;
                 case "background-image":
                     if (builder instanceof BackgroundSupported) {
-                        String realUrl = value.replace("url(", "")
-                                .replace(")", "")
-                                .replace("\"", "")
-                                .replace("'", "");
+                        StyleUtils.BackgroundParts parts = StyleUtils.parseBackgroundParts(value, true);
+                        String realUrl = parts.value();
                         HyUIPatchStyle background = ((BackgroundSupported<?>) builder).getBackground();
                         if (background == null) {
                             HyUIPatchStyle bg = new HyUIPatchStyle().setTexturePath(realUrl);
+                            StyleUtils.applyBorders(bg, parts);
                             ((BackgroundSupported<?>) builder).withBackground(bg);
                         } else {
                             background.setTexturePath(realUrl);
+                            StyleUtils.applyBorders(background, parts);
                         }
                     }
                     break;
                 case "background-color":
                     if (builder instanceof BackgroundSupported) {
+                        StyleUtils.BackgroundParts parts = StyleUtils.parseBackgroundParts(value, false);
+                        String normalizedColor = StyleUtils.normalizeBackgroundColor(parts.value());
                         HyUIPatchStyle background = ((BackgroundSupported<?>) builder).getBackground();
                         if (background == null) {
-                            HyUIPatchStyle bg = new HyUIPatchStyle().setColor(value);
+                            HyUIPatchStyle bg = new HyUIPatchStyle().setColor(normalizedColor);
+                            StyleUtils.applyBorders(bg, parts);
                             ((BackgroundSupported<?>) builder).withBackground(bg);
                         } else {
-                            background.setColor(value);
+                            background.setColor(normalizedColor);
+                            StyleUtils.applyBorders(background, parts);
                         }
                     }
                     break;

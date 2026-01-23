@@ -38,6 +38,9 @@ PageBuilder.pageForPlayer(playerRef)
 | `<input type="reset">`    | `ButtonBuilder` | Specifically creates a `CancelTextButton`.                        |
 | `<progress>`              | `ProgressBarBuilder` | Displays a progress bar.                                          |
 | `<span class="item-icon">` | `ItemIconBuilder` | Displays an item icon. Use `data-hyui-item-id` for the item icon. |
+| `<span class="item-slot">` | `ItemSlotBuilder` | Displays a full item slot. Use `data-hyui-item-id` for the item.  |
+| `<div class="item-grid">` | `ItemGridBuilder` | Displays an item grid container.                                  |
+| `<div class="item-grid-slot">` | `ItemGridSlot` | Adds a slot entry inside an item grid.                         |
 | `<img>`                   | `ImageBuilder` | Displays an image. Use `src` for the path.                        |
 | `<select>`                | `DropdownBoxBuilder` | Dropdown selection lists. Use `<option>` children for entries.   |
 | `<sprite>`                | `SpriteBuilder` | Displays an animated sprite.                                     |
@@ -59,6 +62,8 @@ HYUIML supports several standard and custom attributes:
 *   `data-hyui-title`: Specific to containers/overlays to set the header title.
 *   `data-hyui-tooltiptext`: Adds a tooltip to the element.
 *   `data-hyui-item-id`: In-game item ID for the icon to reflect.
+*   `data-hyui-show-quality-background`: Specific to `<span class="item-slot">`, toggles item quality background.
+*   `data-hyui-show-quantity`: Specific to `<span class="item-slot">`, toggles the item quantity display.
 *   `data-hyui-max-decimal-places`: Specific to `<input type="number">`, sets the maximum decimal places.
 *   `data-hyui-bar-texture-path`: Path to the progress bar's fill texture.
 *   `data-hyui-effect-texture-path`: Path to the progress bar's effect texture.
@@ -71,6 +76,21 @@ HYUIML supports several standard and custom attributes:
 *   `data-hyui-showlabel`: Specific to `<select>`, boolean to show or hide the label.
 *   `data-hyui-frame-width`, `data-hyui-frame-height`, `data-hyui-frame-per-row`, `data-hyui-frame-count`: Specific to `<sprite>`, defines the sprite animation frames.
 *   `data-hyui-fps`: Specific to `<sprite>`, sets the animation speed.
+*   `data-hyui-background-mode`: Specific to `<div class="item-grid">`, sets the background mode.
+*   `data-hyui-render-item-quality-background`: Specific to `<div class="item-grid">`, toggles item quality background rendering.
+*   `data-hyui-are-items-draggable`: Specific to `<div class="item-grid">`, toggles item drag behavior.
+*   `data-hyui-keep-scroll-position`: Specific to `<div class="item-grid">`, keeps scroll position.
+*   `data-hyui-show-scrollbar`: Specific to `<div class="item-grid">`, toggles the scrollbar.
+*   `data-hyui-slots-per-row`: Specific to `<div class="item-grid">`, sets slots per row.
+*   `data-hyui-name`: Specific to `<div class="item-grid-slot">`, sets the slot label.
+*   `data-hyui-description`: Specific to `<div class="item-grid-slot">`, sets the slot description.
+*   `data-hyui-item-incompatible`: Specific to `<div class="item-grid-slot">`, toggles item incompatibility.
+*   `data-hyui-item-uncraftable`: Specific to `<div class="item-grid-slot">`, toggles item uncraftable state.
+*   `data-hyui-activatable`: Specific to `<div class="item-grid-slot">`, toggles slot activation.
+*   `data-hyui-skip-item-quality-background`: Specific to `<div class="item-grid-slot">`, skips item quality background.
+*   `data-hyui-slot-background`: Specific to `<div class="item-grid-slot">`, patch style reference for slot background.
+*   `data-hyui-slot-overlay`: Specific to `<div class="item-grid-slot">`, patch style reference for slot overlay.
+*   `data-hyui-slot-icon`: Specific to `<div class="item-grid-slot">`, patch style reference for slot icon.
 
 #### Styling with CSS
 
@@ -134,6 +154,8 @@ HYUIML provides several special classes for `<div>` elements that map to Hytale'
     *   **`.container-title`**: A special child `div` of `.container`. Any elements inside this will be placed in the container's **#Title** area (alongside the main title).
     *   **`.container-contents`**: A special child `div` of `.container`. Any elements inside this will be placed in the container's main **#Content** area.
     *   *Note: If you don't use these specific child classes, elements added directly to a `.container` will be placed in the main `#Content` area by default.*
+*   **`.item-grid`**: Maps to an `ItemGrid` element. This is not a container; it renders a grid of item slots.
+*   **`.item-grid-slot`**: Adds a slot entry to the nearest `.item-grid`. This does not render on its own.
 
 Example usage:
 

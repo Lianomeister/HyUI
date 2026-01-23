@@ -6,6 +6,7 @@ import au.ellie.hyui.elements.UIElements;
 import au.ellie.hyui.theme.Theme;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
+import java.util.Set;
 
 /**
  * Builder for creating label UI elements. 
@@ -70,6 +71,29 @@ public class LabelBuilder extends UIElementBuilder<LabelBuilder> implements Back
     @Override
     protected boolean supportsStyling() {
         return true;
+    }
+
+    @Override
+    protected boolean isStyleWhitelist() {
+        return true;
+    }
+
+    @Override
+    protected Set<String> getSupportedStyleProperties() {
+        return Set.of(
+                "FontSize",
+                "RenderBold",
+                "RenderUppercase",
+                "TextColor",
+                "HorizontalAlignment",
+                "VerticalAlignment",
+                "Alignment",
+                "RenderItalics",
+                "FontName",
+                "Wrap",
+                "LetterSpacing",
+                "OutlineColor"
+        );
     }
 
     @Override

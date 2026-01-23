@@ -23,6 +23,7 @@ public class HtmlParser {
 
     public HtmlParser() {
         // Register default handlers
+        registerHandler(new ItemGridHandler());
         registerHandler(new DivHandler());
         registerHandler(new LabelHandler());
         registerHandler(new InputHandler());
@@ -30,6 +31,7 @@ public class HtmlParser {
         registerHandler(new ImgHandler());
         registerHandler(new ProgressBarHandler());
         registerHandler(new ItemIconHandler());
+        registerHandler(new ItemSlotHandler());
         registerHandler(new SelectHandler());
         registerHandler(new SpriteHandler());
     }

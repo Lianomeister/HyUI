@@ -470,6 +470,14 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
         return Set.of();
     }
 
+    protected boolean isStyleWhitelist() {
+        return false;
+    }
+
+    protected Set<String> getSupportedStyleProperties() {
+        return Set.of();
+    }
+
     @SuppressWarnings("unchecked")
     public <V> T addEventListener(CustomUIEventBindingType type, Class<V> valueClass, Consumer<V> callback) {
         return addEventListenerInternal(type, callback);
@@ -540,38 +548,69 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
             return;
         }
 
-        Set<String> unsupported = getUnsupportedStyleProperties();
+        boolean whitelist = isStyleWhitelist();
+        Set<String> supported = whitelist ? getSupportedStyleProperties() : Set.of();
+        Set<String> unsupported = whitelist ? Set.of() : getUnsupportedStyleProperties();
+        java.util.function.Predicate<String> isAllowed = property -> {
+            if (whitelist) {
+                return supported.contains(property);
+            }
+            return !unsupported.contains(property);
+        };
         
-        if (style.getFontSize() != null && !unsupported.contains("FontSize")) {
+        if (style.getFontSize() != null && isAllowed.test("FontSize")) {
             HyUIPlugin.getLog().logInfo("Setting Style FontSize: " + style.getFontSize() + " for " + prefix);
             doc.set("FontSize", style.getFontSize().doubleValue());
         }
-        if (style.getRenderBold() != null && !unsupported.contains("RenderBold")) {
+        if (style.getRenderBold() != null && isAllowed.test("RenderBold")) {
             HyUIPlugin.getLog().logInfo("Setting Style RenderBold: " + style.getRenderBold() + " for " + prefix);
             doc.set("RenderBold", style.getRenderBold());
         }
-        if (style.getRenderUppercase() != null && !unsupported.contains("RenderUppercase")) {
+        if (style.getRenderUppercase() != null && isAllowed.test("RenderUppercase")) {
             HyUIPlugin.getLog().logInfo("Setting Style RenderUppercase: " + style.getRenderUppercase() + " for " + prefix);
             doc.set("RenderUppercase", style.getRenderUppercase());
         }
-        if (style.getTextColor() != null && !unsupported.contains("TextColor")) {
+        if (style.getRenderItalics() != null && isAllowed.test("RenderItalics")) {
+            HyUIPlugin.getLog().logInfo("Setting Style RenderItalics: " + style.getRenderItalics() + " for " + prefix);
+            doc.set("RenderItalics", style.getRenderItalics());
+        }
+        if (style.getTextColor() != null && isAllowed.test("TextColor")) {
             HyUIPlugin.getLog().logInfo("Setting Style TextColor: " + style.getTextColor() + " for " + prefix);
             doc.set("TextColor", style.getTextColor());
         }
-        if (style.getHorizontalAlignment() != null && !unsupported.contains("HorizontalAlignment")) {
+        if (style.getLetterSpacing() != null && isAllowed.test("LetterSpacing")) {
+            HyUIPlugin.getLog().logInfo("Setting Style LetterSpacing: " + style.getLetterSpacing() + " for " + prefix);
+            doc.set("LetterSpacing", style.getLetterSpacing());
+        }
+        if (style.getWrap() != null && isAllowed.test("Wrap")) {
+            HyUIPlugin.getLog().logInfo("Setting Style Wrap: " + style.getWrap() + " for " + prefix);
+            doc.set("Wrap", style.getWrap());
+        }
+        if (style.getFontName() != null && isAllowed.test("FontName")) {
+            HyUIPlugin.getLog().logInfo("Setting Style FontName: " + style.getFontName() + " for " + prefix);
+            doc.set("FontName", style.getFontName());
+        }
+        if (style.getOutlineColor() != null && isAllowed.test("OutlineColor")) {
+            HyUIPlugin.getLog().logInfo("Setting Style OutlineColor: " + style.getOutlineColor() + " for " + prefix);
+            doc.set("OutlineColor", style.getOutlineColor());
+        }
+        if (style.getHorizontalAlignment() != null && isAllowed.test("HorizontalAlignment")) {
             HyUIPlugin.getLog().logInfo("Setting Style HorizontalAlignment: " + style.getHorizontalAlignment() + " for " + prefix);
             doc.set("HorizontalAlignment", style.getHorizontalAlignment().name());
         }
-        if (style.getVerticalAlignment() != null && !unsupported.contains("VerticalAlignment")) {
+        if (style.getVerticalAlignment() != null && isAllowed.test("VerticalAlignment")) {
             HyUIPlugin.getLog().logInfo("Setting Style VerticalAlignment: " + style.getVerticalAlignment() + " for " + prefix);
             doc.set("VerticalAlignment", style.getVerticalAlignment().name());
         }
-        if (style.getAlignment() != null && !unsupported.contains("Alignment")) {
+        if (style.getAlignment() != null && isAllowed.test("Alignment")) {
             HyUIPlugin.getLog().logInfo("Setting Style Alignment: " + style.getAlignment() + " for " + prefix);
             doc.set("Alignment", style.getAlignment().name());
         }
 
         style.getRawProperties().forEach((key, value) -> {
+            if (!isAllowed.test(key)) {
+                return;
+            }
             HyUIPlugin.getLog().logInfo("Setting Style Raw Property: " + key + "=" + value + " for " + prefix);
             switch (value) {
                 case String s -> doc.set(key, s);

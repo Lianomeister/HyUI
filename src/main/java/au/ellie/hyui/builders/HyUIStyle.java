@@ -10,8 +10,13 @@ public class HyUIStyle {
 
     private Float fontSize;
     private Boolean renderBold;
+    private Boolean renderItalics;
     private Boolean renderUppercase;
     private String textColor;
+    private Integer letterSpacing;
+    private Boolean wrap;
+    private String fontName;
+    private String outlineColor;
     private Alignment horizontalAlignment;
     private Alignment verticalAlignment;
     private Alignment alignment;
@@ -52,8 +57,53 @@ public class HyUIStyle {
         return this;
     }
 
+    public HyUIStyle setRenderItalics(boolean renderItalics) {
+        this.renderItalics = renderItalics;
+        return this;
+    }
+
+    public HyUIStyle setRenderItalics(String renderItalics) {
+        this.renderItalics = Boolean.parseBoolean(renderItalics);
+        return this;
+    }
+
     public HyUIStyle setTextColor(String textColor) {
         this.textColor = textColor;
+        return this;
+    }
+
+    public HyUIStyle setLetterSpacing(int letterSpacing) {
+        this.letterSpacing = letterSpacing;
+        return this;
+    }
+
+    public HyUIStyle setLetterSpacing(String letterSpacing) {
+        try {
+            this.letterSpacing = Integer.parseInt(letterSpacing);
+        } catch (NumberFormatException ignored) {}
+        return this;
+    }
+
+    public HyUIStyle setWrap(boolean wrap) {
+        this.wrap = wrap;
+        return this;
+    }
+
+    public HyUIStyle setWrap(String wrap) {
+        this.wrap = Boolean.parseBoolean(wrap);
+        return this;
+    }
+
+    public HyUIStyle setFontName(String fontName) {
+        String normalized = normalizeFontName(fontName);
+        if (normalized != null) {
+            this.fontName = normalized;
+        }
+        return this;
+    }
+
+    public HyUIStyle setOutlineColor(String outlineColor) {
+        this.outlineColor = outlineColor;
         return this;
     }
 
@@ -132,12 +182,32 @@ public class HyUIStyle {
         return renderBold;
     }
 
+    public Boolean getRenderItalics() {
+        return renderItalics;
+    }
+
     public Boolean getRenderUppercase() {
         return renderUppercase;
     }
 
     public String getTextColor() {
         return textColor;
+    }
+
+    public Integer getLetterSpacing() {
+        return letterSpacing;
+    }
+
+    public Boolean getWrap() {
+        return wrap;
+    }
+
+    public String getFontName() {
+        return fontName;
+    }
+
+    public String getOutlineColor() {
+        return outlineColor;
     }
 
     public Alignment getHorizontalAlignment() {
@@ -165,8 +235,13 @@ public class HyUIStyle {
         return "HyUIStyle{" +
                 "fontSize=" + fontSize +
                 ", renderBold=" + renderBold +
+                ", renderItalics=" + renderItalics +
                 ", renderUppercase=" + renderUppercase +
                 ", textColor='" + textColor + '\'' +
+                ", letterSpacing=" + letterSpacing +
+                ", wrap=" + wrap +
+                ", fontName='" + fontName + '\'' +
+                ", outlineColor='" + outlineColor + '\'' +
                 ", horizontalAlignment=" + horizontalAlignment +
                 ", verticalAlignment=" + verticalAlignment +
                 ", alignment=" + alignment +
@@ -183,5 +258,18 @@ public class HyUIStyle {
 
     public Map<String, Object> getRawProperties() {
         return rawProperties;
+    }
+
+    private String normalizeFontName(String fontName) {
+        if (fontName == null || fontName.isBlank()) {
+            return null;
+        }
+        if (fontName.equalsIgnoreCase("default")) {
+            return "Default";
+        }
+        if (fontName.equalsIgnoreCase("secondary")) {
+            return "Secondary";
+        }
+        return null;
     }
 }

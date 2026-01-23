@@ -97,9 +97,6 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                         .input-row { text-align: top; flex-weight: 1; color: #ff0000; }
                         input[type="text"] { flex-weight: 1; }
                         .cancel-btn { flex-weight: 2; }
-                        p:hover {
-                            text-transform: uppercase;
-                        }
                     </style>
                     <div class="page-overlay">
                         <div class="container" id="myContainer" data-hyui-title="HyUIML Parser Test">
@@ -130,6 +127,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                                     data-hyui-effect-height="50" 
                                     data-hyui-effect-offset="0"></progress>
                                 <span class="item-icon" data-hyui-item-id="Tool_Pickaxe_Crude" style="anchor-width: 64; anchor-height: 64;"></span>
+                               
                                 <button id="btn1">Click Me!</button>
                                 <select id="myDropdown" data-hyui-showlabel="true" value="Entry1">
                                     <option value="Entry1">First Entry</option>
@@ -150,6 +148,33 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                             </div>
                         </div>
                     </div>
+                    """;
+            html = """
+                    <div class="page-overlay">
+                        <div class="container" style="anchor-width: 800; anchor-height: 900;" id="myContainer" data-hyui-title="HyUIML Parser Test">
+                        <div style="anchor-left: 1; layout-mode: left;"><span class="item-slot" data-hyui-item-id="Tool_Pickaxe_Crude" data-hyui-show-quality-background="true"
+                            data-hyui-show-quantity="true" style="anchor-width: 64; anchor-height: 64;"></span></div>
+                        <div style="layout-mode: right;">
+                            <div class="item-grid" data-hyui-slots-per-row="6"
+                                style="anchor-width: 400; anchor-height: 400;">
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude"></div>
+                                <div class="item-grid-slot"></div>
+                                <div class="item-grid-slot"></div>
+                                <div class="item-grid-slot"></div>
+                            </div></div>
+
+                        </div>
+                    </div>
+                    
                     """;
 /*            html = """
                     <style>
@@ -225,8 +250,8 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
             AtomicInteger clicks = new AtomicInteger();
             PageBuilder builder = PageBuilder.detachedPage()
                     .fromHtml(html)
-                    .withLifetime(CustomPageLifetime.CanDismiss)
-                .addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                    .withLifetime(CustomPageLifetime.CanDismiss);
+                /*.addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {
                     playerRef.sendMessage(Message.raw("Button clicked via PageBuilder ID lookup!: " +
                     ctx.getValue("myInput", String.class).orElse("N/A")));
                     HyUIPlugin.getLog().logInfo("Clicked button.");
@@ -246,13 +271,13 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                 .addEventListener("myDropdown", CustomUIEventBindingType.ValueChanged, String.class, (val) -> {
                     playerRef.sendMessage(Message.raw("Dropdown changed to: " + val));
                 });
-
+*/
             // Or ... if you don't like building in method chains or want something custom...
-        builder.getById("myInput", TextFieldBuilder.class).ifPresent(input -> {
+        /*builder.getById("myInput", TextFieldBuilder.class).ifPresent(input -> {
             input.addEventListener(CustomUIEventBindingType.ValueChanged, (val) -> {
                 playerRef.sendMessage(Message.raw("Input changed to: " + val));
             });
-        });
+        });*/
             builder.open(playerRef, store);
             for (String s : builder.getCommandLog()) {
                 HyUIPlugin.getLog().logInfo(s);

@@ -143,6 +143,28 @@ We do not validate possible client-side elements, properties, or styles.
 - `ItemId` (String, example: `Tool_Pickaxe_Crude`)
 - NO STYLE.
 
+### ItemSlot
+- `ShowQualityBackground` (Boolean)
+- `ShowQuantity` (Boolean)
+- `ItemId` (String, example: `Tool_Pickaxe_Crude`)
+- NO STYLE.
+
+### ItemGrid
+- `LayoutMode` (String)
+- `BackgroundMode` (String)
+- `ScrollbarStyle` (Value reference)
+- `RenderItemQualityBackground` (Boolean)
+- `AreItemsDraggable` (Boolean)
+- `KeepScrollPosition` (Boolean)
+- `ShowScrollbar` (Boolean)
+- `SlotsPerRow` (Integer)
+- `Slots` (List<ItemGridSlot>)
+- `Style` (HyUIStyle with custom properties below)
+  - `SlotSize` (Integer)
+  - `SlotIconSize` (Integer) - often the same as the slot size
+  - `SlotSpacing` (Integer)
+  - `SlotBackground` (String, example: `Common/BlockSelectorSlotBackground`)
+
 ### Sprite
 - `TexturePath` (String)
 - `Frame` (Frame, as `(Width: Int, Height: Int, PerRow: Int, Count: Int)`)

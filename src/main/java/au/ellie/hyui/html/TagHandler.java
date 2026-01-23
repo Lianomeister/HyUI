@@ -151,17 +151,51 @@ public interface TagHandler {
                         parsed.hasStyle = true;
                     }
                     break;
+                case "font-style":
+                    if (value.equalsIgnoreCase("italic")) {
+                        parsed.style.setRenderItalics(true);
+                        parsed.hasStyle = true;
+                    } else if (value.equalsIgnoreCase("normal")) {
+                        parsed.style.setRenderItalics(false);
+                        parsed.hasStyle = true;
+                    }
+                    break;
                 case "text-transform":
                     if (value.equalsIgnoreCase("uppercase")) {
                         parsed.style.setRenderUppercase(true);
                         parsed.hasStyle = true;
                     }
                     break;
+                case "letter-spacing":
+                    try {
+                        parsed.style.setLetterSpacing(Integer.parseInt(value));
+                        parsed.hasStyle = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "white-space":
+                    if (value.equalsIgnoreCase("nowrap")) {
+                        parsed.style.setWrap(false);
+                        parsed.hasStyle = true;
+                    } else if (value.equalsIgnoreCase("normal") || value.equalsIgnoreCase("wrap")) {
+                        parsed.style.setWrap(true);
+                        parsed.hasStyle = true;
+                    }
+                    break;
+                case "font-family":
+                case "font-name":
+                    parsed.style.setFontName(value);
+                    parsed.hasStyle = true;
+                    break;
+                case "outline-color":
+                case "text-outline-color":
+                    parsed.style.setOutlineColor(value);
+                    parsed.hasStyle = true;
+                    break;
                 case "text-align":
                 case "layout-mode":
                 case "layout":
                     if (builder instanceof LayoutModeSupported) {
-                        ((LayoutModeSupported<?>) builder).withLayoutMode(capitalize(value));
+                        ((LayoutModeSupported<?>) builder).withLayoutMode(normalizeLayoutMode(value));
                     }
                     break;
                 case "vertical-align":
@@ -231,9 +265,33 @@ public interface TagHandler {
                         parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
-                case "anchor":
+                case "anchor-full", "anchor":
                     try {
                         parsed.anchor.setFull(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "anchor-horizontal":
+                    try {
+                        parsed.anchor.setHorizontal(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "anchor-vertical":
+                    try {
+                        parsed.anchor.setVertical(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "anchor-min-width":
+                    try {
+                        parsed.anchor.setMinWidth(Integer.parseInt(value));
+                        parsed.hasAnchor = true;
+                    } catch (NumberFormatException ignored) {}
+                    break;
+                case "anchor-max-width":
+                    try {
+                        parsed.anchor.setMaxWidth(Integer.parseInt(value));
                         parsed.hasAnchor = true;
                     } catch (NumberFormatException ignored) {}
                     break;
@@ -351,15 +409,22 @@ public interface TagHandler {
         return style;
     }
 
+    private String normalizeLayoutMode(String value) {
+        if (value == null || value.isBlank()) {
+            return value;
+        }
+        String normalized = value.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        for (LayoutModeSupported.LayoutMode mode : LayoutModeSupported.LayoutMode.values()) {
+            String modeNormalized = mode.name().replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+            if (modeNormalized.equals(normalized)) {
+                return mode.name();
+            }
+        }
+        return capitalize(value);
+    }
+
     private String capitalize(String str) {
         if (str == null || str.isEmpty()) return str;
-        // Check for specific multi-word LayoutModes
-        if (str.equalsIgnoreCase("topscrolling")) return "TopScrolling";
-        if (str.equalsIgnoreCase("bottomscrolling")) return "BottomScrolling";
-        if (str.equalsIgnoreCase("middlecenter")) return "MiddleCenter";
-        if (str.equalsIgnoreCase("centermiddle")) return "CenterMiddle";
-        if (str.equalsIgnoreCase("leftcenterwrap")) return "LeftCenterWrap";
-        
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 }

@@ -94,7 +94,7 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
 
                 // Register reusable components
                 .registerComponent("statCard", """
-                <div style="background-color: #2a2a3e; padding: 10; anchor-width: 120; anchor-height: 60;">
+                <div style="background-color: #2a2a3e; padding: 10; anchor-width: 120; anchor-height: 60; layout-mode: top;">
                     <p style="color: #888888; font-size: 11;">{{$label}}</p>
                     <p style="color: #ffffff; font-size: 18; font-weight: bold;">{{$value}}</p>
                 </div>

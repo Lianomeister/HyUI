@@ -247,18 +247,18 @@ public class TabNavigationBuilder extends UIElementBuilder<TabNavigationBuilder>
     }
 
     /**
-     * Creates a default style for selected tabs (bold, highlighted).
+     * Creates a default style for selected tabs (primary button)
      */
     public static HyUIStyle defaultSelectedStyle() {
-        return new HyUIStyle();
-                //.setRenderBold(true);
+        return new HyUIStyle()
+                .withStyleReference("Common.ui", "DefaultTextButtonStyle");
     }
 
     /**
-     * Creates a default style for unselected tabs (normal, dimmed).
+     * Creates a default style for unselected tabs (secondary button).
      */
     public static HyUIStyle defaultUnselectedStyle() {
-        return new HyUIStyle();
-                 //.setRenderBold(false);
+        return new HyUIStyle()
+                .withStyleReference("Common.ui", "SecondaryTextButtonStyle");
     }
 }

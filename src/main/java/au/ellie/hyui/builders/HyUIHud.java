@@ -3,6 +3,7 @@ package au.ellie.hyui.builders;
 import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.events.UIContext;
 import au.ellie.hyui.utils.MultiHudWrapper;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
@@ -134,8 +135,14 @@ public class HyUIHud extends CustomUIHud implements UIContext {
      * You can later associate it with another, or the same multi-HUD and show it.
      */
     public void remove() {
-        getStore().getExternalData().getWorld().execute(() -> {
-            MultiHudWrapper.hideCustomHud(getPlayer(), getPlayerRef(), this.name);
+        var store = getStore();
+        if (store == null) return;
+
+        store.getExternalData().getWorld().execute(() -> {
+            var player = getPlayer();
+            if (player == null) return;
+
+            MultiHudWrapper.hideCustomHud(player, getPlayerRef(), this.name);
         });
         HyUIPlugin.getLog().logInfo("HUD removed: " + this.name);
         refreshTask.cancel(false);
@@ -149,7 +156,10 @@ public class HyUIHud extends CustomUIHud implements UIContext {
      * You can later associate it with another, or the same multi-HUD and show it.
      */
     public void removeUnsafe() {
-        MultiHudWrapper.hideCustomHud(getPlayer(), getPlayerRef(), this.name);
+        var player = getPlayer();
+        if (player == null) return;
+
+        MultiHudWrapper.hideCustomHud(player, getPlayerRef(), this.name);
         HyUIPlugin.getLog().logInfo("HUD removed: " + this.name);
         refreshTask.cancel(false);
     }
@@ -160,9 +170,7 @@ public class HyUIHud extends CustomUIHud implements UIContext {
      * 
      */
     public void add() {
-        getStore().getExternalData().getWorld().execute(() -> {
-            MultiHudWrapper.setCustomHud(getPlayer(), getPlayerRef(), this.name, this);
-        });
+        this.safeAdd();
         if (refreshTask != null && !refreshTask.isCancelled()) {
             refreshTask.cancel(false);
         }
@@ -176,7 +184,10 @@ public class HyUIHud extends CustomUIHud implements UIContext {
      *
      */
     public void addUnsafe() {
-        MultiHudWrapper.setCustomHud(getPlayer(), getPlayerRef(), this.name, this);
+        var player = getPlayer();
+        if (player == null) return;
+
+        MultiHudWrapper.setCustomHud(player, getPlayerRef(), this.name, this);
         if (refreshTask != null && !refreshTask.isCancelled()) {
             refreshTask.cancel(false);
         }
@@ -241,11 +252,12 @@ public class HyUIHud extends CustomUIHud implements UIContext {
         } else {
             // Re-render completely.
             if (!unsafe) {
-                getStore().getExternalData().getWorld().execute(() -> {
-                    MultiHudWrapper.setCustomHud(getPlayer(), getPlayerRef(), this.name, this);
-                });
+                this.safeAdd();
             } else {
-                MultiHudWrapper.setCustomHud(getPlayer(), getPlayerRef(), this.name, this);
+                var player = getPlayer();
+                if (player == null) return;
+
+                MultiHudWrapper.setCustomHud(player, getPlayerRef(), this.name, this);
             }
 
         }
@@ -293,7 +305,18 @@ public class HyUIHud extends CustomUIHud implements UIContext {
         return builder;
     }
 
-    @Nullable
+    private void safeAdd() {
+        var store = getStore();
+        if (store == null) return;
+
+        store.getExternalData().getWorld().execute(() -> {
+            var player = getPlayer();
+            if (player == null) return;
+
+            MultiHudWrapper.setCustomHud(player, getPlayerRef(), this.name, this);
+        });
+    }
+
     private Store<EntityStore> getStore() {
         var playerRef = getPlayerRef();
         if (!playerRef.isValid()) {
@@ -305,21 +328,36 @@ public class HyUIHud extends CustomUIHud implements UIContext {
         }
         return playerReference.getStore();
     }
-    
-    @Nullable
+
     private Player getPlayer() {
         var playerRef = getPlayerRef();
-        if (playerRef == null || !playerRef.isValid()) {
+        if (!playerRef.isValid()) {
             return null;
         }
         var playerRefRef = playerRef.getReference();
         if (playerRefRef == null || !playerRefRef.isValid()) {
             return null;
         }
-        var store = getStore();
-        if (store == null) {
-            return  null;
-        }
+        var store = playerRefRef.getStore();
         return store.getComponent(playerRefRef, Player.getComponentType());
+    }
+
+    /**
+     * Reloads a dynamic image by its element ID. This will forcibly invalidate the image 
+     * and re-download (cache still applies to all downloads for 15 seconds!).
+     *
+     * @param dynamicImageElementId The ID of the dynamic image element.
+     */
+    public void reloadImage(String dynamicImageElementId) {
+        var playerRefInternal = getPlayerRef();
+        Ref<EntityStore> ref = playerRefInternal.getReference();
+        if (ref == null || !ref.isValid()) {
+            return;
+        }
+        getById(dynamicImageElementId, DynamicImageBuilder.class).ifPresent(dynamicImage -> {
+            dynamicImage.invalidateImage();
+            InterfaceBuilder.sendDynamicImage(playerRefInternal, dynamicImage);
+            updatePage(true);
+        });
     }
 }

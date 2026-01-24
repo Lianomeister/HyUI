@@ -92,7 +92,7 @@ public class HyUIAddHudCommand extends AbstractAsyncCommand {
                     });
                     //playerRef.sendMessage(Message.raw("HUD Refreshed!"));
                 })
-                .show(playerRef, store);
+                .show(playerRef);
         HUD_INSTANCES.add(hud2);
     }
 }

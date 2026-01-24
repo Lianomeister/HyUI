@@ -65,6 +65,24 @@ public class HyUIPage extends InteractiveCustomUIPage<DynamicPageData> implement
         return delegate.getById(id, clazz);
     }
 
+    /**
+     * Reloads a dynamic image by its element ID. This will forcibly invalidate the image 
+     * and re-download (cache still applies to all downloads for 15 seconds!).
+     * 
+     * @param dynamicImageElementId The ID of the dynamic image element.
+     */
+    public void reloadImage(String dynamicImageElementId) {
+        Ref<EntityStore> ref = this.playerRef.getReference();
+        if (ref == null || !ref.isValid()) {
+            return;
+        }
+        getById(dynamicImageElementId, DynamicImageBuilder.class).ifPresent(dynamicImage -> {
+            dynamicImage.invalidateImage();
+            InterfaceBuilder.sendDynamicImage(playerRef, dynamicImage);
+            updatePage(true);
+        });
+    }
+
     @Override
     public void build(@Nonnull Ref<EntityStore> ref, @Nonnull UICommandBuilder uiCommandBuilder, @Nonnull UIEventBuilder uiEventBuilder, @Nonnull Store<EntityStore> store) {
         delegate.build(ref, uiCommandBuilder, uiEventBuilder, store);

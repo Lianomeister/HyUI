@@ -21,6 +21,9 @@ public class ProgressBarBuilder extends UIElementBuilder<ProgressBarBuilder> imp
     private Integer effectOffset;
     private String direction;
     private String alignment;
+    private String maskTexturePath;
+    private boolean circular;
+    private String color;
     private HyUIPatchStyle background;
     private HyUIPatchStyle bar;
     private String layoutMode;
@@ -30,6 +33,7 @@ public class ProgressBarBuilder extends UIElementBuilder<ProgressBarBuilder> imp
         super(UIElements.PROGRESS_BAR, "#HyUIProgressBar");
         withUiFile("Pages/Elements/ProgressBar.ui");
         withWrappingGroup(true);
+        this.initialValue = 0.0f;
     }
 
     public ProgressBarBuilder(Theme theme) {
@@ -45,6 +49,33 @@ public class ProgressBarBuilder extends UIElementBuilder<ProgressBarBuilder> imp
      */
     public static ProgressBarBuilder progressBar() {
         return new ProgressBarBuilder();
+    }
+
+    /**
+     * Factory method to create a new instance of {@code ProgressBarBuilder} using a circular progress bar.
+     *
+     * @return A new {@code ProgressBarBuilder} instance configured for CircularProgressBar.
+     */
+    public static ProgressBarBuilder circularProgressBar() {
+        ProgressBarBuilder builder = new ProgressBarBuilder();
+        builder.withCircular(true);
+        return builder;
+    }
+
+    /**
+     * Enables circular progress bar mode (CircularProgressBar).
+     *
+     * @param circular whether to use CircularProgressBar
+     * @return This builder instance for method chaining.
+     */
+    public ProgressBarBuilder withCircular(boolean circular) {
+        this.circular = circular;
+        if (circular) {
+            withUiFile(null);
+        } else {
+            withUiFile("Pages/Elements/ProgressBar.ui");
+        }
+        return this;
     }
 
     /**
@@ -66,6 +97,22 @@ public class ProgressBarBuilder extends UIElementBuilder<ProgressBarBuilder> imp
 
     public ProgressBarBuilder withEffectTexturePath(String effectTexturePath) {
         this.effectTexturePath = effectTexturePath;
+        return this;
+    }
+
+    public ProgressBarBuilder withMaskTexturePath(String maskTexturePath) {
+        this.maskTexturePath = maskTexturePath;
+        return this;
+    }
+
+    /**
+     * Sets the color of the progress bar fill.
+     *
+     * @param color the color string (e.g. #RRGGBB)
+     * @return This builder instance for method chaining.
+     */
+    public ProgressBarBuilder withColor(String color) {
+        this.color = color;
         return this;
     }
 
@@ -114,6 +161,25 @@ public class ProgressBarBuilder extends UIElementBuilder<ProgressBarBuilder> imp
     @Override
     protected boolean supportsStyling() {
         return false;
+    }
+
+    @Override
+    protected boolean hasCustomInlineContent() {
+        return circular;
+    }
+
+    @Override
+    protected String generateCustomInlineContent() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Group #HyUIOuterProgressBar { ");
+        sb.append("CircularProgressBar #HyUIProgressBar { ");
+        if (maskTexturePath != null) {
+            sb.append("MaskTexturePath: \"").append(maskTexturePath).append("\"; ");
+        }
+        sb.append("Value: 0.0; ");
+        sb.append("} ");
+        sb.append("}");
+        return sb.toString();
     }
 
     @Override
@@ -199,16 +265,24 @@ public class ProgressBarBuilder extends UIElementBuilder<ProgressBarBuilder> imp
             commands.set(selector + ".BarTexturePath", barTexturePath);
         }
         if (effectTexturePath != null) {
-            commands.set(selector + ".EffectTexturePath", effectTexturePath);
+            if (!circular) {
+                commands.set(selector + ".EffectTexturePath", effectTexturePath);
+            }
         }
         if (effectWidth != null) {
-            commands.set(selector + ".EffectWidth", effectWidth);
+            if (!circular) {
+                commands.set(selector + ".EffectWidth", effectWidth);
+            }
         }
         if (effectHeight != null) {
-            commands.set(selector + ".EffectHeight", effectHeight);
+            if (!circular) {
+                commands.set(selector + ".EffectHeight", effectHeight);
+            }
         }
         if (effectOffset != null) {
-            commands.set(selector + ".EffectOffset", effectOffset);
+            if (!circular) {
+                commands.set(selector + ".EffectOffset", effectOffset);
+            }
         }
         if (direction != null) {
             commands.set(selector + ".Direction", direction);
@@ -218,6 +292,9 @@ public class ProgressBarBuilder extends UIElementBuilder<ProgressBarBuilder> imp
         }
         if (bar != null) {
             commands.setObject(selector + ".Bar", bar.getHytalePatchStyle());
+        }
+        if (color != null) {
+            commands.set(selector + ".Color", color);
         }
     }
 }

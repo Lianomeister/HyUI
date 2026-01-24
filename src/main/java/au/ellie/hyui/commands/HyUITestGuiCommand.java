@@ -154,9 +154,20 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                         <div class="container" style="anchor-width: 800; anchor-height: 900;" id="myContainer" data-hyui-title="HyUIML Parser Test">
                         <div style="anchor-left: 1; layout-mode: left;">
                             <div style="layout-mode: top">
-                                <span class="item-slot" id="itemslot" data-hyui-item-id="Tool_Pickaxe_Crude" data-hyui-show-quality-background="true"
-                                data-hyui-show-quantity="true" style="anchor-width: 64; anchor-height: 64;"></span>
+                                <button id="test">
+                                    <span class="item-slot" id="itemslot" data-hyui-item-id="Tool_Pickaxe_Crude" data-hyui-show-quality-background="true"
+                                    data-hyui-show-quantity="true" style="anchor-width: 64; anchor-height: 64;">
+                                    </span>
+                                </button>
+                                
+                               <div style="background-color: #2a2a3e; padding: 10; anchor-width: 140; align-items: center; justify-content: center;">
+                                        <img class="dynamic-image" src="https://hyvatar.io/render/Elyra" style="anchor-width: 120; anchor-height: 120;" />
+                               </div>
                                 <input type="number" value="42" min="-5" max="50" step="1.5" style="padding: 10; anchor-width: 50;"/>
+                                <p>Please enter your desired Buy It Now price:</p>
+                                <p style="color: #ff0000; visibility: hidden;" id="invalid-price">Price must be a positive number.</p>
+                                <input id="price-input" type="number"/>
+                                <button id="confirm-button">Confirm</button>
                             </div>
                         </div>
                         <div style="layout-mode: right;">
@@ -263,6 +274,10 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                     })
                     .addEventListener("itemslot", CustomUIEventBindingType.Dropped, (data, ctx) -> {
                         HyUIPlugin.getLog().logInfo("Slot dropped.");
+                    })
+                    .addEventListener("test", CustomUIEventBindingType.Activating, (_, context) -> {
+                        var a = context.getValue("price-input", Double.class);
+                        a.ifPresent(aDouble -> HyUIPlugin.getLog().logInfo("Price input is: " + aDouble));
                     })
                     .withLifetime(CustomPageLifetime.CanDismiss);
                 /*.addEventListener("btn1", CustomUIEventBindingType.Activating, (data, ctx) -> {

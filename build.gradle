@@ -30,8 +30,8 @@ javadoc {
 // compile against their code. This requires you to have Hytale installed using
 // the official launcher for now.
 dependencies {
-    compileOnly 'com.hypixel.hytale:Server:2026.01.22-6f8bdbdc4'
-    runtimeOnly 'com.hypixel.hytale:Server:2026.01.22-6f8bdbdc4'
+    compileOnly(files("$hytaleHome/install/$patchline/package/game/latest/Server/HytaleServer.jar"))
+    runtimeOnly(files("$hytaleHome/install/$patchline/package/game/latest/Server/HytaleServer.jar"))
     shadow 'org.jsoup:jsoup:1.22.1'
     implementation 'org.jsoup:jsoup:1.22.1'
 }
@@ -85,18 +85,14 @@ idea.project.settings.runConfigurations {
     }
 }
 
-repositories { 
+repositories {
     mavenCentral()
-    maven {
-        name = "hytale-pre-release"
-        url = uri("https://maven.hytale.com/pre-release")
-    }
 }
 
 shadowJar {
     archiveBaseName.set(project.name)
     archiveClassifier.set('all')
-    
+
     configurations = [project.configurations.shadow]
 /*
     doFirst {

@@ -1,5 +1,10 @@
 ### HyUI Changelog
 
+#### 0.5.2 - 24 Jan 2026
+- Add access to custom styles from HYUIML.
+- Add dynamic images from remote sources.
+- Add circular progress bar support.
+
 #### 0.5.1 - 24 Jan 2026
 - Add default events to all elements that handle value changes, this allows us to always capture data updates.
 - Add numberfield support for MinValue, MaxValue, Step, MaxDecimalPlaces.

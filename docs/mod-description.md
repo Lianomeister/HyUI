@@ -18,7 +18,7 @@ Whether you are building a simple admin panel, a persistent HUD, or a full-scale
     *   **Progress Bars:** Dynamic progress indicators with customizable textures and effects.
     *   **Item Icons:** Display item icons with asset-backed textures.
     *   **Containers:** Flexible Group builders with various layout modes and window frames.
-    *   **Images:** Easy asset-backed images with support for Hytale's `@2x` resolution.
+*   **Images:** Easy asset-backed images, plus runtime-downloaded dynamic images.
 *   **Advanced Logic (Escape Hatches):** Access raw `UICommandBuilder` instances at any point for properties not natively covered by the API.
 
 ***
@@ -53,6 +53,7 @@ String html = """
             <div class="container-contents">
                 <p>Welcome to the menu!</p>
                 <button id="myBtn">Click Me</button>
+                <img class="dynamic-image" src="https://example.invalid/render/PlayerName" />
             </div>
         </div>
     </div>
@@ -86,14 +87,25 @@ HudBuilder.hudForPlayer(playerRef)
 | <code>HudBuilder</code> |Entry point for HUD creation; manages multi-HUD coexistence and refreshes. |
 | <code>GroupBuilder</code> |A container used to organize and layout child elements.                    |
 | <code>ContainerBuilder</code> |Provides the standard Hytale window frame.                                 |
+| <code>PageOverlayBuilder</code> |Full-screen overlay container.                                          |
+| <code>TabNavigationBuilder</code> |Tabbed navigation bar.                                              |
+| <code>TabContentBuilder</code> |Tab content container.                                                 |
 | <code>ButtonBuilder</code> |For interactive buttons; supports standard Hytale aesthetics.              |
 | <code>LabelBuilder</code> |For displaying dynamic text with style and anchor support.                 |
 | <code>ImageBuilder</code> |For displaying asset-backed images (<code>.png</code>).                    |
-| <code>TextFieldBuilder</code> |Captures string or numeric input from the player.                          |
-| <code>ColorPickerBuilder</code> |Provides a Hex color selection interface.                                  |
+| <code>DynamicImageBuilder</code> |Runtime-downloaded PNG images.                                     |
+| <code>TextFieldBuilder</code> |Captures string input from the player.                                 |
+| <code>NumberFieldBuilder</code> |Captures numeric input from the player.                               |
+| <code>DropdownBoxBuilder</code> |Dropdown selection control.                                         |
+| <code>CheckBoxBuilder</code> |Checkbox input control.                                               |
+| <code>ColorPickerBuilder</code> |Provides a Hex color selection interface.                            |
 | <code>SliderBuilder</code> |Provides support for number sliders.                                       |
-| <code>ProgressBarBuilder</code> |Provides support for progress bars.                                       |
-| <code>ItemIconBuilder</code> |Provides support for item icons.                                          |
+| <code>ProgressBarBuilder</code> |Provides support for progress bars.                                  |
+| <code>TimerLabelBuilder</code> |Timer labels with formatting.                                         |
+| <code>SpriteBuilder</code> |Animated sprite rendering.                                             |
+| <code>ItemIconBuilder</code> |Provides support for item icons.                                       |
+| <code>ItemSlotBuilder</code> |Item slot UI elements.                                               |
+| <code>ItemGridBuilder</code> |Scrollable item grid.                                                 |
 
 ***
 

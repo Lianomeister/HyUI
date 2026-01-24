@@ -1,11 +1,17 @@
 package au.ellie.hyui.builders;
 
+import au.ellie.hyui.HyUIPlugin;
+import au.ellie.hyui.assets.DynamicImageAsset;
 import au.ellie.hyui.events.UIContext;
 import au.ellie.hyui.html.HtmlParser;
 import au.ellie.hyui.html.TemplateProcessor;
+import au.ellie.hyui.utils.PngDownloadUtils;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.server.core.asset.common.CommonAssetRegistry;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -207,6 +213,59 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
     public T editElement(Consumer<UICommandBuilder> callback) {
         this.editCallbacks.add(callback);
         return self();
+    }
+
+    protected void sendDynamicImageIfNeeded(PlayerRef pRef) {
+        if (pRef == null || !pRef.isValid()) {
+            return;
+        }
+        List<DynamicImageBuilder> dynamicImages = collectDynamicImages();
+        for (DynamicImageBuilder dynamicImage : dynamicImages) {
+            if (dynamicImage.isImagePathAssigned()) {
+                continue;
+            }
+            sendDynamicImage(pRef, dynamicImage);
+        }
+    }
+
+    static void sendDynamicImage(PlayerRef pRef, DynamicImageBuilder dynamicImage) {
+        if (pRef == null || dynamicImage == null) {
+            return;
+        }
+        String url = dynamicImage.getImageUrl();
+        if (url == null || url.isBlank()) {
+            return;
+        }
+        try {
+            HyUIPlugin.getLog().logInfo("Preparing dynamic image from URL: " + url);
+            byte[] imageBytes = PngDownloadUtils.downloadPng(url);
+
+            DynamicImageAsset.sendToPlayer(pRef.getPacketHandler(), DynamicImageAsset.empty(DynamicImageAsset.peekNextSlotIndex()));
+
+            DynamicImageAsset asset = new DynamicImageAsset(imageBytes);
+            dynamicImage.withImagePath(asset.getPath());
+            dynamicImage.setSlotIndex(asset.getSlotIndex());
+
+            DynamicImageAsset.sendToPlayer(pRef.getPacketHandler(), asset);
+            HyUIPlugin.getLog().logInfo("Dynamic image sent using path: " + asset.getPath());
+        } catch (IllegalStateException e) {
+            HyUIPlugin.getLog().logInfo("Failed to allocate dynamic image slot: " + e.getMessage());
+        } catch (IOException e) {
+            HyUIPlugin.getLog().logInfo("Failed to download dynamic image: " + e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            HyUIPlugin.getLog().logInfo("Dynamic image download interrupted: " + e.getMessage());
+        }
+    }
+
+    private List<DynamicImageBuilder> collectDynamicImages() {
+        List<DynamicImageBuilder> dynamicImages = new ArrayList<>();
+        for (UIElementBuilder<?> element : elementRegistry.values()) {
+            if (element instanceof DynamicImageBuilder dynamicImage) {
+                dynamicImages.add(dynamicImage);
+            }
+        }
+        return dynamicImages;
     }
 
     /**

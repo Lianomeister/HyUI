@@ -93,6 +93,7 @@ public class PageBuilder extends InterfaceBuilder<PageBuilder> {
     public HyUIPage open(Store<EntityStore> store) {
         assert playerRef != null : "Player reference cannot be null. Use override for open(Store<ECS>) if reusing this builder.";
         Player playerComponent = store.getComponent(playerRef.getReference(), Player.getComponentType());
+        sendDynamicImageIfNeeded(playerRef);
         PageManager pageManager = playerComponent.getPageManager();
         this.lastPage = new HyUIPage(playerRef, lifetime, uiFile, getTopLevelElements(), editCallbacks);
         pageManager.openCustomPage(playerRef.getReference(), store, this.lastPage);
@@ -111,6 +112,7 @@ public class PageBuilder extends InterfaceBuilder<PageBuilder> {
      */
     public HyUIPage open(@Nonnull PlayerRef playerRefParam, Store<EntityStore> store) {
         Player playerComponent = store.getComponent(playerRefParam.getReference(), Player.getComponentType());
+        sendDynamicImageIfNeeded(playerRefParam);
         PageManager pageManager = playerComponent.getPageManager();
         this.lastPage = new HyUIPage(playerRefParam, lifetime, uiFile, getTopLevelElements(), editCallbacks);
         pageManager.openCustomPage(playerRefParam.getReference(), store, this.lastPage);
@@ -126,5 +128,16 @@ public class PageBuilder extends InterfaceBuilder<PageBuilder> {
             return List.of();
         }
         return lastPage.getCommandLog();
+    }
+
+    /**
+     * Reloads a dynamic image by its element ID on the last opened page.
+     *
+     * @param id The ID of the dynamic image element.
+     */
+    public void reloadImage(String id) {
+        if (lastPage != null) {
+            lastPage.reloadImage(id);
+        }
     }
 }

@@ -43,6 +43,7 @@ PageBuilder.pageForPlayer(playerRef)
 | `<div class="item-grid">` | `ItemGridBuilder` | Displays an item grid container.                                                                                         |
 | `<div class="item-grid-slot">` | `ItemGridSlot` | Adds a slot entry inside an item grid.                                                                                   |
 | `<img>`                   | `ImageBuilder` | Displays an image. Use `src` for the path.                                                                               |
+| `<img class="dynamic-image">` | `DynamicImageBuilder` | Downloads and streams a PNG at runtime (see Dynamic Images).                                                      |
 | `<select>`                | `DropdownBoxBuilder` | Dropdown selection lists. Use `<option>` children for entries.                                                           |
 | `<sprite>`                | `SpriteBuilder` | Displays an animated sprite.                                                                                             |
 | `<nav class="tabs">`      | `TabNavigationBuilder` | Tab navigation bar.                                                                                                      |
@@ -167,6 +168,18 @@ All image paths (in `src` for `<img>` or `url()` for `background-image`) are rel
 
 **Important**: Hytale requires image assets to have a name ending in `@2x.png` for high-resolution support. 
 For example, if you use `<img src="lizard.png"/>`, you must have a file named `lizard@2x.png` located in `src/main/resources/Common/UI/Custom/lizard@2x.png`.
+
+#### Dynamic Images
+
+Use `class="dynamic-image"` on `<img>` to download a PNG at runtime:
+
+```html
+<img class="dynamic-image" src="https://hyvatar.io/render/Elyra" />
+```
+
+Notes:
+*   Dynamic images are limited to 10 per page.
+*   Downloaded PNGs are cached for 15 seconds.
 
 #### Special Layout Classes
 

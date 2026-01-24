@@ -194,6 +194,46 @@ PageBuilder.pageForPlayer(playerRef)
 
 If you have multiple tab navs, set `data-hyui-tab-nav` (HYUIML) or `withTabNavigationId(...)` (Java) on the content to target a specific navigation ID.
 
+### Dynamic Image Example
+
+Dynamic images download a PNG at runtime and assign it to a dynamic image slot.
+
+#### HYUIML Example
+
+```html
+<img id="player-head" class="dynamic-image" src="https://hyvatar.io/render/PlayerName" />
+```
+
+#### Java Builder Example
+
+```java
+DynamicImageBuilder.dynamicImage()
+    .withId("player-head")
+    .withImageUrl("https://hyvatar.io/render/PlayerName");
+```
+
+#### Update URL at Runtime
+
+Use a text field + button and call `reloadImage(...)` to invalidate and re-download:
+
+```java
+builder.addEventListener("reload-button", CustomUIEventBindingType.Activating, (data, ctx) -> {
+    ctx.getValue("image-url").ifPresent(value -> {
+        String url = String.valueOf(value).trim();
+        if (url.isBlank()) {
+            return;
+        }
+        ctx.getById("player-head", DynamicImageBuilder.class)
+                .ifPresent(img -> img.withImageUrl(url));
+        ctx.getPage().ifPresent(page -> page.reloadImage("player-head"));
+    });
+});
+```
+
+Notes:
+*   Dynamic images are limited to 10 per page.
+*   Downloaded PNGs are cached for 15 seconds.
+
 ### Circular Progress Bar Example
 
 A `CircularProgressBar` uses a mask texture and color to render a radial fill.

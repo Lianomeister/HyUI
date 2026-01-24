@@ -92,6 +92,7 @@ public class HudBuilder extends InterfaceBuilder<HudBuilder> {
      */
     public HyUIHud show(@Nonnull PlayerRef playerRefParam, Store<EntityStore> store) {
         Player playerComponent = store.getComponent(playerRefParam.getReference(), Player.getComponentType());
+        sendDynamicImageIfNeeded(playerRefParam);
         String name = "HYUIHUD" + System.currentTimeMillis();
         
         this.lastHud = new HyUIHud(name, playerRefParam, store, uiFile, getTopLevelElements(), editCallbacks);

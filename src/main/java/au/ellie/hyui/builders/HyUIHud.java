@@ -3,6 +3,7 @@ package au.ellie.hyui.builders;
 import au.ellie.hyui.HyUIPlugin;
 import au.ellie.hyui.events.UIContext;
 import au.ellie.hyui.utils.MultiHudWrapper;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
@@ -303,5 +304,24 @@ public class HyUIHud extends CustomUIHud implements UIContext {
             return null;
         }
         return store.getComponent(playerRefRef, Player.getComponentType());
+    }
+
+    /**
+     * Reloads a dynamic image by its element ID. This will forcibly invalidate the image 
+     * and re-download (cache still applies to all downloads for 15 seconds!).
+     *
+     * @param dynamicImageElementId The ID of the dynamic image element.
+     */
+    public void reloadImage(String dynamicImageElementId) {
+        var playerRefInternal = getPlayerRef();
+        Ref<EntityStore> ref = playerRefInternal.getReference();
+        if (ref == null || !ref.isValid()) {
+            return;
+        }
+        getById(dynamicImageElementId, DynamicImageBuilder.class).ifPresent(dynamicImage -> {
+            dynamicImage.invalidateImage();
+            InterfaceBuilder.sendDynamicImage(playerRefInternal, dynamicImage);
+            updatePage(true);
+        });
     }
 }

@@ -1,6 +1,7 @@
 package au.ellie.hyui.commands;
 
 import au.ellie.hyui.HyUIPluginLogger;
+import au.ellie.hyui.builders.DynamicImageBuilder;
 import au.ellie.hyui.builders.PageBuilder;
 import au.ellie.hyui.html.TemplateProcessor;
 import com.hypixel.hytale.component.Ref;
@@ -70,6 +71,17 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
             playerRef.sendMessage(Message.raw("[Showcase] Button clicked " + count + " times!"));
             uiCtx.updatePage(true);
         });
+        builder.addEventListener("head-url-button", CustomUIEventBindingType.Activating, (data, ctx) -> {
+            ctx.getValue("head-url-input", String.class).ifPresent(url -> {
+                if (url.isBlank()) {
+                    return;
+                }
+                ctx.getById("player-head-image", DynamicImageBuilder.class)
+                        .ifPresent(image -> image.withImageUrl(url));
+                ctx.getPage().ifPresent(page -> page.reloadImage("player-head-image") );
+                ctx.updatePage(true);
+            });
+        });
 
         builder.open(store);
     }
@@ -109,8 +121,8 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                 // Register reusable components
                 .registerComponent("statCard", """
                 <div style="background-color: #2a2a3e; padding: 10; anchor-width: 120; anchor-height: 60; layout-mode: top;">
-                    <p style="color: #888888; font-size: 15;">{{$label}}</p>
-                    <p style="color: #ffffff; font-size: 22; font-weight: bold;">{{$value}}</p>
+                    <p style="color: #888888; font-size: 19;">{{$label}}</p>
+                    <p style="color: #ffffff; font-size: 26; font-weight: bold;">{{$value}}</p>
                 </div>
                 """)
 
@@ -140,9 +152,12 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
             return """
                     <div style="background-color: #1a1a2e(0.95); anchor: 0; padding: 20; flex-direction: column;">
                         <!-- Header -->
-                        <div style="anchor-height: 80; flex-direction: column;">
-                            <p style="color: #4CAF50; font-size: 28; font-weight: bold;">HyUI 0.5.0 Feature Showcase</p>
-                            <p style="color: #888888; font-size: 18;">Welcome, {{$playerName|Guest}}!</p>
+                        <div style="anchor-height: 80; flex-direction: row; align-items: center; gap: 10;">
+                            <img class="dynamic-image" src="https://media.forgecdn.net/avatars/thumbnails/1616/805/64/64/639041389520913670.png" style="anchor-width: 48; anchor-height: 48;" />
+                            <div style="flex-direction: column;">
+                                <p style="color: #4CAF50; font-size: 32; font-weight: bold;">HyUI 0.5.0 Feature Showcase</p>
+                                <p style="color: #888888; font-size: 22;">Welcome, {{$playerName|Guest}}!</p>
+                            </div>
                         </div>
                     
                         <!-- Tab Navigation -->
@@ -154,22 +169,32 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                     
                             <div id="templates-content" class="tab-content" data-hyui-tab-id="templates" style="flex-direction: column;">
                                 <!-- Section 1: Template Variables -->
-                                <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">1. Template Variables</p>
-                                <div style="flex-direction: row; anchor-height: 100;">
-                                    <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #ffffff; font-size: 16;">Player: {{$playerName}}</p>
-                                        <p style="color: #ffffff; font-size: 16;">Level: {{$playerLevel}}</p>
-                                        <p style="color: #ffffff; font-size: 16;">Gold: {{$playerGold|number}}</p>
+                                <p style="color: #4CAF50; font-size: 24; font-weight: bold; anchor-height: 30;">1. Template Variables</p>
+                                <div style="flex-direction: row; anchor-height: 130;">
+                                    <div style="background-color: #2a2a3e; padding: 10; anchor-width: 140; align-items: center; justify-content: center;">
+                                        <img id="player-head-image" class="dynamic-image" src="https://hyvatar.io/render/{{$playerName}}" style="anchor-width: 120; anchor-height: 120;" />
+                                    </div>
+                                    <div style="background-color: #2a2a3e; padding: 10; anchor-width: 140; align-items: center; justify-content: center;">
+                                        <img class="dynamic-image" src="https://hyvatar.io/render/full/{{$playerName}}" style="anchor-width: 120; anchor-height: 120;" />
                                     </div>
                                     <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #ffffff; font-size: 16;">Upper: {{$playerName|upper}}</p>
-                                        <p style="color: #ffffff; font-size: 16;">Lower: {{$playerName|lower}}</p>
-                                        <p style="color: #ffffff; font-size: 16;">Default: {{$missing|Not Set}}</p>
+                                        <p style="color: #ffffff; font-size: 20;">Player: {{$playerName}}</p>
+                                        <p style="color: #ffffff; font-size: 20;">Level: {{$playerLevel}}</p>
+                                        <p style="color: #ffffff; font-size: 20;">Gold: {{$playerGold|number}}</p>
                                     </div>
+                                    <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
+                                        <p style="color: #ffffff; font-size: 20;">Upper: {{$playerName|upper}}</p>
+                                        <p style="color: #ffffff; font-size: 20;">Lower: {{$playerName|lower}}</p>
+                                        <p style="color: #ffffff; font-size: 20;">Default: {{$missing|Not Set}}</p>
+                                    </div>
+                                </div>
+                                <div style="flex-direction: row; anchor-height: 40; gap: 10; padding-top: 5;">
+                                    <input type="text" id="head-url-input" value="https://hyvatar.io/render/{{$playerDisplayName}}" style="anchor-height: 30; flex-weight: 1;" />
+                                    <button id="head-url-button" style="anchor-width: 140;">Reload Head</button>
                                 </div>
                     
                                 <!-- Section 2: Loops + Conditionals -->
-                                <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">2. Loops + Conditionals</p>
+                                <p style="color: #4CAF50; font-size: 24; font-weight: bold; anchor-height: 30;">2. Loops + Conditionals</p>
                                 <div style="flex-direction: column; anchor-height: 200;">
                                     {{#each items}}
                                     {{@showcaseItem:name={{$name}},meta.tier={{$meta.tier}},power={{$power}},rarity={{$rarity}},meta.source={{$meta.source}}}}
@@ -189,30 +214,30 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                     
                             <div id="timers-content" class="tab-content" data-hyui-tab-id="timers" style="flex-direction: column;">
                                 <!-- Section 2: Timers -->
-                                <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">2. Timer Formats</p>
+                                <p style="color: #4CAF50; font-size: 24; font-weight: bold; anchor-height: 30;">2. Timer Formats</p>
                                 <div style="flex-direction: row; anchor-height: 80;">
                                     <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #888888; font-size: 15;">MM:SS</p>
-                                        <timer style="color: #00BCD4; font-size: 22;" value="185000" format="ms"></timer>
+                                        <p style="color: #888888; font-size: 19;">MM:SS</p>
+                                        <timer style="color: #00BCD4; font-size: 26;" value="185000" format="ms"></timer>
                                     </div>
                                     <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #888888; font-size: 15;">HH:MM:SS</p>
-                                        <timer style="color: #00BCD4; font-size: 22;" value="7325000" format="hms"></timer>
+                                        <p style="color: #888888; font-size: 19;">HH:MM:SS</p>
+                                        <timer style="color: #00BCD4; font-size: 26;" value="7325000" format="hms"></timer>
                                     </div>
                                     <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #888888; font-size: 15;">Human</p>
-                                        <timer style="color: #00BCD4; font-size: 22;" value="7325000" format="human"></timer>
+                                        <p style="color: #888888; font-size: 19;">Human</p>
+                                        <timer style="color: #00BCD4; font-size: 26;" value="7325000" format="human"></timer>
                                     </div>
                                     <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #888888; font-size: 15;">Prefix/Suffix</p>
-                                        <timer style="color: #00BCD4; font-size: 22;" value="300000" format="ms" prefix="Time: " suffix=" left"></timer>
+                                        <p style="color: #888888; font-size: 19;">Prefix/Suffix</p>
+                                        <timer style="color: #00BCD4; font-size: 26;" value="300000" format="ms" prefix="Time: " suffix=" left"></timer>
                                     </div>
                                 </div>
                             </div>
                     
                             <div id="components-content" class="tab-content" data-hyui-tab-id="components" style="flex-direction: column;">
                                 <!-- Section 3: Components -->
-                                <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">3. Reusable Components</p>
+                                <p style="color: #4CAF50; font-size: 24; font-weight: bold; anchor-height: 30;">3. Reusable Components</p>
                                 <div style="flex-direction: row; anchor-height: 70;">
                                     {{@statCard:label=Blocks Placed,value=12.847}}
                                     {{@statCard:label=Creatures Found,value=23}}
@@ -221,7 +246,7 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                                 </div>
                     
                                 <!-- Section 4: Features -->
-                                <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">4. New in HyUI 0.5.0</p>
+                                <p style="color: #4CAF50; font-size: 24; font-weight: bold; anchor-height: 30;">4. New in HyUI 0.5.0</p>
                                 <div style="flex-direction: column; anchor-height: 130;">
                                     {{@featureItem:text=TemplateProcessor for variable interpolation}}
                                     {{@featureItem:text=Built-in filters (upper/lower/number/percent)}}
@@ -230,18 +255,18 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                                 </div>
                     
                                 <!-- Section 5: Input Elements -->
-                                <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">5. Input Elements</p>
+                                <p style="color: #4CAF50; font-size: 24; font-weight: bold; anchor-height: 30;">5. Input Elements</p>
                                 <div style="flex-direction: row; anchor-height: 150; gap: 10;">
                                     <div style="background-color: #2a2a3e; padding: 15; anchor-width: 200; flex-direction: column; align-items: center;">
-                                        <p style="color: #888888; font-size: 15; anchor-height: 20;">Color Picker</p>
+                                        <p style="color: #888888; font-size: 19; anchor-height: 20;">Color Picker</p>
                                         <input type="color" id="demo-color" value="#4CAF50" style="anchor-width: 170; anchor-height: 110;" />
                                     </div>
                                     <div style="background-color: #2a2a3e; padding: 15; flex-weight: 2; flex-direction: column;">
-                                        <p style="color: #888888; font-size: 15; anchor-height: 20;">Volume Slider</p>
+                                        <p style="color: #888888; font-size: 19; anchor-height: 20;">Volume Slider</p>
                                         <input type="range" id="demo-slider" min="0" max="100" value="75" style="anchor-height: 30;" />
                                     </div>
                                     <div style="background-color: #2a2a3e; padding: 15; flex-weight: 1; flex-direction: column; align-items: center;">
-                                        <p style="color: #888888; font-size: 15; anchor-height: 20;">Checkbox</p>
+                                        <p style="color: #888888; font-size: 19; anchor-height: 20;">Checkbox</p>
                                         <input type="checkbox" id="demo-checkbox" checked style="anchor-height: 30;" />
                                     </div>
                                 </div>
@@ -254,14 +279,14 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                             </div>
                     
                             <div id="items-content" class="tab-content" data-hyui-tab-id="items" style="flex-direction: column;">
-                                <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">5. Item Display</p>
+                                <p style="color: #4CAF50; font-size: 24; font-weight: bold; anchor-height: 30;">5. Item Display</p>
                                 <div style="flex-direction: row; anchor-height: 200; gap: 10;">
                                     <div style="background-color: #2a2a3e; padding: 15; flex-direction: column; align-items: center;">
-                                        <p style="color: #888888; font-size: 15; anchor-height: 20;">Single Item</p>
+                                        <p style="color: #888888; font-size: 19; anchor-height: 20;">Single Item</p>
                                         <span class="item-slot" data-hyui-item-id="Tool_Pickaxe_Crude" style="anchor-width: 64; anchor-height: 64;"></span>
                                     </div>
                                     <div style="background-color: #2a2a3e; padding: 15; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #888888; font-size: 15; anchor-height: 20;">Item Grid (scrollable)</p>
+                                        <p style="color: #888888; font-size: 19; anchor-height: 20;">Item Grid (scrollable)</p>
                                         <div class="item-grid" data-hyui-style="SlotSpacing: 8" data-hyui-slots-per-row="4" data-hyui-show-scrollbar="true" style="anchor-height: 150;">
                                             <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude" data-hyui-quantity="1"></div>
                                             <div class="item-grid-slot" data-hyui-item-id="Tool_Pickaxe_Crude" data-hyui-quantity="2"></div>
@@ -277,14 +302,14 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                             </div>
                     
                             <div id="inputs-content" class="tab-content" data-hyui-tab-id="inputs" style="flex-direction: column;">
-                                <p style="color: #4CAF50; font-size: 20; font-weight: bold; anchor-height: 30;">6. Input Types</p>
+                                <p style="color: #4CAF50; font-size: 24; font-weight: bold; anchor-height: 30;">6. Input Types</p>
                                 <div style="flex-direction: row; anchor-height: 320; gap: 10;">
                                     <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Text</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Text</p>
                                         <input type="text" value="Hello" placeholder="Text input" style="anchor-height: 30;" />
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Number</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Number</p>
                                         <input type="number" value="12" min="0" max="100" step="1" data-hyui-max-decimal-places="0" style="anchor-height: 30; anchor-width: 50;" />
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Dropdown</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Dropdown</p>
                                         <select value="Entry1" data-hyui-showlabel="true" style="anchor-height: 40;">
                                             <option value="Entry1">First Entry</option>
                                             <option value="Entry2">Second Entry</option>
@@ -292,22 +317,22 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                                         </select>
                                     </div>
                                     <div style="background-color: #2a2a3e; padding: 10; flex-weight: 1; flex-direction: column;">
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Range</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Range</p>
                                         <input type="range" min="0" max="100" step="5" value="40" style="anchor-height: 30;" />
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Checkbox</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Checkbox</p>
                                         <input type="checkbox" checked style="anchor-height: 30;" />
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Color</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Color</p>
                                         <input type="color" value="#4CAF50" style="anchor-width: 120; anchor-height: 40;" />
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Circular Progress</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Circular Progress</p>
                                         <progress class="circular-progress"
                                                   value="0.65"
                                                   data-hyui-mask-texture-path="Assets/FrameAbilityOnUseState.png"
                                                   data-hyui-color="#5fd4e5"
                                                   style="anchor-width: 64; anchor-height: 64;">
                                         </progress>
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Reset</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Reset</p>
                                         <input type="reset" value="Reset" style="anchor-height: 30;" />
-                                        <p style="color: #888888; font-size: 14; anchor-height: 18;">Sprite</p>
+                                        <p style="color: #888888; font-size: 18; anchor-height: 18;">Sprite</p>
                                         <sprite src="Common/Spinner.png"
                                                 data-hyui-frame-width="32"
                                                 data-hyui-frame-height="32"
@@ -323,7 +348,7 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                     
                         <!-- Footer -->
                         <div style="anchor-height: 30;">
-                            <p style="color: #666666; font-size: 14;">HyUI 0.5.0 | {{$currentTime}} on {{$currentDate}}</p>
+                            <p style="color: #666666; font-size: 18;">HyUI 0.5.0 | {{$currentTime}} on {{$currentDate}}</p>
                         </div>
                     </div>
                     """;

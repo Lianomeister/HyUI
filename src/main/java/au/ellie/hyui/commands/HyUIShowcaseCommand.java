@@ -87,7 +87,7 @@ public class HyUIShowcaseCommand extends AbstractAsyncCommand {
                 }
                 ctx.getById("player-head-image", DynamicImageBuilder.class)
                         .ifPresent(image -> image.withImageUrl(url));
-                ctx.getPage().ifPresent(page -> page.reloadImage("player-head-image") );
+                ctx.getPage().ifPresent(page -> page.reloadImage("player-head-image", true) );
                 ctx.updatePage(true);
             });
         });

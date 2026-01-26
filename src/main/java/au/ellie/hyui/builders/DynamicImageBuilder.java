@@ -89,6 +89,22 @@ public class DynamicImageBuilder extends UIElementBuilder<DynamicImageBuilder>
     }
 
     @Override
+    protected void applyTemplate(UIElementBuilder<?> template) {
+        HyUIPatchStyle currentBackground = this.background;
+        boolean currentImagePathAssigned = this.imagePathAssigned;
+        Map<UUID, Integer> currentSlotIndexes = new HashMap<>(this.slotIndexes);
+
+        super.applyTemplate(template);
+
+        if (currentImagePathAssigned) {
+            this.background = currentBackground;
+            this.imagePathAssigned = true;
+            this.slotIndexes.clear();
+            this.slotIndexes.putAll(currentSlotIndexes);
+        }
+    }
+
+    @Override
     public DynamicImageBuilder withLayoutMode(String layoutMode) {
         this.layoutMode = layoutMode;
         return this;

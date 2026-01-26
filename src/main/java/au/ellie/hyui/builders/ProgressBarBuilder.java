@@ -225,14 +225,14 @@ public class ProgressBarBuilder extends UIElementBuilder<ProgressBarBuilder> imp
     }
     
     @Override
-    protected void buildBase(UICommandBuilder commands, UIEventBuilder events) {
+    protected void buildBase(UICommandBuilder commands, UIEventBuilder events, boolean updateOnly) {
         // Temporarily hide the anchor from buildBase so it doesn't apply to the inner element
         HyUIAnchor originalAnchor = this.anchor;
         if (this.outerAnchor == null) {
             this.anchor = null;
         }
 
-        super.buildBase(commands, events);
+        super.buildBase(commands, events, updateOnly);
 
         // Restore it immediately after buildBase completes
         this.anchor = originalAnchor;

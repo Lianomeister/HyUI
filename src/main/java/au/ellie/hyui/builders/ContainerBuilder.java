@@ -146,7 +146,7 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> impleme
     }
 
     @Override
-    protected void buildChildren(UICommandBuilder commands, UIEventBuilder events) {
+    protected void buildChildren(UICommandBuilder commands, UIEventBuilder events, boolean updateOnly) {
         String selector = getSelector();
         if (selector != null) {
             for (UIElementBuilder<?> child : children) {
@@ -160,15 +160,15 @@ public class ContainerBuilder extends UIElementBuilder<ContainerBuilder> impleme
                 String originalParent = childParent;
 
                 if (childParent.equals("#Content")) {
-                    child.inside(selector + " #Content").build(commands, events);
+                    child.inside(selector + " #Content").build(commands, events, updateOnly);
                 } else if (childParent.equals("#Title")) {
-                    child.inside(selector + " #Title").build(commands, events);
+                    child.inside(selector + " #Title").build(commands, events, updateOnly);
                 } else if (childParent.startsWith("#")) {
                     // If it starts with #, assume it's a sub-element ID of the container
-                    child.inside(selector + " " + childParent).build(commands, events);
+                    child.inside(selector + " " + childParent).build(commands, events, updateOnly);
                 } else {
                     // Fallback
-                    child.inside(selector + " " + childParent).build(commands, events);
+                    child.inside(selector + " " + childParent).build(commands, events, updateOnly);
                 }
 
                 // Restore the original parent selector

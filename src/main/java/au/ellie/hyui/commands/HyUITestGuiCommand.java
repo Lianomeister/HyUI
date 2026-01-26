@@ -50,7 +50,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                     return CompletableFuture.runAsync(() -> {
                         PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
                         if (playerRef != null) {
-                            openHtmlTestGui(playerRef, store);
+                            openTestGuiFromScratch(playerRef, store);
                         }
                     }, world);
                 } else {

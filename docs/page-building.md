@@ -73,6 +73,9 @@ Key methods in `UIContext`:
 ##### 3. Manual Building
 You can manually add elements using builders for fine-grained control.
 
+Note: `addElement(...)` only attaches elements to the root. To nest elements, use `.addChild(...)`
+or the element-specific helpers like `.addContentChild(...)`.
+
 ```java
 PageBuilder.detachedPage()
     .withLifetime(CustomPageLifetime.CanDismiss)

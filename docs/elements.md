@@ -193,6 +193,9 @@ PageBuilder.pageForPlayer(playerRef)
     .open(store);
 ```
 
+Note: `addElement(...)` only attaches elements to the root. To nest elements, use `.addChild(...)`
+on the parent builder.
+
 If you have multiple tab navs, set `data-hyui-tab-nav` (HYUIML) or `withTabNavigationId(...)` (Java) on the content to target a specific navigation ID.
 
 ### Dynamic Image Example

@@ -1,5 +1,10 @@
 ### HyUI Changelog
 
+#### 0.5.4 - 26 Jan 2026
+- Add template runtime evaluation.
+- Add helper method to get a builder as a casted type.
+- CHANGE: Do not force clearing a page when reloading an image, allow caller to decide: `reloadImage(String dynamicImageElementId, boolean shouldClearPage)`
+
 #### 0.5.3 - 25 Jan 2026
 - Add decorated container.
 - Add a per-player image limit of 10.

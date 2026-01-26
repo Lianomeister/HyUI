@@ -58,4 +58,29 @@ public interface UIContext {
      * @return An Optional containing the builder, or empty if not found or if casting fails.
      */
     <E extends UIElementBuilder<E>> Optional<E> getById(String id, Class<E> clazz);
+
+    /**
+     * Retrieves the builder for a particular element without self-typed constraints.
+     *
+     * @param id The ID of the element.
+     * @return An Optional containing the builder, or empty if not found.
+     */
+    Optional<UIElementBuilder<?>> getByIdRaw(String id);
+
+    /**
+     * Retrieves the builder for a particular element, cast to the specified builder type.
+     * This is useful for builders that extend a different self-typed base.
+     *
+     * @param id The ID of the element.
+     * @param clazz The class of the type to cast to.
+     * @param <E> The expected type of the builder.
+     * @return An Optional containing the builder, or empty if not found or if casting fails.
+     */
+    default <E extends UIElementBuilder<?>> Optional<E> getByIdAs(String id, Class<E> clazz) {
+        Optional<UIElementBuilder<?>> builder = getByIdRaw(id);
+        if (builder.isPresent() && clazz.isInstance(builder.get())) {
+            return Optional.of(clazz.cast(builder.get()));
+        }
+        return Optional.empty();
+    }
 }

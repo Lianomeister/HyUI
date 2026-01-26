@@ -25,6 +25,9 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
     protected final Map<String, UIElementBuilder<?>> elementRegistry = new LinkedHashMap<>();
     protected final List<Consumer<UICommandBuilder>> editCallbacks = new ArrayList<>();
     protected String uiFile;
+    protected String templateHtml;
+    protected TemplateProcessor templateProcessor;
+    protected boolean runtimeTemplateUpdatesEnabled;
 
     @SuppressWarnings("unchecked")
     protected T self() {
@@ -33,10 +36,16 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
 
     public T fromFile(String uiFile) {
         this.uiFile = uiFile;
+        this.templateHtml = null;
+        this.templateProcessor = null;
+        this.runtimeTemplateUpdatesEnabled = false;
         return self();
     }
 
     public T fromHtml(String html) {
+        this.templateHtml = null;
+        this.templateProcessor = null;
+        this.runtimeTemplateUpdatesEnabled = false;
         new HtmlParser().parseToInterface(this, html);
         return self();
     }
@@ -59,9 +68,16 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
      * @return This builder instance for method chaining
      */
     public T fromTemplate(String html, TemplateProcessor template) {
+        this.templateHtml = html;
+        this.templateProcessor = template;
         HtmlParser parser = new HtmlParser();
         parser.setTemplateProcessor(template);
         parser.parseToInterface(this, html);
+        return self();
+    }
+
+    public T enableRuntimeTemplateUpdates(boolean enabled) {
+        this.runtimeTemplateUpdatesEnabled = enabled;
         return self();
     }
 
@@ -76,6 +92,11 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
         return fromTemplate(html, new TemplateProcessor().setVariables(variables));
     }
 
+    /**
+     * Add an element inside the root node (#HyUIRoot) of the interface.
+     * @param element The element to add to the root node.
+     * @return Self, for chaining.
+     */
     public T addElement(UIElementBuilder<?> element) {
         element.inside("#HyUIRoot");
         registerElement(element);
@@ -233,11 +254,15 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
 
     static void sendDynamicImage(PlayerRef pRef, DynamicImageBuilder dynamicImage) {
         if (pRef == null || dynamicImage == null) {
+            HyUIPlugin.getLog().logInfo("REFERENCE WAS INVALID");
+            
             return;
         }
         UUID playerUuid = pRef.getUuid();
         String url = dynamicImage.getImageUrl();
         if (url == null || url.isBlank()) {
+            HyUIPlugin.getLog().logInfo("URL WAS BLANK OR NULL");
+            
             return;
         }
         try {
@@ -293,5 +318,17 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
      */
     public List<UIElementBuilder<?>> getElements() {
         return elementRegistry.values().stream().toList();        
+    }
+
+    public String getTemplateHtml() {
+        return templateHtml;
+    }
+
+    public TemplateProcessor getTemplateProcessor() {
+        return templateProcessor;
+    }
+
+    public boolean isRuntimeTemplateUpdatesEnabled() {
+        return runtimeTemplateUpdatesEnabled;
     }
 }

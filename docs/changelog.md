@@ -1,5 +1,11 @@
 ### HyUI Changelog
 
+#### 0.5.5 - 26 Jan 2026
+- Update validation rules according to schema.
+- Add helper method to cast a value to a particular type (UIContext.getValueAs).
+- Optimize jar size.
+- Add custom button support.
+
 #### 0.5.4 - 26 Jan 2026
 - Add template runtime evaluation.
 - Add helper method to get a builder as a casted type.

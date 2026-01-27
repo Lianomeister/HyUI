@@ -38,6 +38,18 @@ public interface UIContext {
     }
 
     /**
+     * Retrieves the current value of an element by its ID, cast to the specified type.
+     *
+     * @param id   The ID of the element.
+     * @param type The class of the type to cast to.
+     * @param <T>  The expected type of the value.
+     * @return An Optional containing the cast value, or empty if not found or if casting fails.
+     */
+    default <T> Optional<T> getValueAs(String id, Class<T> type) {
+        return getValue(id).filter(type::isInstance).map(type::cast);
+    }
+
+    /**
      * @return The page associated with this context, or empty if not a page.
      */
     Optional<HyUIPage> getPage();

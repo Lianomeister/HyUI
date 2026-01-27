@@ -209,7 +209,7 @@ public class CustomButtonBuilder extends UIElementBuilder<CustomButtonBuilder>
             commands.set(selector + ".Disabled", disabled);
         }
 
-        if (overscroll != null) {
+        if (overscroll != null && buttonType == ButtonType.TEXT_BUTTON) {
             HyUIPlugin.getLog().logInfo("Setting Overscroll: " + overscroll + " for " + selector);
             commands.set(selector + ".Overscroll", overscroll);
         }

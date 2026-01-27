@@ -373,24 +373,28 @@ public interface TagHandler {
                     });
                     break;
                 case "padding-left":
+                    value = HyUIStyle.cleanUnits(value);
                     ParseUtils.parseInt(value).ifPresent(v -> {
                         parsed.padding.setLeft(v);
                         parsed.hasPadding = true;
                     });
                     break;
                 case "padding-right":
+                    value = HyUIStyle.cleanUnits(value);
                     ParseUtils.parseInt(value).ifPresent(v -> {
                         parsed.padding.setRight(v);
                         parsed.hasPadding = true;
                     });
                     break;
                 case "padding-top":
+                    value = HyUIStyle.cleanUnits(value);
                     ParseUtils.parseInt(value).ifPresent(v -> {
                         parsed.padding.setTop(v);
                         parsed.hasPadding = true;
                     });
                     break;
                 case "padding-bottom":
+                    value = HyUIStyle.cleanUnits(value);
                     ParseUtils.parseInt(value).ifPresent(v -> {
                         parsed.padding.setBottom(v);
                         parsed.hasPadding = true;
@@ -399,13 +403,13 @@ public interface TagHandler {
                 case "padding":
                     String[] paddingValues = value.split("\\s+");
                     if (paddingValues.length == 1) {
-                        ParseUtils.parseInt(paddingValues[0]).ifPresent(v -> {
+                        ParseUtils.parseInt(HyUIStyle.cleanUnits(paddingValues[0])).ifPresent(v -> {
                             parsed.padding.setFull(v);
                             parsed.hasPadding = true;
                         });
                     } else if (paddingValues.length >= 2) {
-                        var vertical = ParseUtils.parseInt(paddingValues[0]);
-                        var horizontal = ParseUtils.parseInt(paddingValues[1]);
+                        var vertical = ParseUtils.parseInt(HyUIStyle.cleanUnits(paddingValues[0]));
+                        var horizontal = ParseUtils.parseInt(HyUIStyle.cleanUnits(paddingValues[1]));
                         if (vertical.isPresent() && horizontal.isPresent()) {
                             parsed.padding.setSymmetric(vertical.get(), horizontal.get());
                             parsed.hasPadding = true;

@@ -50,7 +50,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                     return CompletableFuture.runAsync(() -> {
                         PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
                         if (playerRef != null) {
-                            openTestGuiFromScratch(playerRef, store);
+                            openHtmlTestGui(playerRef, store);
                         }
                     }, world);
                 } else {
@@ -77,73 +77,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
             return;
         }
 
-        String html = """
-                    <style>
-                        .page-overlay {
-                            anchor: 150;
-                            background-image: url('lizard.png');
-                        }
-                        .container 
-                        { 
-                            layout-mode: top;
-                            anchor-left: 100; 
-                            anchor-right: 100; 
-                            anchor-top: 50; 
-                            anchor-bottom: 50; 
-                        }
-                        .title-text 
-                        { 
-                            // This is a comment
-                            color: #ff0000; 
-                            font-weight: bold; 
-                            text-transform: uppercase; 
-                        }
-                        #welcome-msg { 
-                            /* Multi-line
-                               comment */
-                            font-size: 20; 
-                            color: #00ff00; 
-                            background-color: #ff0000;
-                        }
-                        .input-row { text-align: top; flex-weight: 1; color: #ff0000; }
-                        input[type="text"] { flex-weight: 1; }
-                        .cancel-btn { flex-weight: 2; }
-                    </style>
-                    <div class="page-overlay">
-                        <div class="container" id="myContainer" data-hyui-title="HyUIML Parser Test">
-                            <div class="container-title">
-                                <p class="title-text">
-                                    Text Here That Isnt The Title
-                                </p>
-                            </div>
-                            <div class="container-contents">
-                                <p id="welcome-msg" style="padding: 100 200">Welcome to HyUIML parser!</p>
-                                <p id="label">Clicks: 0</p>
-                                <div class="input-row" style="padding-left: 50; padding-top: 20;">
-                                     Free text here should be a label!
-                                    <input type="text" id="myInput"/>
-                                </div>
-                                <button id="btn1">Click Me!</button>
-                                <select id="myDropdown" data-hyui-showlabel="true" value="Entry1">
-                                    <option value="Entry1">First Entry</option>
-                                    <option value="Entry2">Second Entry</option>
-                                    <option value="Entry3" selected>Third Entry</option>
-                                </select>
-                                <sprite src="Common/Spinner.png"
-                                    data-hyui-frame-width="32"
-                                    data-hyui-frame-height="32"
-                                    data-hyui-frame-per-row="8"
-                                    data-hyui-frame-count="72"
-                                    data-hyui-fps="30"
-                                    style="anchor-width: 32; anchor-height: 32; anchor-right: 1;"
-                                >
-                                </sprite>
-                                <button id="btn2"><span class="item-icon" data-hyui-item-id="Tool_Pickaxe_Crude" style="anchor-width: 64; anchor-height: 64;"></span></button>
-                                <input type="reset" value="Cancel Operation" class="cancel-btn" style="font-size: 25px"/>
-                            </div>
-                        </div>
-                    </div>
-                    """;
+        // Resource file: Common/UI/Custom/Pages/HyUIHtmlTest.html
         /*html = """
                     <div class="page-overlay">
                         <div class="decorated-container" style="anchor-width: 800; anchor-height: 900;" id="myContainer" data-hyui-title="HyUIML Parser Test">
@@ -262,7 +196,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
         //        .show(playerRef, store);
         AtomicInteger clicks = new AtomicInteger();
         PageBuilder builder = PageBuilder.detachedPage()
-                .fromHtml(html)
+                .loadHtml("Pages/HyUIHtmlTest.html")
                 /*.addEventListener("itemgrid", CustomUIEventBindingType.Dropped, (data, ctx) -> {
                     HyUIPlugin.getLog().logInfo("Item dropped on grid.");
                 })

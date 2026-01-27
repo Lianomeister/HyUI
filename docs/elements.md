@@ -118,6 +118,46 @@ ButtonBuilder.textButton()
     .open(playerRef, store);
 ```
 
+### Custom Button Example
+
+Custom buttons let you override the background and (for text buttons) label styles on a per-state basis. This is the same pattern used in the HyUI showcase.
+
+#### HYUIML Example
+
+```html
+<style>
+    @ShowcaseHoveredLabel {
+        font-weight: bold;
+        color: #ffffff;
+        font-size: 18;
+    }
+    @ShowcaseHoveredBackground {
+        background-color: #0c0c0c;
+    }
+    @ShowcaseCustomBackground {
+        background-image: url('Common/ShopTest.png');
+        background-color: rgba(255, 0, 0, 0.25);
+    }
+</style>
+
+<button class="custom-textbutton"
+        data-hyui-default-label-style="@ShowcaseHoveredLabel"
+        data-hyui-default-bg="@ShowcaseHoveredBackground"
+        style="anchor-height: 30;">Custom Text</button>
+
+<button class="custom-button"
+        data-hyui-default-bg="@ShowcaseCustomBackground"
+        style="anchor-width: 44; anchor-height: 44;"></button>
+```
+
+#### Notes
+
+- `custom-textbutton` supports per-state label styling via `data-hyui-*-label-style` and background styling via `data-hyui-*-bg`.
+- `custom-button` supports per-state background styling via `data-hyui-*-bg`.
+- Each `data-hyui-*` style can be an inline declaration (`color: #fff; font-size: 18;`) or a `@Name` definition from a `<style>` block.
+- For label styles, HyUI supports `color`, `font-size`, `font-weight`, `font-style`, `text-transform`, `letter-spacing`, `white-space`, `font-family`/`font-name`, outline color, and alignment.
+- Use `data-hyui-disabled` or `data-hyui-overscroll` to control button state/behavior.
+
 ### Sprite Example
 
 A `Sprite` displays an animated sequence of frames from a spritemap texture.

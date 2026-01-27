@@ -31,7 +31,7 @@ PageBuilder.pageForPlayer(playerRef)
 | `<div class="container">` | `ContainerBuilder` | Uses the container UI file for a frame with minimal style.                                                                                                                                    |
 | `<p>`                     | `LabelBuilder` | Standard text labels.                                                                                                                                                                         |
 | `<label>`                 | `LabelBuilder` | Similar to `<p>`, often used for form field descriptions.                                                                                                                                     |
-| `<button>`                | `ButtonBuilder` | Standard buttons. Use `class="back-button"`, `class="secondary-button"`, `class="small-secondary-button"`, `class="small-tertiary-button"`, or `class="tertiary-button"` for themed variants. |
+| `<button>`                | `ButtonBuilder` | Standard buttons. Use `class="back-button"`, `class="secondary-button"`, `class="small-secondary-button"`, `class="small-tertiary-button"`, or `class="tertiary-button"` for themed variants. Use `class="custom-textbutton"` or `class="custom-button"` for custom buttons. |
 | `<input type="text">`     | `TextFieldBuilder` | Text input fields. Requires a `value` to set to track values on events.                                                                                                                       |
 | `<input type="password">` | `TextFieldBuilder` | Masked password input fields. Requires a `value` to set to track values on events.                                                                                                            |
 | `<input type="number">`   | `NumberFieldBuilder` | Numeric input fields. Requires a `value` to set to track values on events.                                                                                                                    |
@@ -104,6 +104,16 @@ HYUIML supports several standard and custom attributes:
 *   `data-tab-content`: Specific to `<button>` or `<a>` inside a tab nav, links a tab to a content ID.
 *   `data-hyui-tab-id`: Specific to `<div class="tab-content">`, links this content block to a tab ID.
 *   `data-hyui-tab-nav`: Optional for `<div class="tab-content">`, restricts it to a specific tab nav ID.
+*   `data-hyui-default-label-style`: Custom text button label style for the default state (see Custom Buttons).
+*   `data-hyui-hovered-label-style`: Custom text button label style for the hovered state.
+*   `data-hyui-pressed-label-style`: Custom text button label style for the pressed state.
+*   `data-hyui-disabled-label-style`: Custom text button label style for the disabled state.
+*   `data-hyui-default-bg`: Custom button background style for the default state (see Custom Buttons).
+*   `data-hyui-hovered-bg`: Custom button background style for the hovered state.
+*   `data-hyui-pressed-bg`: Custom button background style for the pressed state.
+*   `data-hyui-disabled-bg`: Custom button background style for the disabled state.
+*   `data-hyui-disabled`: Disables a button (including custom buttons).
+*   `data-hyui-overscroll`: Enables overscroll handling for buttons (including custom buttons).
 
 #### Styling with CSS
 
@@ -146,6 +156,56 @@ You can include a `<style>` block at the beginning of your HYUIML:
 *   `anchor-*`: Maps to Hytale anchors (e.g., `anchor-left`, `anchor-top`, `anchor-width`, `anchor-height`).
 *   `background-image`: URL to an image (e.g., `url('lizard.png')` or `lizard.png`) with optional border values: `background-image: url('lizard.png') 4 6` (horizontal, vertical) or `background-image: url('lizard.png') 4` (border).
 *   `background-color`: Hex color (e.g., `#ff0000` or `#ff0000(0.5)`) or `rgb(...)`/`rgba(...)` (converted to hex). Supports optional border values: `background-color: #ff0000 4 6` (horizontal, vertical) or `background-color: rgba(255, 0, 0, 0.5) 4` (border).
+
+##### CSS Units
+
+HYUIML strips CSS units from numeric values (e.g., `px`, `rem`, `em`, `%`) because unit conversion is not supported. Values are treated as raw numbers, so prefer plain numeric values (e.g., `font-size: 16;` instead of `font-size: 16px;`).
+
+#### Custom Buttons
+
+HyUI supports two custom button variants via `<button>` classes:
+
+*   `custom-textbutton`: A text button with fully custom background and label styles per state.
+*   `custom-button`: A square button with custom background styles per state (no text label styling).
+
+The custom styles are provided via `data-hyui-*-bg` and `data-hyui-*-label-style`. Each attribute accepts a small CSS declaration block (e.g., `color: #fff; font-size: 18;`) or a style definition reference using `@Name` from a `<style>` block. The `@Name` definitions are declared like a selector and resolved by HyUI.
+
+```html
+<style>
+    @ShowcaseHoveredLabel {
+        font-weight: bold;
+        color: #ffffff;
+        font-size: 18;
+    }
+    @ShowcaseHoveredBackground {
+        background-color: #0c0c0c;
+    }
+    @ShowcaseCustomBackground {
+        background-image: url('Common/ShopTest.png');
+        background-color: rgba(255, 0, 0, 0.25);
+    }
+</style>
+
+<button class="custom-textbutton"
+        data-hyui-default-label-style="@ShowcaseHoveredLabel"
+        data-hyui-default-bg="@ShowcaseHoveredBackground"
+        style="anchor-height: 30;">Custom Text</button>
+
+<button class="custom-button"
+        data-hyui-default-bg="@ShowcaseCustomBackground"
+        style="anchor-width: 44; anchor-height: 44;"></button>
+```
+
+Supported custom label style keys:
+*   `color`, `font-size`, `font-weight`, `font-style`, `text-transform`, `letter-spacing`
+*   `white-space` (`nowrap` or `wrap`/`normal`)
+*   `font-family`/`font-name`
+*   `outline-color`/`text-outline-color`
+*   `vertical-align`, `horizontal-align`, `text-align`, `align`
+
+Supported custom background style keys:
+*   `background-image`
+*   `background-color`
 
 #### Custom Style Properties
 

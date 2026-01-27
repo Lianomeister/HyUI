@@ -12,6 +12,8 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,6 +77,52 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
         parser.parseToInterface(this, html);
         return self();
     }
+    
+    private String loadHtmlFromResources(String resourceFileName) {
+        try (InputStream inputStream = InterfaceBuilder.class.getResourceAsStream(resourceFileName)) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("Resource not found: " + resourceFileName);
+            }
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load HTML from resource: " + resourceFileName, e);
+        }
+    }
+
+    /**
+     * Loads an HTML file from resources under Common/UI/Custom and parses it into this interface.
+     *
+     * @param resourcePath Path relative to Common/UI/Custom (e.g. "Pages/Something.html")
+     * @return This builder instance for method chaining
+     */
+    public T loadHtml(String resourcePath) {
+        String html = loadHtmlFromResources(resolveCustomResourcePath(resourcePath));
+        return fromHtml(html);
+    }
+
+    /**
+     * Loads an HTML template from resources under Common/UI/Custom with a template processor.
+     *
+     * @param resourcePath Path relative to Common/UI/Custom (e.g. "Pages/Something.html")
+     * @param template     The template processor with variables set
+     * @return This builder instance for method chaining
+     */
+    public T loadHtml(String resourcePath, TemplateProcessor template) {
+        String html = loadHtmlFromResources(resolveCustomResourcePath(resourcePath));
+        return fromTemplate(html, template);
+    }
+
+    /**
+     * Loads an HTML template from resources under Common/UI/Custom with variables.
+     *
+     * @param resourcePath Path relative to Common/UI/Custom (e.g. "Pages/Something.html")
+     * @param variables    Map of variable names to values
+     * @return This builder instance for method chaining
+     */
+    public T loadHtml(String resourcePath, Map<String, ?> variables) {
+        String html = loadHtmlFromResources(resolveCustomResourcePath(resourcePath));
+        return fromTemplate(html, variables);
+    }
 
     public T enableRuntimeTemplateUpdates(boolean enabled) {
         this.runtimeTemplateUpdatesEnabled = enabled;
@@ -90,6 +138,14 @@ public abstract class InterfaceBuilder<T extends InterfaceBuilder<T>> {
      */
     public T fromTemplate(String html, Map<String, ?> variables) {
         return fromTemplate(html, new TemplateProcessor().setVariables(variables));
+    }
+
+    private String resolveCustomResourcePath(String resourcePath) {
+        if (resourcePath == null || resourcePath.isBlank()) {
+            throw new IllegalArgumentException("Resource path cannot be null or blank.");
+        }
+        String trimmed = resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
+        return "/Common/UI/Custom/" + trimmed;
     }
 
     /**

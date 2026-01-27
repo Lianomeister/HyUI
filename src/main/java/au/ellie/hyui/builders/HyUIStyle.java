@@ -27,12 +27,21 @@ public class HyUIStyle {
     private final Map<String, HyUIStyle> states = new HashMap<>();
     private final Map<String, Object> rawProperties = new HashMap<>();
 
+    /**
+     * Cleans the input string by removing units like rem, em, pt, px, and %.
+     * @param input The input string to clean
+     * @return The cleaned string
+     */
+    public static String cleanUnits(String input) {
+        return input.replaceAll("(rem|em|pt|px|%)", "").trim();
+    }
     public HyUIStyle setFontSize(float fontSize) {
         this.fontSize = fontSize;
         return this;
     }
 
     public HyUIStyle setFontSize(String fontSize) {
+        fontSize = cleanUnits(fontSize);
         ParseUtils.parseFloat(fontSize)
                 .ifPresent(v -> this.fontSize = v);
         return this;
@@ -44,6 +53,7 @@ public class HyUIStyle {
     }
 
     public HyUIStyle setRenderBold(String renderBold) {
+        renderBold = cleanUnits(renderBold);
         this.renderBold = Boolean.parseBoolean(renderBold);
         return this;
     }
@@ -54,6 +64,7 @@ public class HyUIStyle {
     }
 
     public HyUIStyle setRenderUppercase(String renderUppercase) {
+        renderUppercase = cleanUnits(renderUppercase);
         this.renderUppercase = Boolean.parseBoolean(renderUppercase);
         return this;
     }
@@ -64,11 +75,13 @@ public class HyUIStyle {
     }
 
     public HyUIStyle setRenderItalics(String renderItalics) {
+        renderItalics = cleanUnits(renderItalics);
         this.renderItalics = Boolean.parseBoolean(renderItalics);
         return this;
     }
 
     public HyUIStyle setTextColor(String textColor) {
+        textColor = cleanUnits(textColor);
         this.textColor = textColor;
         return this;
     }
@@ -80,6 +93,7 @@ public class HyUIStyle {
 
     public HyUIStyle setLetterSpacing(String letterSpacing) {
         try {
+            letterSpacing = cleanUnits(letterSpacing);
             this.letterSpacing = Integer.parseInt(letterSpacing);
         } catch (NumberFormatException ignored) {}
         return this;
@@ -91,6 +105,7 @@ public class HyUIStyle {
     }
 
     public HyUIStyle setWrap(String wrap) {
+        wrap = cleanUnits(wrap);
         this.wrap = Boolean.parseBoolean(wrap);
         return this;
     }
@@ -104,6 +119,7 @@ public class HyUIStyle {
     }
 
     public HyUIStyle setOutlineColor(String outlineColor) {
+        outlineColor = cleanUnits(outlineColor);
         this.outlineColor = outlineColor;
         return this;
     }
@@ -136,6 +152,7 @@ public class HyUIStyle {
     }
 
     public HyUIStyle setAlignment(String alignment) {
+        alignment = cleanUnits(alignment);
         ParseUtils.parseEnum(alignment, Alignment.class)
                 .ifPresent(v -> this.alignment = v);
         return this;

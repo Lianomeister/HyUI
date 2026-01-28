@@ -1,6 +1,6 @@
 # HyUI
 
-[Getting Started](docs/getting-started.md)
+[Getting Started](https://hyui.gitbook.io/docs/getting-started)
 
 If you're not from CurseForge, here's the mod download:
 [HyUI on CurseForge](https://curseforge.com/hytale/mods/hyui)

@@ -57,10 +57,15 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
             "theme",
             "parentSelector",
             "editAfterCallbacks",
-            "editBeforeCallbacks"
+            "editBeforeCallbacks",
+            "lastBuiltTabsVersion",
+            "tabsVersion",
+            "selectedTabId"
     );
 
     private static int idCounter = 0;
+    
+    protected boolean isUpdateOnly = false;
 
     public UIElementBuilder(String elementPath, String typeSelector) {
         this(Theme.RAW, elementPath, typeSelector);
@@ -77,6 +82,10 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     protected abstract void onBuild(UICommandBuilder commands, UIEventBuilder events);
 
     protected boolean supportsStyling() {
+        return false;
+    }
+
+    protected boolean preserveChildrenOnTemplateMerge() {
         return false;
     }
     
@@ -397,7 +406,9 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     }
 
     protected void buildUpdates(UICommandBuilder commands, UIEventBuilder events) {
+        isUpdateOnly = true;
         build(commands, events, true);
+        isUpdateOnly = false;
     }
 
     protected void build(UICommandBuilder commands, UIEventBuilder events, boolean updateOnly) {
@@ -737,13 +748,15 @@ public abstract class UIElementBuilder<T extends UIElementBuilder<T>> {
     }
 
     private void executeBuild(UICommandBuilder commands, UIEventBuilder events, boolean updateOnly) {
+        this.isUpdateOnly = updateOnly;
+
         buildBase(commands, events, updateOnly);
 
         String selector = getSelector();
         for (BiConsumer<UICommandBuilder, String> callback : editBeforeCallbacks) {
             callback.accept(commands, selector);
         }
-
+        
         onBuild(commands, events);
         buildChildren(commands, events, updateOnly);
 

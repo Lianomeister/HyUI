@@ -14,7 +14,10 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
  * 
  * This directly translates to a {@code Group {}}
  */
-public class GroupBuilder extends UIElementBuilder<GroupBuilder> implements LayoutModeSupported<GroupBuilder>, BackgroundSupported<GroupBuilder>, ScrollbarStyleSupported<GroupBuilder> {
+public class GroupBuilder extends UIElementBuilder<GroupBuilder> implements 
+        LayoutModeSupported<GroupBuilder>, 
+        BackgroundSupported<GroupBuilder>, 
+        ScrollbarStyleSupported<GroupBuilder> {
     private String layoutMode;
     private HyUIPatchStyle background;
     private String scrollbarStyleReference;

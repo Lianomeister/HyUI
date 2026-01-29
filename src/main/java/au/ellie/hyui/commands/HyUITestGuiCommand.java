@@ -52,7 +52,7 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
                     return CompletableFuture.runAsync(() -> {
                         PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
                         if (playerRef != null) {
-                            openHtmlTestGui2(playerRef, store);
+                            openReplicate(playerRef, store);
                         }
                     }, world);
                 } else {
@@ -66,6 +66,16 @@ public class HyUITestGuiCommand extends AbstractAsyncCommand {
             return CompletableFuture.completedFuture(null);
         }
     }
+    
+    private void openReplicate(PlayerRef playerRef, Store<EntityStore> store) {
+        if (!HyUIPluginLogger.IS_DEV) {
+            return;
+        }
+        new PageBuilder(playerRef)
+                .loadHtml("Pages/Replicate.html")
+                .open(store);
+    }
+    
     private void openTestGuiMinimal(PlayerRef playerRef, Store<EntityStore> store) {
         if (!HyUIPluginLogger.IS_DEV) {
             return;

@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -48,8 +49,6 @@ public class TabNavigationBuilder extends UIElementBuilder<TabNavigationBuilder>
     private int tabsVersion = 0;
     private int lastBuiltTabsVersion = -1;
     private final List<UIElementBuilder<?>> tabButtons = new ArrayList<>();
-    private boolean updateOnlyBuild = false;
-
     public TabNavigationBuilder() {
         super(UIElements.GROUP, "Group");
     }
@@ -282,7 +281,11 @@ public class TabNavigationBuilder extends UIElementBuilder<TabNavigationBuilder>
         return false;
     }
 
-    private boolean tabButtonsCreated = false;
+    @Override
+    protected boolean preserveChildrenOnTemplateMerge() {
+        return true;
+    }
+
 
     @Override
     protected void onBuild(UICommandBuilder commands, UIEventBuilder events) {
@@ -295,19 +298,16 @@ public class TabNavigationBuilder extends UIElementBuilder<TabNavigationBuilder>
         if ((selectedTabId == null || !hasTab(selectedTabId)) && !tabs.isEmpty()) {
             selectedTabId = tabs.get(0).id();
         }
-
-        boolean shouldRebuildButtons = tabsVersion != lastBuiltTabsVersion;
-        if (shouldRebuildButtons) {
-            if (updateOnlyBuild) {
-                return;
-            }
+        
+        // TODO Proper hash check on objects.
+        boolean tabButtonsMissing = (tabButtons.isEmpty() && children.isEmpty()) || tabButtons.size() != children.size();
+        if (tabButtonsMissing) {
             clearTabButtons();
-            tabButtonsCreated = false;
+        } else {
+            return;
         }
 
         // Only create tab buttons once, we're dealing with builders here, not raw set commands.
-        if (tabButtonsCreated) return;
-        tabButtonsCreated = true;
         lastBuiltTabsVersion = tabsVersion;
 
         // Create tab buttons as children
@@ -340,13 +340,6 @@ public class TabNavigationBuilder extends UIElementBuilder<TabNavigationBuilder>
         }
     }
 
-    @Override
-    protected void buildUpdates(UICommandBuilder commands, UIEventBuilder events) {
-        updateOnlyBuild = true;
-        super.buildUpdates(commands, events);
-        updateOnlyBuild = false;
-    }
-
     private void applyTabSelection(UIContext ctx, String tabId) {
         this.selectedTabId = tabId;
         for (Tab tab : tabs) {
@@ -361,6 +354,22 @@ public class TabNavigationBuilder extends UIElementBuilder<TabNavigationBuilder>
             if (contentId != null && !contentId.isBlank()) {
                 ctx.getById(contentId, TabContentBuilder.class).ifPresent(content -> content.withVisible(isSelected));
             }
+        }
+    }
+
+    public void applySelectionState(UIContext ctx) {
+        if (ctx == null) {
+            return;
+        }
+        String tabId = selectedTabId;
+        if (tabId == null || tabId.isBlank() || !hasTab(tabId)) {
+            if (!tabs.isEmpty()) {
+                tabId = tabs.get(0).id();
+                selectedTabId = tabId;
+            }
+        }
+        if (tabId != null && !tabId.isBlank()) {
+            applyTabSelection(ctx, tabId);
         }
     }
 

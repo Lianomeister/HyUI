@@ -4,6 +4,7 @@ import au.ellie.hyui.HyUIPluginLogger;
 import au.ellie.hyui.builders.ButtonBuilder;
 import au.ellie.hyui.builders.PageBuilder;
 import au.ellie.hyui.builders.TabNavigationBuilder;
+import au.ellie.hyui.html.TemplateProcessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.GameMode;
@@ -62,7 +63,7 @@ public class HyUITabsCommand extends AbstractAsyncCommand {
                 <div class="decorated-container" data-hyui-title="Workshop Tabs" style="anchor-width: 720; anchor-height: 480;">
                     <div class="container-contents" style="layout-mode: Top; padding: 6;">
                         <nav id="workshop-tabs" class="tabs"
-                             data-tabs="blueprints:Blueprints:blueprints-content,materials:Materials:materials-content,tools:Tools:tools-content"
+                             data-tabs="blueprints:Blueprints:blueprints-content,materials:Materials:materials-content{{#if isAdmin}},tools:Tools:tools-content{{/if}}"
                              data-selected="blueprints">
                         </nav>
 
@@ -74,9 +75,11 @@ public class HyUITabsCommand extends AbstractAsyncCommand {
                             <p>Material stacks and salvage.</p>
                         </div>
 
+                        {{#if isAdmin}}
                         <div id="tools-content" class="tab-content" data-hyui-tab-id="tools">
                             <p>Workbench tools and kits.</p>
                         </div>
+                        {{/if}}
 
                         <button id="upgrade-tabs" class="secondary-button">Upgrade Materials Tab</button>
                     </div>
@@ -84,8 +87,12 @@ public class HyUITabsCommand extends AbstractAsyncCommand {
             </div>
             """;
 
+        TemplateProcessor template = new TemplateProcessor()
+                .setVariable("isAdmin", false);
+
         PageBuilder builder = PageBuilder.pageForPlayer(playerRef)
-                .fromHtml(html)
+                .fromTemplate(html, template)
+                .enableRuntimeTemplateUpdates(true)
                 .withLifetime(CustomPageLifetime.CanDismiss);
 
         builder.addEventListener("upgrade-tabs", CustomUIEventBindingType.Activating, (data, ctx) -> {

@@ -816,7 +816,7 @@ public class TemplateProcessor {
                     field.setAccessible(true);
                 }
                 values.put(field.getName(), field.get(item));
-            } catch (IllegalAccessException ignored) {
+            } catch (IllegalAccessException | IllegalArgumentException ignored) {
                 // Skip inaccessible fields.
             }
         }

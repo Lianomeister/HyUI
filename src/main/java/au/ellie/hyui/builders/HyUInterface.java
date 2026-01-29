@@ -98,23 +98,24 @@ public abstract class HyUInterface implements UIContext {
                       @Nonnull UIEventBuilder uiEventBuilder,
                       @Nonnull Store<EntityStore> store,
                       boolean updateOnly) {
+        
         HyUIPlugin.getLog().logFinest("REBUILD: HyUInterface build updateOnly=" + updateOnly);
         HyUIPlugin.getLog().logFinest("Building HyUInterface" + (uiFile != null ? " from file: " + uiFile : ""));
 
-        LoggingUICommandBuilder loggingBuilder = new LoggingUICommandBuilder();
+        //LoggingUICommandBuilder loggingBuilder = new LoggingUICommandBuilder();
 
         refreshTemplate(this);
 
         if (!updateOnly && uiFile != null) {
-            if (HyUIPluginLogger.IS_DEV)
-                loggingBuilder.append(uiFile);
+            //if (HyUIPluginLogger.IS_DEV)
+            //    loggingBuilder.append(uiFile);
             uiCommandBuilder.append(uiFile);
         }
 
         if (editCallbacks != null) {
             for (Consumer<UICommandBuilder> callback : editCallbacks) {
-                if (HyUIPluginLogger.IS_DEV)
-                    callback.accept(loggingBuilder);
+                //if (HyUIPluginLogger.IS_DEV)
+                //    callback.accept(loggingBuilder);
                 callback.accept(uiCommandBuilder);
             }
         }
@@ -127,13 +128,13 @@ public abstract class HyUInterface implements UIContext {
             if (!updateOnly) {
                 captureInitialValues(element);
             }
-            if (HyUIPluginLogger.IS_DEV) {
+            /*if (HyUIPluginLogger.IS_DEV) {
                 if (updateOnly) {
                     element.buildUpdates(loggingBuilder, new UIEventBuilder());
                 } else {
                     element.build(loggingBuilder, new UIEventBuilder());
                 }
-            }
+            }*/
             if (updateOnly) {
                 element.buildUpdates(uiCommandBuilder, uiEventBuilder);
             } else {
@@ -142,16 +143,19 @@ public abstract class HyUInterface implements UIContext {
         }
 
         if (!updateOnly) {
+            // This entire process below happens because we need to update the template to mimic the page.
+            // and we capture the real values of the elements after they've been built.
             refreshTemplate(this);
             for (UIElementBuilder<?> element : elements) {
-                if (HyUIPluginLogger.IS_DEV) {
+                /*if (HyUIPluginLogger.IS_DEV) {
                     element.buildUpdates(loggingBuilder, new UIEventBuilder());
-                }
+                }*/
+                // TODO: THIS IS CALLED WHICH REBUILDS THE ENTIRE UI.
                 element.buildUpdates(uiCommandBuilder, uiEventBuilder);
             }
         }
 
-        this.commandLog = loggingBuilder.getCommandLog();
+        //this.commandLog = loggingBuilder.getCommandLog();
         this.hasBuilt = true;
     }
 
@@ -163,20 +167,20 @@ public abstract class HyUInterface implements UIContext {
         HyUIPlugin.getLog().logFinest("REBUILD: HyUInterface buildFromCommandBuilder updateOnly=" + updateOnly);
         HyUIPlugin.getLog().logFinest("Building HyUInterface " + (uiFile != null ? " from file: " + uiFile : ""));
 
-        LoggingUICommandBuilder loggingBuilder = new LoggingUICommandBuilder();
+        //LoggingUICommandBuilder loggingBuilder = new LoggingUICommandBuilder();
 
         refreshTemplate(this);
 
         if (!updateOnly && uiFile != null) {
-            if (HyUIPluginLogger.IS_DEV)
-                loggingBuilder.append(uiFile);
+            /*if (HyUIPluginLogger.IS_DEV)
+                loggingBuilder.append(uiFile);*/
             uiCommandBuilder.append(uiFile);
         }
 
         if (editCallbacks != null) {
             for (Consumer<UICommandBuilder> callback : editCallbacks) {
-                if (HyUIPluginLogger.IS_DEV)
-                    callback.accept(loggingBuilder);
+               /* if (HyUIPluginLogger.IS_DEV)
+                    callback.accept(loggingBuilder);*/
                 callback.accept(uiCommandBuilder);
             }
         }
@@ -189,13 +193,13 @@ public abstract class HyUInterface implements UIContext {
             if (!updateOnly) {
                 captureInitialValues(element);
             }
-            if (HyUIPluginLogger.IS_DEV) {
+            /*if (HyUIPluginLogger.IS_DEV) {
                 if (updateOnly) {
                     element.buildUpdates(loggingBuilder, null);
                 } else {
                     element.build(loggingBuilder, null);
                 }
-            }
+            }*/
             if (updateOnly) {
                 element.buildUpdates(uiCommandBuilder, null);
             } else {
@@ -206,14 +210,14 @@ public abstract class HyUInterface implements UIContext {
         if (!updateOnly) {
             refreshTemplate(this);
             for (UIElementBuilder<?> element : elements) {
-                if (HyUIPluginLogger.IS_DEV) {
+                /*if (HyUIPluginLogger.IS_DEV) {
                     element.buildUpdates(loggingBuilder, null);
-                }
+                }*/
                 element.buildUpdates(uiCommandBuilder, null);
             }
         }
 
-        this.commandLog = loggingBuilder.getCommandLog();
+        //this.commandLog = loggingBuilder.getCommandLog();
         this.hasBuilt = true;
     }
 
@@ -428,6 +432,7 @@ public abstract class HyUInterface implements UIContext {
         
         this.elements = mergeElementLists(this.elements, updatedElements);
         applyRuntimeValues(this.elements, context);
+        reapplyTabSelections(this.elements, context);
         if (hasBuilt) {
             //dirtyValueIds.clear();
         }
@@ -490,9 +495,11 @@ public abstract class HyUInterface implements UIContext {
 
             if (current != null && current.getClass().equals(updated.getClass())) {
                 current.applyTemplate(updated);
-                List<UIElementBuilder<?>> mergedChildren = mergeElementLists(current.children, updated.children);
-                current.children.clear();
-                current.children.addAll(mergedChildren);
+                if (!(current instanceof TabNavigationBuilder)) {
+                    List<UIElementBuilder<?>> mergedChildren = mergeElementLists(current.children, updated.children);
+                    current.children.clear();
+                    current.children.addAll(mergedChildren);
+                }
                 merged.add(current);
             } else {
                 merged.add(updated);
@@ -532,6 +539,20 @@ public abstract class HyUInterface implements UIContext {
             }
             if (!element.children.isEmpty()) {
                 applyRuntimeValues(element.children, context);
+            }
+        }
+    }
+
+    private void reapplyTabSelections(List<UIElementBuilder<?>> elements, UIContext context) {
+        if (elements == null || context == null) {
+            return;
+        }
+        for (UIElementBuilder<?> element : elements) {
+            if (element instanceof TabNavigationBuilder navigation) {
+                navigation.applySelectionState(context);
+            }
+            if (!element.children.isEmpty()) {
+                reapplyTabSelections(element.children, context);
             }
         }
     }

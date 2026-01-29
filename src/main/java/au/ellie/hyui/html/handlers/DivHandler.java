@@ -1,6 +1,7 @@
 package au.ellie.hyui.html.handlers;
 
 import au.ellie.hyui.builders.*;
+import au.ellie.hyui.elements.ScrollbarStyleSupported;
 import au.ellie.hyui.html.HtmlParser;
 import au.ellie.hyui.html.TagHandler;
 import org.jsoup.nodes.Element;
@@ -8,6 +9,7 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DivHandler implements TagHandler {
     @Override
@@ -37,6 +39,7 @@ public class DivHandler implements TagHandler {
         }
 
         applyCommonAttributes(builder, element);
+        applyScrollbarStyle(builder, element);
 
         for (Node childNode : element.childNodes()) {
             if (childNode instanceof Element) {
@@ -76,5 +79,45 @@ public class DivHandler implements TagHandler {
         }
 
         return builder;
+    }
+
+    private void applyScrollbarStyle(UIElementBuilder<?> builder, Element element) {
+        if (!(builder instanceof ScrollbarStyleSupported<?> scrollbarSupported)) {
+            return;
+        }
+        if (element.hasAttr("data-hyui-scrollbar-style")) {
+            parseStyleReference(element.attr("data-hyui-scrollbar-style"))
+                    .ifPresent(ref -> scrollbarSupported.withScrollbarStyle(ref.document, ref.reference));
+        }
+    }
+
+    private Optional<StyleReference> parseStyleReference(String rawValue) {
+        if (rawValue == null || rawValue.isBlank()) {
+            return Optional.empty();
+        }
+        String[] parts = rawValue.trim().split("\\s+");
+        if (parts.length >= 2) {
+            return Optional.of(new StyleReference(stripQuotes(parts[0]), stripQuotes(parts[1])));
+        }
+        return Optional.of(new StyleReference("Common.ui", stripQuotes(rawValue.trim())));
+    }
+
+    private String stripQuotes(String value) {
+        String trimmed = value.trim();
+        if ((trimmed.startsWith("\"") && trimmed.endsWith("\""))
+                || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+            return trimmed.substring(1, trimmed.length() - 1).trim();
+        }
+        return trimmed;
+    }
+
+    private static final class StyleReference {
+        private final String document;
+        private final String reference;
+
+        private StyleReference(String document, String reference) {
+            this.document = document;
+            this.reference = reference;
+        }
     }
 }

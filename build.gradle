@@ -22,7 +22,7 @@ javadoc {
 hytale {
     // Add `--allow-op` to server args (allows you to run `/op self` in-game)
     allowOp.set(true)
-
+    
     // Set the patchline to use, currently there are "release" and "pre-release"
     patchline.set("pre-release")
 
@@ -62,6 +62,7 @@ shadowJar {
 tasks.runServer {
     jvmArgs = jvmArgs + "-XX:+AllowEnhancedClassRedefinition"
     environment("HYUI_DEV", "true")
+    //args = args + "--log FINEST"
 }
 
 tasks.register('releaseJar', Jar) {

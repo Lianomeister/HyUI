@@ -97,7 +97,7 @@ class TemplateProcessorTest {
             processor.setVariable("value", 1234);
 
             assertEquals(
-                    "1 234",
+                    "1,234",
                     processor.process("{{$value|number}}")
             );
         }

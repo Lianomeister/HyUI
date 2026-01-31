@@ -19,6 +19,7 @@
 package au.ellie.hyui;
 
 import au.ellie.hyui.commands.*;
+import au.ellie.hyui.sounds.SoundManager;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
@@ -33,9 +34,12 @@ import javax.annotation.Nonnull;
 public class HyUIPlugin extends JavaPlugin {
 
     private static HyUIPluginLogger instance;
-    
+
     private static final boolean ADD_CMDS = false;
-    
+
+    /**
+     * Get the plugin logger instance.
+     */
     public static HyUIPluginLogger getLog() {
         if (instance == null)
             instance = new HyUIPluginLogger();
@@ -50,8 +54,17 @@ public class HyUIPlugin extends JavaPlugin {
 
     @Override
     protected void setup() {
+        // --------------------------
+        // Initialize TinySound / SoundManager
+        // --------------------------
+        SoundManager.init();
+
+        // --------------------------
+        // Register commands if enabled
+        // --------------------------
         if (ADD_CMDS) {
             instance.logFinest("Setting up plugin " + this.getName());
+
             this.getCommandRegistry().registerCommand(new HyUITestGuiCommand());
             this.getCommandRegistry().registerCommand(new HyUIAddHudCommand());
             this.getCommandRegistry().registerCommand(new HyUIRemHudCommand());
@@ -60,12 +73,15 @@ public class HyUIPlugin extends JavaPlugin {
             this.getCommandRegistry().registerCommand(new HyUITemplateRuntimeCommand());
             this.getCommandRegistry().registerCommand(new HyUIBountyCommand());
             this.getCommandRegistry().registerCommand(new HyUITabsCommand());
-            
+
+            // --------------------------
+            // Global PlayerReady event
+            // --------------------------
             this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, event -> {
-                instance.logFinest("Player ready event triggered for " + event.getPlayer().getDisplayName());
-                
                 var player = event.getPlayer();
                 if (player == null) return;
+
+                instance.logFinest("Player ready event triggered for " + player.getDisplayName());
 
                 Ref<EntityStore> ref = event.getPlayerRef();
                 if (!ref.isValid()) return;
@@ -74,8 +90,15 @@ public class HyUIPlugin extends JavaPlugin {
                 World world = store.getExternalData().getWorld();
                 world.execute(() -> {
                     PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-                    String html = "<hyvatar username='" + player.getDisplayName() + "' size='64'></hyvatar><div style='anchor-width: 400; anchor-height: 50;'><progress value='50' max='100' data-hyui-bar-texture-path='Common/ShopTest.png'></progress></div>";
-                    /*var hud = HudBuilder.detachedHud()
+
+                    // Example HUD HTML
+                    String html = "<hyvatar username='" + player.getDisplayName() + "' size='64'></hyvatar>"
+                            + "<div style='anchor-width: 400; anchor-height: 50;'>"
+                            + "<progress value='50' max='100' data-hyui-bar-texture-path='Common/ShopTest.png'></progress>"
+                            + "</div>";
+
+                    /* Example HUD builder (commented out)
+                    var hud = HudBuilder.detachedHud()
                             .fromHtml(html)
                             .withRefreshRate(1000)
                             .onRefresh((h) -> {
@@ -83,11 +106,19 @@ public class HyUIPlugin extends JavaPlugin {
                                     builder.withText("Hello, World! " + System.currentTimeMillis());
                                 });
                             })
-                            .show(playerRef);*/
+                            .show(playerRef);
+                    */
                 });
-
             });
         }
-        
+    }
+
+    @Override
+    protected void shutdown() {
+        // --------------------------
+        // Shutdown TinySound / SoundManager
+        // --------------------------
+        SoundManager.shutdown();
+        super.shutdown();
     }
 }

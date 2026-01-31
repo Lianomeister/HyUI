@@ -2,12 +2,23 @@
 
 [Getting Started](https://hyui.gitbook.io/docs/getting-started)
 
-If you're not from CurseForge, here's the mod download:
+If you're not from CurseForge, you can download the mod here:  
 [HyUI on CurseForge](https://curseforge.com/hytale/mods/hyui)
 
-Make sure you include the project as a dependency on upload to CurseForge.
-[Click here for a template starter project for HyUI!](https://github.com/Elliesaur/Hytale-Example-UI-Project)
+Make sure to include the project as a dependency when uploading to CurseForge.  
+[Click here for a starter template project for HyUI](https://github.com/Elliesaur/Hytale-Example-UI-Project)
 
-In the meanwhile, have you seen [Hytale UI Builder](https://hytale.ellie.au)?
+---
 
-It supports outputting to HYUIML! Our special HTML/CSS-like syntax.
+## Features in This Fork
+
+- **TinyUI / SoundManager added** – Play sound effects and background music in your UI.  
+- Fully integrated into HyUI, ready for modders to load their own audio assets.  
+
+---
+
+## Hytale UI Builder
+
+Have you seen the [Hytale UI Builder](https://hytale.ellie.au)?  
+
+It supports exporting to **HYUIML**, our special HTML/CSS-like syntax for UI creation.

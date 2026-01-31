@@ -214,6 +214,7 @@ public class CustomButtonBuilder extends UIElementBuilder<CustomButtonBuilder>
         if (selector == null) return;
 
         if (buttonType == ButtonType.BUTTON) {
+            // TODO: Check if this is going to be a problem :) :) :)
             applyLayoutMode(commands, selector);
         }
 

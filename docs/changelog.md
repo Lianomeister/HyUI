@@ -1,4 +1,10 @@
 ### HyUI Changelog
+#### 0.5.10 - 31 Jan 2026
+* Fixed layout mode being applied to buttons and not group surrounding button.
+* Refactor: use supplier instead of direct value - thank you @Farrael!
+* Feature: Allow negative anchors - thank you @WolverinDEV
+* Changed from ARR to LGPLv3 license.
+
 #### 0.5.10 - 30 Jan 2026
 * Fix field access checks.
 
